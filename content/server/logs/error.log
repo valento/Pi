@@ -1,0 +1,50 @@
+2019/08/27 13:15:45 [error] 2608#8036: *1 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2019/08/27 13:17:27 [notice] 15780#3460: signal process started
+2019/08/27 13:18:02 [notice] 8124#3180: signal process started
+2019/08/27 13:25:44 [notice] 20220#18892: signal process started
+2019/08/27 13:25:44 [error] 20220#18892: CreateFile() "C:\Users\User\Documents\project\pi\cart\server/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2019/08/27 13:26:40 [error] 12984#19132: *1 "C:\Users\User\Documents\project\pi\cart\server/build/index.html" is not found (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:3001"
+2019/08/27 13:26:40 [error] 12984#19132: *1 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/build/favicon.ico" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3001/"
+2019/08/27 13:27:24 [notice] 11380#1336: signal process started
+2019/08/27 13:27:32 [notice] 180#19864: signal process started
+2019/08/27 13:27:32 [error] 180#19864: CreateFile() "C:\Users\User\Documents\project\pi\cart\server/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2019/08/27 13:27:50 [notice] 20000#12480: signal process started
+2019/08/27 13:27:50 [error] 20000#12480: CreateFile() "C:\Users\User\Documents\project\pi\cart\server/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2019/08/27 13:29:27 [error] 7208#3968: *1 "C:\Users\User\Documents\project\pi\cart\server/build/index.html" is not found (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:3001"
+2019/08/27 13:30:25 [notice] 19004#15136: signal process started
+2019/08/27 13:31:07 [error] 6220#17212: *7 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/assets-manifest.json" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /assets-manifest.json HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/27 13:31:35 [error] 6220#17212: *6 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/assets-manifest.json" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /assets-manifest.json HTTP/1.1", host: "localhost:3001"
+2019/08/27 13:40:20 [notice] 1908#7088: signal process started
+2019/08/27 13:44:08 [error] 16568#15236: *4 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/assets-manifest.json" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /assets-manifest.json HTTP/1.1", host: "localhost:3001"
+2019/08/27 13:51:20 [notice] 17492#16440: signal process started
+2019/08/27 13:53:19 [emerg] 20476#14972: unknown directive "if($request_metod" in C:\Users\User\Documents\project\pi\cart\server/conf/nginx.conf:45
+2019/08/27 13:54:08 [emerg] 9156#18892: unknown directive "if($request_metod" in C:\Users\User\Documents\project\pi\cart\server/conf/nginx.conf:45
+2019/08/27 13:55:16 [emerg] 16820#19412: unknown directive "if($request_method" in C:\Users\User\Documents\project\pi\cart\server/conf/nginx.conf:45
+2019/08/27 14:40:46 [notice] 3156#6660: signal process started
+2019/08/27 14:46:21 [notice] 1528#20260: signal process started
+2019/08/27 14:52:36 [notice] 4888#5644: signal process started
+2019/08/28 12:01:45 [notice] 10148#14492: signal process started
+2019/08/28 16:00:19 [notice] 2336#1036: signal process started
+2019/08/29 11:39:53 [error] 15188#15256: *49 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 11:41:20 [notice] 8744#9256: signal process started
+2019/08/29 11:41:25 [error] 16764#14780: *52 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 11:46:04 [error] 16764#14780: *55 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 11:46:14 [error] 16764#14780: *55 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 11:57:22 [error] 16764#14780: *60 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 11:57:57 [notice] 15524#7564: signal process started
+2019/08/29 12:00:51 [error] 4252#13736: *4 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 12:03:28 [notice] 14412#14584: signal process started
+2019/08/29 12:03:44 [error] 16604#1376: *2 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 12:05:36 [error] 16604#1376: *5 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 12:07:10 [error] 16604#1376: *9 CreateFile() "C:\Users\User\Documents\project\pi\cart\server/../build/static/js/main.2ba4c733.js" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /static/js/main.2ba4c733.js HTTP/1.1", host: "localhost:3001", referrer: "http://localhost:3000/cart"
+2019/08/29 12:15:25 [notice] 16716#12096: signal process started
+2019/08/30 18:26:29 [error] 8852#17112: *142 directory index of "C:\Users\User\Documents\project\pi\cart\server/../build/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:3001"
+2019/08/30 18:30:50 [notice] 8764#1904: signal process started
+2019/08/30 18:45:44 [notice] 15760#17960: signal process started
+2019/08/30 20:22:04 [notice] 10720#18308: signal process started
+2019/08/31 22:38:58 [notice] 5112#20396: signal process started
+2019/09/01 12:00:36 [error] 19504#9448: *2 directory index of "C:\Users\User\Documents\project\pi\content\server/../public/css/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /css/ HTTP/1.1", host: "localhost:5000"
+2019/09/01 12:00:46 [error] 19504#9448: *2 CreateFile() "C:\Users\User\Documents\project\pi\content\server/../public/public/css" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /public/css HTTP/1.1", host: "localhost:5000"
+2019/09/01 12:08:31 [error] 19504#9448: *12 CreateFile() "C:\Users\User\Documents\project\pi\content\server/../public/App.css" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /App.css HTTP/1.1", host: "localhost:5000", referrer: "http://localhost:3000/"
+2019/09/01 14:47:11 [notice] 16880#3836: signal process started
+2019/09/04 23:45:43 [notice] 10616#11132: signal process started

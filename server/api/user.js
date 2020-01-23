@@ -1,0 +1,153 @@
+import mysql from 'mysql'
+import dotenv from 'dotenv'
+const config = require('../../config')
+
+const options = {
+  user: config.get('MYSQL_USER'),
+  password: config.get('MYSQL_PASSWORD'),
+  database: config.get('MYSQL_DB')
+}
+
+if( config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'production' ) {
+  options.socketPath = `/cloudsql/${config.get('INSTANCE_CONNECTION_NAME')}`
+} else {
+  options.host = 'localhost'
+}
+
+const db = mysql.createConnection(options)
+
+export default {
+
+    signup: data => {
+      let sql = ``
+      const { email,password,token } = data
+      if(email==='valentin.mundrov@gmail.com'){
+        sql = `INSERT INTO user (email,password,membership) VALUES('${email}','${password}',1)`
+      } else {
+        sql = `INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
+      }
+      return new Promise ((resolve,reject) => {
+        db.query(sql, (err,result) => {
+          if(err) {
+            reject(err)
+          } else {
+            resolve(result.insertId)
+          }
+        })
+      })
+    },
+    checkOne: (email,scope='*') => {
+      const sql = `SELECT ${scope} FROM user WHERE email='${email}'`
+      return new Promise( (resolve, reject) => {
+        db.query(sql, ( err,results ) => {
+          if(!err) {
+            resolve(results)
+          } else {
+            reject(err)
+          }
+        })
+      })
+    },
+    verify: email => {
+      const sql = `UPDATE user SET verified=1 WHERE email='${email}'`
+      return new Promise( (resolve, reject) => {
+        db.query(sql, ( err,rows ) => {
+          if(!err) {
+            resolve(rows)
+          } else {
+            reject(err)
+          }
+        })
+      })
+    },
+// on User.init: returns user and user's locations
+    getOne: (data={},table,scope=['*']) => {
+      let sql
+      let sc = scope.map( entry => 'u.'+entry)
+      const _key = Object.keys(data)
+      const _value = Object.values(data)
+      if(table==='user'){
+        sql = `SELECT ${sc},
+        ul.id,ul.name,ul.door,ul.floor,ul.bell,ul.admin,
+        ul.mobile,ul.location,ul.c_status,ul.prime,
+        l.city
+        FROM user u
+        LEFT OUTER JOIN user_location ul ON u.uid=ul.uid
+        JOIN location l ON l.id=ul.location
+        WHERE u.email='${data.email}'
+        `
+      } else {
+        sql = `SELECT ${scope} FROM ${table} WHERE ${_key}='${_value}'`
+      }
+      console.log(sql)
+      return new Promise( (resolve,reject) => {
+        db.query(sql, (err,results) => {
+          if(table==='user'){
+            console.log('User Init data: ',results)
+          }
+          if(!err) {
+            resolve(results)
+          } else {
+            reject(err)
+          }
+        })
+      })
+    },
+// Save user or user_location table
+    saveOne: (data={},table) => {
+      let _keys = Object.keys(data), _values = []
+      let params = Object.values(data).map( v => {
+        _values.push('?')
+        return v
+      })
+      const sql = `INSERT INTO ${table} (${_keys}) VALUES (${_values})`
+  console.log(sql,params)
+      return new Promise( (resolve,reject) => {
+        db.query(sql, params, (err,result) => {
+          if (err) return reject()
+          resolve(result.insertId)
+        })
+      })
+    },
+// Update user table or user_location table
+    updateOne: (data={},table) => {
+      const {id, ...rest} = data
+      const _map = Object.keys(rest).map( entry => {
+        if (entry==='name' || entry==='bell' || entry==='entry')
+        {
+          return `${entry}='${rest[entry]}'`
+        } else {
+          return `${entry}=${rest[entry]}`
+        }
+
+      })
+      const sql =`UPDATE ${table} SET ${_map} WHERE id=${id}`
+      console.log('ORM: ',sql)
+      return new Promise( (resolve,reject) => {
+        db.query(sql, err => {
+          if (err) return reject()
+          resolve()
+        })
+      } )
+    },
+// IDS: all user location IDs
+// Get every FAC with all products in FACs STORE
+    getAllFac: ids => {
+      const sql = `SELECT fl.fac,fl.city,fl.prime,
+      f.open,f.delivery,f.bottleneck,f.mobile,
+      s.product,s.local_promo,s.local_price,
+      s.on_hand,s.take_only,s.add_time
+      FROM fac_location fl
+      JOIN store s ON fl.fac=s.fac AND s.on_hand>0
+      JOIN fac f ON fl.fac=f.id
+      WHERE fl.city IN (${ids}) AND fl.prime=1
+      AND f.status=7`
+      return new Promise( (resolve,reject) => {
+        db.query(sql, (err,results) => {
+          if(err) return reject(err)
+          resolve(results)
+        })
+      })
+    }
+
+}

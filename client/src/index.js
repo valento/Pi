@@ -1,0 +1,72 @@
+import React from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore, compose, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import 'semantic-ui-css/semantic.min.css'
+import './App.css'
+import RootReducer from './RootReducer'
+import { setUI,getProductList } from './actions/settup'
+import { userSignedIn } from './actions/auth'
+import { userInit,getLocalFacs } from './actions/user'
+import setAuthHeader from './utils/setAuthHeader'
+import setLanHeader from './utils/setLanHeader'
+import App from './App'
+//import * as serviceWorker from './serviceWorker'
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const initState = {
+  user: {},
+  settings: {
+    lan: 'bg'
+  },
+  products: [],
+  order: {},
+  cart: []
+}
+
+const store = createStore(
+  RootReducer,
+  initState,
+  composeEnhancers(applyMiddleware(thunk))
+)
+
+window.GS = store
+
+if(localStorage.valePizzaJWT){
+  let user = {}
+  user.new_user = false
+  user.token = localStorage.valePizzaJWT
+  setAuthHeader(user.token)
+  store.dispatch(userSignedIn(user))
+  store.dispatch(userInit()).then( locations => {
+    if(!locations) return
+// get all user saved locations
+    let loc = locations.map( l => {
+      return l.city
+    })
+    let l = [...new Set(loc)]
+// get all facs for each unique user.location.city
+    store.dispatch(getLocalFacs(l))
+  })
+}
+setLanHeader('bg')
+store.dispatch(setUI())
+store.dispatch(getProductList('bg'))
+
+const Root = (
+  <Provider store={store}>
+    <Router>
+      <Route component={App} />
+    </Router>
+  </Provider>
+)
+
+ReactDOM.render(
+  Root,
+  document.getElementById('root'))
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+//serviceWorker.unregister()

@@ -1,0 +1,9 @@
+#[START app_yaml]
+runtime: nodejs10
+beta_settings:
+  cloud_sql_instances: sapient-tracer-232311:europe-west1:piapp
+handlers:
+- url: /.*
+  script: auto
+  secure: always
+  redirect_http_response_code: 301

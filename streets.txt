@@ -1,0 +1,53 @@
+# LAT-LONG = street direction (long:E/W or lat:N/S)
+# DIAG: NW/SE=0  NE/SW=1
+
+INSERT INTO street (name,city,latitude) VALUES
+('{"en":"Sveti Patriarh Evtimiy","es":"Sveti Patriarh Evtimiy","bg":"Св. Патриарх Евтимий"}',14,1),
+('{"en":"Tsar Ivan Shishman","es":"Tsar Ivan Shishman","bg":"Цар Иван Шишман"}',14,1),
+('{"en":"bul. Ruski","es":"bul. Ruski","bg":"бул. Руски"}',14,1),
+('{"en":"Mitropolit Metodi Kusev","es":"Mitropolit Metodi Kusev","bg":"Митрополид Методи Кусев"}',14,1),
+('{"en":"Hadzhi Dimitar Asenov","es":"Hadzhi Dimitar Asenov","bg":"Хад. Димитър Асенов"}',14,1),
+('{"en":"Tsar Ivan Asen II","es":"Tsar Ivan Asen II","bg":"Цар Иван Асен II"}',14,1),
+('{"en":"Sveti Otets Paisij","es":"Sveti Otets Paisij","bg":"Св. Отец Паисий"}',14,1),
+('{"en":"Samarsko Zname","es":"Samarsko Zname","bg":"Самарско Знаме"}',14,1),
+('{"en":"Petar Alabin","es":"Petar Alabin","bg":"Петър Алабин"}',14,1),
+('{"en":"Rodopi","es":"Rodopi","bg":"Родопи"}',14,1),
+('{"en":"Bulgarsko opalchenie","es":"Bulgarsko opalchenie","bg":"Българско Опълчение"}',14,1),
+('{"en":"Angel Kanchev","es":"Angel Kanchev","bg":"Ангел Кънчев"}',14,1),
+('{"en":"Krayrechen bulevard","es":"Krayrechen bulevard","bg":"Крайречен булевард"}',14,1),
+('{"en":"Han Tervel","es":"Han Tervel","bg":"Хан Тервел"}',14,1),
+('{"en":"sv. Apostol Karp","es":"sv. Apostol Karp","bg":"св. Апостол Карп"}',14,1),
+('{"en":"Pop Mincho Kanchev","es":"Pop Mincho Kanchev","bg":"поп Минчо Кънчев"}',14,1)
+;
+
+INSERT INTO street (name,city,longitude) VALUES
+('{"en":"bul. Slavjanski","es":"bul. Slavjanski","bg":"бул. Славянски"}',14,1),
+('{"en":"Nikola Petkov","es":"Nikola Petkov","bg":"Никола Петков"}',14,1),
+('{"en":"Tsar Simeon Veliki","es":"Tsar Simeon Veliki","bg":"Цар Симеон Велики"}',14,1),
+('{"en":"bul. Hristo Botev","es":"bul. Hristo Botev","bg":"бул. Христо Ботев"}',14,1),
+('{"en":"Bratia Jekovi","es":"Bratia Jekovi","bg":"Братя Жекови"}',14,1),
+('{"en":"General Gurko","es":"General Gurko","bg":"Ген. Гурко"}',14,1),
+('{"en":"Kniaz Boris","es":"Kniaz Boris","bg":"Княз Борис"}',14,1),
+('{"en":"Graf Ignatiev","es":"Graf Ignatiev","bg":"Граф Игнатиев"}',14,1),
+('{"en":"General Stoletov","es":"General Stoletov","bg":"Генерал Столетов"}',14,1),
+('{"en":"Vasil Levski","es":"Vasil Levski","bg":"Васил Левски"}',14,1),
+('{"en":"Boruygrad","es":"Boruygrad","bg":"Боруйград"}',14,1),
+('{"en":"Vasil Levski","es":"Vasil Levski","bg":"Васил Левски"}',14,1),
+('{"en":"Avgusta Trayana","es":"Avgusta Trayana","bg":"Августа Траяна"}',14,1),
+('{"en":"Hristina Morfova","es":"Hristina Morfova","bg":"Христина Морфова"}',14,1)
+;
+
+INSERT INTO street (name,city,diag) VALUES
+('{"en":"Han Asparuh","es":"Han Asparuh","bg":"Хан Аспарух"}',14,1),
+('{"en":"Beroe","es":"Beroe","bg":"Берое"}',14,0)
+;
+
+
+INSERT INTO zone (name,code,city) VALUES
+('{"en": "Samara I","bg":"Самара 1","es":"Samara I"}','6000-1',14),
+('{"en": "Samara II","bg":"Самара 2","es":"Samara II"}','6000-2',14),
+('{"en": "Samara III","bg":"Самара 3","es":"Samara III"}','6000-2',14)
+('{"en": "Zjabkite","bg":"Жабките","es":"Zjabkite"}',14,'6000-8',32,21,22)
+;
+
+INSERT INTO zone (name,city,code,w,s,e) VALUES ('{"en": "Zjabkite","bg":"Жабките","es":"Zjabkite"}',14,'6000-8',32,21,33);
