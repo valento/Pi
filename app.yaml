@@ -1,7 +1,7 @@
 #[START app_yaml]
 runtime: nodejs10
 beta_settings:
-  cloud_sql_instances: sapient-tracer-232311:europe-west1:piapp
+  cloud_sql_instances: sapient-tracer-232311:europe-west1:pzzdb
 handlers:
 - url: /.*
   script: auto
