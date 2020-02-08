@@ -48,6 +48,7 @@ exports.default = {
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, result) {
         if (err) {
+          console.log(err);
           reject(err);
         } else {
           resolve(result.insertId);
@@ -58,10 +59,11 @@ exports.default = {
   checkOne: function checkOne(email) {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '*';
 
-    var sql = 'SELECT ' + scope + ' FROM user WHERE email=\'' + email + '\'';
+    var sql = 'SELECT ' + scope + ' FROM user WHERE email=\'' + email + '\' AND c_status=4';
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (!err) {
+          //if(results[0].c_status !== 4) return reject({ error: { message: 'User Account is canceled' }})
           resolve(results);
         } else {
           reject(err);
@@ -94,16 +96,12 @@ exports.default = {
     var _key = Object.keys(data);
     var _value = Object.values(data);
     if (table === 'user') {
-      sql = 'SELECT ' + sc + ',\n        ul.id,ul.name,ul.door,ul.floor,ul.bell,ul.admin,\n        ul.mobile,ul.location,ul.c_status,ul.prime,\n        l.city\n        FROM user u\n        LEFT OUTER JOIN user_location ul ON u.uid=ul.uid\n        JOIN location l ON l.id=ul.location\n        WHERE u.email=\'' + data.email + '\'\n        ';
+      sql = 'SELECT ' + sc + ',\n        ul.id,ul.name,ul.door,ul.floor,ul.bell,ul.admin,ul.mobile,ul.location,ul.c_status,ul.prime,\n        l.city\n        FROM user u\n        LEFT JOIN user_location ul ON u.uid=ul.uid\n        LEFT JOIN location l ON l.id=ul.location\n        WHERE u.email=\'' + data.email + '\'\n        ';
     } else {
       sql = 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + _key + '=\'' + _value + '\'';
     }
-    console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
-        if (table === 'user') {
-          console.log('User Init data: ', results);
-        }
         if (!err) {
           resolve(results);
         } else {
@@ -158,8 +156,8 @@ exports.default = {
   },
   // IDS: all user location IDs
   // Get every FAC with all products in FACs STORE
-  getAllFac: function getAllFac(ids) {
-    var sql = 'SELECT fl.fac,fl.city,fl.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac_location fl\n      JOIN store s ON fl.fac=s.fac AND s.on_hand>0\n      JOIN fac f ON fl.fac=f.id\n      WHERE fl.city IN (' + ids + ') AND fl.prime=1\n      AND f.status=7';
+  getFac: function getFac(id) {
+    var sql = 'SELECT fl.fac,fl.city,fl.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac_location fl\n      JOIN store s ON fl.fac=s.fac AND s.on_hand>0\n      JOIN fac f ON fl.fac=f.id\n      WHERE fl.city=' + id + ' AND fl.prime=1\n      AND f.status=7';
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (err) return reject(err);

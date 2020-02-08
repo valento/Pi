@@ -14,13 +14,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var getUser = exports.getUser = function getUser(req, res, next) {
   var token = req.get('Authorization');
   try {
-    var decoded = _jsonwebtoken2.default.decode(token);
+    var decoded = _jsonwebtoken2.default.verify(token, process.env.JWT_SECRET);
     console.log('/user API-decoded: ', decoded);
     req.email = decoded.email;
+    req.uid = decoded.uid;
+    next();
   } catch (err) {
-    return res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({ error: { message: 'Invalid token' } });
   }
-  next();
+  //next()
 };
 
 var getLan = exports.getLan = function getLan(req, res, next) {
@@ -33,11 +35,11 @@ var getLan = exports.getLan = function getLan(req, res, next) {
 var getUserId = exports.getUserId = function getUserId(req, res, next) {
   var token = req.get('Authorization');
   try {
-    var decoded = _jsonwebtoken2.default.decode(token);
+    var decoded = _jsonwebtoken2.default.verify(token, process.env.JWT_SECRET);
     console.log('/user API-decoded: ', decoded);
     req.uid = decoded.uid;
   } catch (err) {
-    return res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({ error: { message: 'Invalid token' } });
   }
   next();
 };
@@ -49,7 +51,7 @@ var checkAdmin = exports.checkAdmin = function checkAdmin(req, res, next) {
       req.id = decoded.uid;
       next();
     } else {
-      return res.status(401).json({ message: 'Unauthorized User!' });
+      return res.status(401).json({ error: { message: 'Unauthorized User!' } });
     }
   });
 };
