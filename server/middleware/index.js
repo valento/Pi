@@ -3,13 +3,15 @@ import jwt from 'jsonwebtoken'
 export const getUser = (req,res,next) => {
   const token = req.get('Authorization')
   try {
-    const decoded = jwt.decode(token)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
     console.log('/user API-decoded: ',decoded)
     req.email = decoded.email
+    req.uid = decoded.uid
+    next()
   } catch(err) {
-    return res.status(401).json({message: 'Invalid token'})
+    return res.status(401).json({ error: { message: 'Invalid token' }})
   }
-  next()
+  //next()
 }
 
 export const getLan = (req,res,next) => {
@@ -22,11 +24,11 @@ export const getLan = (req,res,next) => {
 export const getUserId = (req,res,next) => {
   const token = req.get('Authorization')
   try {
-    const decoded = jwt.decode(token)
+    const decoded = jwt.verify(token,process.env.JWT_SECRET)
     console.log('/user API-decoded: ',decoded)
     req.uid = decoded.uid
   } catch(err) {
-    return res.status(401).json({message: 'Invalid token'})
+    return res.status(401).json({ error: { message: 'Invalid token' }})
   }
   next()
 }
@@ -38,7 +40,7 @@ export const checkAdmin = (req,res,next) => {
       req.id = decoded.uid
       next()
     } else {
-      return res.status(401).json({message: 'Unauthorized User!'})
+      return res.status(401).json({ error: { message: 'Unauthorized User!' }})
     }
   })
 }

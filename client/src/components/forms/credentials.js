@@ -16,19 +16,21 @@ export default class Credentials extends React.Component {
 
   onSubmit = () => {
     const {data, errors} = this.state
+    const { pass,submit,getFacs,login } = this.props
     const err = this.validate(data)
     this.setState({ errors: err })
-    if(!this.props.pass && Object.keys(err).length === 0) {
-      this.props.submit(data,false).then( locations => {
+    if(Object.keys(err).length !== 0) return
+    if(!pass) {
+      submit(data,false).then( locations => {
         if(!locations) return
         let loc = locations.map( l => {
           return l.location
         })
-        this.props.getFacs(loc)
+        getFacs(loc)
       })
-      //this.props.init()
-    } else if(Object.keys(err).length === 0) {
-      this.props.login(data,true)
+      //init()
+    } else {
+      login(data,true)
       //console.log(err.password, data)
     }
   }

@@ -65,7 +65,8 @@ app.get('/ui', getLan, (req,res,next) => {
 app.get('/*', (req,res) => {
   const {err} = req
   console.log('Root: ',ENV)
-  if(ENV === 'production'){
+  if(ENV==='production'){
+    console.log('Running: ',ENV)
     res.sendFile(path.join(__dirname, '../client/build/index.html'))
   } else if(!err) {
     res.send('This is not a Web Page! Check your routes...')
@@ -75,13 +76,13 @@ app.get('/*', (req,res) => {
 })
 
 let server = app.listen(PORT, () => {
-  console.log('Server Running in: ',process.env)
+  console.log('Server Running in: ',process.env.PORT)
 })
 
 // TRY HTTP2: no ssl-file
 const options = {
-  key: fs.readFileSync(`${__dirname}/ssl/server.key`),
-  cert:fs.readFileSync(`${__dirname}/ssl/server.srt`),
+  key: fs.readFileSync(__dirname + '/ssl/server.key'),
+  cert:fs.readFileSync(__dirname + '/ssl/server.srt'),
 }
 //const server = spdy.createServer(options,app).listen(PORT, error => {
 //  if(error){

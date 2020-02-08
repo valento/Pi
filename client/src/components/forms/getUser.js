@@ -16,13 +16,14 @@ export default class GetUser extends React.Component {
 
   onSubmit = () => {
     const {data, errors} = this.state
+    const { submit,login,init,pass } = this.props
     const err = this.validate(data)
     this.setState({ errors: err })
-    if(!this.props.pass && Object.keys(err).length === 0) {
-      this.props.submit(data,false)
+    if(!pass && Object.keys(err).length === 0) {
+      submit(data,false)
     } else if(Object.keys(err).length === 0) {
-      this.props.login(data,true)
-      this.props.init()
+      login(data,true)
+      init()
       //console.log(err.password, data)
     }
   }

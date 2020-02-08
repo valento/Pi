@@ -1,7 +1,12 @@
-import { SETUP_CHANGED,PRODUCT_LIST } from '../types.js'
+import { SETUP_CHANGED,PRODUCT_LIST,SET_FAC } from '../types.js'
 import api from '../api'
 
 export const setInterface = data => ({type: SETUP_CHANGED, data})
+
+export const setLocationFactory = facs => ({
+  type: SET_FAC,
+  facs
+})
 
 export const setUI = ui => dispatch =>
 api.settup.setUI(ui).then( data => {
@@ -19,6 +24,12 @@ api.settup.getLocationList(itm,id).then( data => {
 export const getProductList = lan => dispatch =>
 api.settup.getProductList(lan).then( data => {
   dispatch(setProductsList(data))
+})
+
+export const getFacStore = ({city}) => dispatch =>
+api.settup.getLocationFac(city).then( fac => {
+  console.log(fac)
+  dispatch(setLocationFactory(fac))
 })
 
 export const checkReference = ref => dispatch =>

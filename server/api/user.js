@@ -29,6 +29,7 @@ export default {
       return new Promise ((resolve,reject) => {
         db.query(sql, (err,result) => {
           if(err) {
+            console.log(err)
             reject(err)
           } else {
             resolve(result.insertId)
@@ -37,10 +38,11 @@ export default {
       })
     },
     checkOne: (email,scope='*') => {
-      const sql = `SELECT ${scope} FROM user WHERE email='${email}'`
+      const sql = `SELECT ${scope} FROM user WHERE email='${email}' AND c_status=4`
       return new Promise( (resolve, reject) => {
         db.query(sql, ( err,results ) => {
           if(!err) {
+            //if(results[0].c_status !== 4) return reject({ error: { message: 'User Account is canceled' }})
             resolve(results)
           } else {
             reject(err)
@@ -68,23 +70,18 @@ export default {
       const _value = Object.values(data)
       if(table==='user'){
         sql = `SELECT ${sc},
-        ul.id,ul.name,ul.door,ul.floor,ul.bell,ul.admin,
-        ul.mobile,ul.location,ul.c_status,ul.prime,
+        ul.id,ul.name,ul.door,ul.floor,ul.bell,ul.admin,ul.mobile,ul.location,ul.c_status,ul.prime,
         l.city
         FROM user u
-        LEFT OUTER JOIN user_location ul ON u.uid=ul.uid
-        JOIN location l ON l.id=ul.location
+        LEFT JOIN user_location ul ON u.uid=ul.uid
+        LEFT JOIN location l ON l.id=ul.location
         WHERE u.email='${data.email}'
         `
       } else {
         sql = `SELECT ${scope} FROM ${table} WHERE ${_key}='${_value}'`
       }
-      console.log(sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
-          if(table==='user'){
-            console.log('User Init data: ',results)
-          }
           if(!err) {
             resolve(results)
           } else {
@@ -132,7 +129,7 @@ export default {
     },
 // IDS: all user location IDs
 // Get every FAC with all products in FACs STORE
-    getAllFac: ids => {
+    getFac: id => {
       const sql = `SELECT fl.fac,fl.city,fl.prime,
       f.open,f.delivery,f.bottleneck,f.mobile,
       s.product,s.local_promo,s.local_price,
@@ -140,7 +137,7 @@ export default {
       FROM fac_location fl
       JOIN store s ON fl.fac=s.fac AND s.on_hand>0
       JOIN fac f ON fl.fac=f.id
-      WHERE fl.city IN (${ids}) AND fl.prime=1
+      WHERE fl.city=${id} AND fl.prime=1
       AND f.status=7`
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {

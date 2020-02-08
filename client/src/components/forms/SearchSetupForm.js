@@ -50,8 +50,9 @@ class SearchSetupForm extends React.Component {
 
   onSubmit = e => {
     e.preventDefault()
+    const { appsetup,onSubmit } = this.props
     const {data} = this.state
-    if(this.props.appsetup){this.props.onSubmit(data)}
+    if(appsetup){onSubmit(data)}
   }
 
   render() {

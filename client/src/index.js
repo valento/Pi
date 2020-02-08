@@ -38,20 +38,34 @@ if(localStorage.valePizzaJWT){
   user.new_user = false
   user.token = localStorage.valePizzaJWT
   setAuthHeader(user.token)
+// Check if User Exist:
+  //store.dispatch(checkUserToken(localStorage.valePizzaJWT))
+// If Credentials OK:
   store.dispatch(userSignedIn(user))
-  store.dispatch(userInit()).then( locations => {
-    if(!locations) return
-// get all user saved locations
-    let loc = locations.map( l => {
-      return l.city
+// If Credentials OK:
+  store.dispatch(userInit())
+    .then( locations => {
+      if(!locations) return
+//   get all user saved locations
+      let loc = locations.map( l => {
+        return l.city
+      })
+      let l = [...new Set(loc)]
+//   get all facs for each unique user.location.city
+      store.dispatch(getLocalFacs(l))
     })
-    let l = [...new Set(loc)]
-// get all facs for each unique user.location.city
-    store.dispatch(getLocalFacs(l))
-  })
+    .catch( err => {
+      setAuthHeader()
+      user.token = ''
+      user.new_user = true
+      store.dispatch(userSignedIn(user))
+      console.log('initialUser: ', err.response.data.error)
+    })
 }
+
 setLanHeader('bg')
 store.dispatch(setUI())
+// get full Global Products List from products
 store.dispatch(getProductList('bg'))
 
 const Root = (

@@ -11,27 +11,30 @@ import AppSetup from '../ui/AppSetup'
 import { signUp } from '../../actions/auth'
 import { userInit,getLocalFacs } from '../../actions/user'
 
-const HomePage = ({ isAdmin,isAuthorized,new_user,lan,membership,city,cities,signUp,userInit,getLocalFacs }) => {
+const HomePage = ({
+  isAdmin,isAuthorized,new_user,lan,membership,name,
+  city,cities,signUp,userInit,getLocalFacs
+}) => {
   const state = {
     ui: {
       es: ['Bienvenido, ','Hola, ','You\'re in:'],
       en: ['Hello, ','Welcome back, ','Estas en:'],
-      bg: ['Здравей, ','Здравей, ','Намираш се във:']
+      bg: ['Добре дошъл, ','Здравей, ','Намираш се във:']
     }
   }
 
   let newUser = new_user === undefined || new_user
-  console.log('New: ',newUser)
+  console.log('HomePage => New User?: ',newUser)
 
   return (
     <div className='App-content topped padded'>
       <div className='init central padded'>
-        
+
 {/* LOG or Register: */}
         {city !== undefined &&
           <p className='vintage no-border'>
-            {lan !== undefined? ( !newUser? state.ui[lan][1]: state.ui[lan][0]) : 'Hello'}
-            <Sign size='huge'/>
+            {lan? ( !newUser? state.ui[lan][1]: state.ui[lan][0]) : 'Добре дошъл'}
+            {name? name : <Sign size='huge'/>}
           </p>
         }
 
@@ -59,6 +62,7 @@ const mapStateToProps = state => ({
   cities: state.settings.cities,
   city: state.settings.city,
   membership: state.user.membership,
+  name: state.user.username,
   isAuthorized: !!state.user.token,
   new_user: state.user.new_user,
   isAdmin: state.user.membership === 1

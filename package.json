@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "pilab api",
   "main": "index.js",
-  "repository": "https://github.com/valento/PI.git",
+  "repository": "https://github.com/valento/Pi.git",
   "author": "v.mundrov",
   "license": "MIT",
   "scripts": {
-    "start": "SET NODE_ENV=production & node ./build/index.js",
+    "start": "cross-env NODE_ENV=production node ./build/index.js",
     "dev": "SET NODE_ENV=development & nodemon --watch server --exec babel-node -- server/index.js  --presets=env,stage-2",
-    "babel:prod": "SET NODE_ENV=production babel -d ./build ./server -s --presets=env,stage-2"
+    "babel:prod": "cross-env NODE_ENV=production babel -d ./build ./server -s --presets=env,stage-2"
   },
   "dependencies": {
     "bcrypt": "^3.0.5",
@@ -32,6 +32,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1"
+    "babel-preset-stage-2": "^6.24.1",
+    "cross-env": "^6.0.3"
   }
 }

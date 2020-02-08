@@ -32,6 +32,9 @@ export const userInit = () => dispatch => {
 // Get all FACs for user.locations list
       resolve(user.locations)
     })
+    .catch(error => {
+      reject(error)
+    })
   })
 }
 
@@ -40,7 +43,7 @@ export const getLocalFacs = loc => dispatch => {
   api.user.locationFac(loc).then( facs => {
     console.log('Action locationFac: ',facs)
     let FACs = Object.keys(facs).map( k => ({[k]: facs[k]}))
-    dispatch(setLocationFactories(FACs))
+    //dispatch(setLocationFactories(FACs))
   })
 }
 

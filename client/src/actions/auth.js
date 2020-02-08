@@ -12,6 +12,7 @@ export const initialUser = user => ({
 })
 
 // ===== Action Creators: =========================================
+// SignUp/LogIn User with email/pass
 export const signUp = (credentials,pass) => dispatch => {
   if(pass){
     // credentials.password = pass
@@ -19,18 +20,29 @@ export const signUp = (credentials,pass) => dispatch => {
   } else {
     return new Promise( (resolve,reject) => {
       api.user.signup(credentials).then( user => {
-        console.log('Actions: ',user)
         localStorage.valePizzaJWT = user.token
         setAuthHeader(user.token)
         dispatch(userSignedIn(user))
         //if(user.new_user) {
-        console.log('Call userInit()')
-        api.user.initUser().then( user => {
+        //console.log('Call userInit()')
+        //api.user.initUser().then( user => {
           dispatch(initialUser(user))
           resolve(user.locations)
-        })
+        //})
         //}
       })
     })
   }
+}
+
+// Check User Token/Credentials
+export const checkUserToken = user => dispatch => {
+  console.log('Check this one:',user)
+  return new Promise( (resolve,reject) => {
+    api.user.checkOne().then( (result,user) => {
+      if(!result) reject({ err: { message: 'User doesn\'t exist' }})
+      //dispatch(userSignedIn(user))
+      resolve()
+    })
+  })
 }

@@ -17,15 +17,15 @@ const Top = ({city,facs,cities,lan,isAuthorized}) => {
     }
   }
 
-  let cty = state.ui[lan][0], fli
+  let cty = state.ui[lan][0]
   if(cities){
     cities.forEach( c => {
       if( c.id === city ) {
         cty = c.alt? c.alt : c.title
-        fli = facs.findIndex( f => f[city].city === city )
       }
     })
   }
+  console.log(facs)
 
   return (
     <div className='ui grid Top'>
@@ -33,7 +33,7 @@ const Top = ({city,facs,cities,lan,isAuthorized}) => {
         <Link to='/'><Icon name='home' /></Link>
           {city &&
             <Icon.Group>
-              <Icon color={ fli > -1 && facs[fli][city].open ? 'blue' : 'grey'} name='clock' />
+              <Icon color={facs.open ? 'blue' : 'grey'} name='clock' />
             </Icon.Group>
           }
       </div>
@@ -46,7 +46,7 @@ const Top = ({city,facs,cities,lan,isAuthorized}) => {
 }
 
 Top.propType = {
-  facs: PropType.array.isRequired
+  facs: PropType.object.isRequired
 }
 const mapStateToProps = state => ({
   lan: state.settings.lan,

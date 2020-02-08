@@ -29,9 +29,7 @@ class OrdersPage extends React.Component {
     const { lan,city,products,facs } = this.props
     const { category,item } = this.state
 
-    const fli = facs.findIndex( f => f[city].city === city )
-
-    let l = facs[fli][city].products
+    let l = facs.products
     .map( p => {
       let prod = products.find( i => i.id === p.product )
       return Object.assign(p,prod)
