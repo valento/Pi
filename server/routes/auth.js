@@ -21,6 +21,7 @@ authRouter.post('/', (req,res,next) => {
     'username','userlast','uid','verified','orders','credit',
     'gender','bday','membership','language','status'
   ]
+  console.log(email)
   api.checkOne( email,scope ).then( results => {
 // --- Login -> User exist but No token: ---
     if(results.length > 0){

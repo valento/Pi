@@ -31,9 +31,7 @@ if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'produc
 }
 
 var db = _mysql2.default.createConnection(options);
-db.connect(function (err) {
-  return console.log(err);
-});
+
 exports.default = {
   getOne: function getOne() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};

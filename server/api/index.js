@@ -15,7 +15,7 @@ if( config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'produc
 }
 
 const db = mysql.createConnection(options)
-db.connect( err => console.log(err) )
+
 export default {
   getOne: (data={},table,scope=['*']) => {
     let sql

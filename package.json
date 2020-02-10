@@ -7,9 +7,10 @@
   "author": "v.mundrov",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_ENV=production node ./build/index.js",
+    "start": "node ./build/index.js",
+    "start:local": "cross-env NODE_ENV=production node ./build/index.js",
     "dev": "SET NODE_ENV=development & nodemon --watch server --exec babel-node -- server/index.js  --presets=env,stage-2",
-    "babel:prod": "babel -d ./build ./server -s --presets=env,stage-2"
+    "babel:prod": "cross-env NODE_ENV=production babel -d ./build ./server -s --presets=env,stage-2"
   },
   "dependencies": {
     "bcrypt": "^3.0.5",
