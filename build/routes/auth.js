@@ -53,6 +53,7 @@ authRouter.post('/', function (req, res, next) {
   var jwtOptions = { expiresIn: '240d' };
   var scope = ['username', 'userlast', 'uid', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status'];
   _user2.default.checkOne(email, scope).then(function (results) {
+    console.log('Auth CheckOne: ', results);
     // --- Login -> User exist but No token: ---
     if (results.length > 0) {
       //const { uid } = results[0]
@@ -126,6 +127,7 @@ authRouter.post('/', function (req, res, next) {
         // encrypt password and save it to DB:
         _bcrypt2.default.hash(pass, 8, function (err, hash) {
           if (!err) {
+            console.log('New Auth Insert: ', sql);
             try {
               _user2.default.signup({ email: email, password: hash, token: confirmToken }).then(function (id) {
                 // Send mail to User with confirmToken:
