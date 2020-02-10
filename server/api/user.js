@@ -42,12 +42,14 @@ export default {
     },
     checkOne: (email,scope='*') => {
       const sql = `SELECT ${scope} FROM user WHERE email='${email}' AND c_status=4`
+      console.log('API CheckOne User: ',email)
       return new Promise( (resolve, reject) => {
         db.query(sql, ( err,results ) => {
           if(!err) {
             //if(results[0].c_status !== 4) return reject({ error: { message: 'User Account is canceled' }})
             resolve(results)
           } else {
+            console.log('API CheckOne User: ',err)
             reject(err)
           }
         })

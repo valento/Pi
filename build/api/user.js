@@ -62,12 +62,14 @@ exports.default = {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '*';
 
     var sql = 'SELECT ' + scope + ' FROM user WHERE email=\'' + email + '\' AND c_status=4';
+    console.log('API CheckOne User: ', email);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (!err) {
           //if(results[0].c_status !== 4) return reject({ error: { message: 'User Account is canceled' }})
           resolve(results);
         } else {
+          console.log('API CheckOne User: ', err);
           reject(err);
         }
       });
