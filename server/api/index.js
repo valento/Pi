@@ -70,7 +70,6 @@ console.log(results)
   },
   getList: (table,scope=['*'],params=null) => {
     let PARAMS = ''
-console.log(table,scope,params)
     const _key = params? Object.keys(params) : null
     if(_key && _key.length > 0) {
       const kk = _key.map( k => {
@@ -86,10 +85,12 @@ console.log(table,scope,params)
     //}
 
     let sql = !params? `SELECT ${scope} FROM ${table}`:`SELECT ${scope} FROM ${table} WHERE ${PARAMS}`
-console.log(sql)
+
     return new Promise( (resolve,reject) => {
       db.query(sql, params, (err,results) => {
+        console.log('getList Error: ',err)
         if(err) {
+
           return reject(err)
         }
         resolve(results)

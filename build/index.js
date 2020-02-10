@@ -96,7 +96,7 @@ app.get('/ui', _middleware.getLan, function (req, res, next) {
       return {
         title: JSON.parse(entry.name)[data.lan],
         id: entry.id,
-        status: entry.c_status,
+        //status: entry.c_status,
         alt: entry.alt ? JSON.parse(entry.alt)[data.lan] : NULL
       };
     });

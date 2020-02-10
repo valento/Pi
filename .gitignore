@@ -4,3 +4,6 @@ conf.json
 *.sql
 *.txt
 ssl
+factory
+content
+cart

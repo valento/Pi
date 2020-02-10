@@ -94,7 +94,6 @@ exports.default = {
     var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
     var PARAMS = '';
-    console.log(table, scope, params);
     var _key = params ? Object.keys(params) : null;
     if (_key && _key.length > 0) {
       var kk = _key.map(function (k) {
@@ -110,10 +109,12 @@ exports.default = {
     //}
 
     var sql = !params ? 'SELECT ' + scope + ' FROM ' + table : 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + PARAMS;
-    console.log(sql);
+
     return new Promise(function (resolve, reject) {
       db.query(sql, params, function (err, results) {
+        console.log('getList Error: ', err);
         if (err) {
+
           return reject(err);
         }
         resolve(results);

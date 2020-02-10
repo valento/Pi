@@ -1,6 +1,7 @@
 {
   "GCLOUD_PROJECT": "sapient-tracer-232311",
   "DATA_BACKEND": "datastore",
+  "DB_HOST": "pzzdb",
   "MYSQL_USER":"root",
   "MYSQL_PASSWORD":"K0l0mbin0",
   "MYSQL_DB":"pzzaappdb",

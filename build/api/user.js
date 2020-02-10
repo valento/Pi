@@ -18,13 +18,14 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 
 var config = require('../../config');
 
+_dotenv2.default.config({ silent: true });
 var options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
   database: config.get('MYSQL_DB')
 };
 
-if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'production') {
+if (config.get('INSTANCE_CONNECTION_NAME') && process.env.NODE_ENV === 'production') {
   options.socketPath = '/cloudsql/' + config.get('INSTANCE_CONNECTION_NAME');
 } else {
   options.host = 'localhost';
