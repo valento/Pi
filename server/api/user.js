@@ -24,10 +24,11 @@ export default {
       let sql = ``
       const { email,password,token } = data
       if(email==='valentin.mundrov@gmail.com'){
-        sql = `INSERT INTO user (email,password,membership) VALUES('${email}','${password}',1)`
+        sql = `INSERT INTO user (email,password,token,membership) VALUES('${email}','${password}','${token}',1)`
       } else {
         sql = `INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
       }
+      console.log('Auth Insert: ',sql)
       return new Promise ((resolve,reject) => {
         db.query(sql, (err,result) => {
           if(err) {

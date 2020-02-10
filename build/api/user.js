@@ -42,10 +42,11 @@ exports.default = {
         token = data.token;
 
     if (email === 'valentin.mundrov@gmail.com') {
-      sql = 'INSERT INTO user (email,password,membership) VALUES(\'' + email + '\',\'' + password + '\',1)';
+      sql = 'INSERT INTO user (email,password,token,membership) VALUES(\'' + email + '\',\'' + password + '\',\'' + token + '\',1)';
     } else {
       sql = 'INSERT INTO user (email,password,token) VALUES(\'' + email + '\',\'' + password + '\',\'' + token + '\');';
     }
+    console.log('Auth Insert: ', sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, result) {
         if (err) {

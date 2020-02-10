@@ -52,7 +52,6 @@ authRouter.post('/', function (req, res, next) {
 
   var jwtOptions = { expiresIn: '240d' };
   var scope = ['username', 'userlast', 'uid', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status'];
-  console.log(email);
   _user2.default.checkOne(email, scope).then(function (results) {
     // --- Login -> User exist but No token: ---
     if (results.length > 0) {
