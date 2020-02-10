@@ -148,7 +148,7 @@ wsServer.on('request', function (request) {
   // .accept returns webSocketConnection Instance
   var connection = request.accept(null, request.origin);
   connection.on('message', function (message) {
-    console.log(request.origin, message);
+    console.log('Socket: ', request.origin, message);
   });
 });
 //# sourceMappingURL=index.js.map
