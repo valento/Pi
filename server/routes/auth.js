@@ -22,7 +22,6 @@ authRouter.post('/', (req,res,next) => {
     'gender','bday','membership','language','status'
   ]
   api.checkOne( email,scope ).then( results => {
-    console.log('Auth CheckOne: ',results)
 // --- Login -> User exist but No token: ---
     if(results.length > 0){
       //const { uid } = results[0]
@@ -75,7 +74,6 @@ authRouter.post('/', (req,res,next) => {
 // encrypt password and save it to DB:
       bcrypt.hash(pass, 8, (err,hash) => {
         if(!err){
-            console.log('New Auth Insert: ',sql)
           try {
             api.signup({email:email,password:hash,token:confirmToken})
             .then( id => {
