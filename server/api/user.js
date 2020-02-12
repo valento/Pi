@@ -85,7 +85,6 @@ export default {
       } else {
         sql = `SELECT ${scope} FROM ${table} WHERE ${_key}='${_value}'`
       }
-      console.log(sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
 
@@ -105,7 +104,6 @@ export default {
         return v
       })
       const sql = `INSERT INTO ${table} (${_keys}) VALUES (${_values})`
-  console.log(sql,params)
       return new Promise( (resolve,reject) => {
         db.query(sql, params, (err,result) => {
           if (err) return reject()
@@ -126,7 +124,6 @@ export default {
 
       })
       const sql =`UPDATE ${table} SET ${_map} WHERE id=${id}`
-      console.log('ORM: ',sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, err => {
           if (err) return reject()
@@ -137,14 +134,13 @@ export default {
 // ID: location ID
 // Get ever FAC with all products in FACs STORE
     getFac: id => {
-      const sql = `SELECT fl.fac,fl.city,fl.prime,
+      const sql = `SELECT f.id,f.city,f.prime,
       f.open,f.delivery,f.bottleneck,f.mobile,
       s.product,s.local_promo,s.local_price,
       s.on_hand,s.take_only,s.add_time
-      FROM fac_location fl
-      JOIN store s ON fl.fac=s.fac AND s.on_hand>0
-      JOIN fac f ON fl.fac=f.id
-      WHERE fl.city=${id} AND fl.prime=1
+      FROM fac f
+      JOIN store s ON f.id=s.fac AND s.on_hand>0
+      WHERE f.city=${id} AND f.prime=1
       AND f.status=7`
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {

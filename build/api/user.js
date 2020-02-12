@@ -104,7 +104,6 @@ exports.default = {
     } else {
       sql = 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + _key + '=\'' + _value + '\'';
     }
-    console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
 
@@ -128,7 +127,6 @@ exports.default = {
       return v;
     });
     var sql = 'INSERT INTO ' + table + ' (' + _keys + ') VALUES (' + _values + ')';
-    console.log(sql, params);
     return new Promise(function (resolve, reject) {
       db.query(sql, params, function (err, result) {
         if (err) return reject();
@@ -152,7 +150,6 @@ exports.default = {
       }
     });
     var sql = 'UPDATE ' + table + ' SET ' + _map + ' WHERE id=' + id;
-    console.log('ORM: ', sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err) {
         if (err) return reject();
@@ -163,7 +160,7 @@ exports.default = {
   // ID: location ID
   // Get ever FAC with all products in FACs STORE
   getFac: function getFac(id) {
-    var sql = 'SELECT fl.fac,fl.city,fl.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac_location fl\n      JOIN store s ON fl.fac=s.fac AND s.on_hand>0\n      JOIN fac f ON fl.fac=f.id\n      WHERE fl.city=' + id + ' AND fl.prime=1\n      AND f.status=7';
+    var sql = 'SELECT f.id,f.city,f.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + id + ' AND f.prime=1\n      AND f.status=7';
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (err) return reject(err);
