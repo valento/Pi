@@ -30,12 +30,14 @@ c_owner TINYINT unsigned NOT NULL DEFAULT 1,
 c_group TINYINT(2) signed NOT NULL DEFAULT 1,
 c_permis INT unsigned DEFAULT 457
 )
+
 CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 UPDATE city SET alt='{"bg": "Лозенец(ЮП)", "en": "Lozenets(SP)", "es": "Lozenets(SP)"}' WHERE id=1;
 UPDATE city SET alt='{"bg": "Стрелбище", "en": "kv.Strelbiste", "es": "kv.Strelbiste"}' WHERE id=2;
 UPDATE city SET alt='{"bg": "кв.Иван Вазов", "en": "kv.Ivan Wazov", "es": "kv.Ivan Vazov"}' WHERE id=3;
 UPDATE city SET alt='{"bg": "Лагера", "en": "Lagera", "es": "Lagera"}' WHERE id=4;
 UPDATE city SET alt='{"bg": "Лозенец(Бор.г-на)", "en": "Lozenets(BG)", "es": "Lozenets(BG)"}' WHERE id=5;
+
 INSERT INTO city (name,code,zone,c_status) VALUES
 ('{"en": "Sofia-Lozenets(Yuzh.Park)","bg":"София-Лозенец(Южен Парк)","es":"Sofia-Lozenets(Yuzh.Park)"}',1421,8,4),
 ('{"en": "Sofia-Strelbiste","bg":"София-Стрелбище","es":"Sofia-Strelbiste"}',1404,9,4),
@@ -58,9 +60,10 @@ c_status TINYINT unsigned DEFAULT 4,
 c_owner TINYINT unsigned NOT NULL DEFAULT 1,
 c_group TINYINT(2) signed NOT NULL DEFAULT 1,
 c_permis INT unsigned DEFAULT 473,
-FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (zone) REFERENCES city(zone) ON DELETE CASCADE ON UPDATE CASCADE
+FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+FOREIGN KEY (zone) REFERENCES city(zone) ON DELETE CASCADE ON UPDATE CASCADE
 
 INSERT INTO street (name,city) VALUES
 ('{"bg": "Хад. Димитър Асенов", "en": "Hadzhi Dimitar Asenov", "es": "Hadzhi Dimitar Asenov"}',3),
@@ -68,7 +71,7 @@ INSERT INTO street (name,city) VALUES
 ('{"bg": "Железни врата", "en": "Zhelezni vrata", "es": "Zhelezni vrata"}',3),
 ('{"bg": "Сава Силов", "en": "Sava Silov", "es": "Sava Silov"}',3)
 
-('{"bg":"Цветна градина", "en": "Tsvetna gradina", "es": "Tsvetna gradina"},1')
+('{"bg":"Цветна градина", "en": "Tsvetna gradina", "es": "Tsvetna gradina"}',1)
 
 # Zone CODE = city.code-unique.code
 
@@ -99,7 +102,7 @@ INSERT INTO zone ........
 ;
 
 
-# location.UID: unique code for representative to use in sales
+# location.UID: UNIQUE ID for representative to use in sales
 # location.TYPE: (lab,fac,pod,pos,dlvr,basic)
 # location.REP: user.uid - representative or NULL = no representative
 # location.NUMBER: the building
@@ -123,7 +126,7 @@ FOREIGN KEY (street_id) REFERENCES street(id) ON DELETE CASCADE ON UPDATE CASCAD
 FOREIGN KEY (rep) REFERENCES user(uid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO location (uid,city,street_id,number) VALUES (1,12,18,30);
+INSERT INTO location (uid,city,street_id,number,rep) VALUES (1,1,1,31,1);
 
 SELECT u_l.phone,s.name,u_l.bell,l.street_id
 FROM user_location u_l
@@ -223,7 +226,7 @@ FOREIGN KEY (uid) REFERENCES user(uid) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO lab (city,name,mobile,status) VALUES (12,'FirstLab',899939369,7);
+INSERT INTO lab (city,name,mobile,status) VALUES (1,'FirstLab',877323598,7);
 
 # FAC is a USER of GROUP 4 (they can buy components)
 # FAC belongs to LAB
@@ -231,24 +234,29 @@ INSERT INTO lab (city,name,mobile,status) VALUES (12,'FirstLab',899939369,7);
 # fac.checkin = FAC is set to open (baker is in)
 # fac.open = FAC is public
 # fac.delivery = [all,to-door,to-take]
+# fac.pod = FAC is PoD or PoD is apart
 
 CREATE TABLE fac (
 id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
 uid INT NOT NULL DEFAULT 1,
 bulstat INT,
 city INT NOT NULL,
+lab INT NOT NULL,
 name TEXT,
-delivery TINYINT(2) DEFAULT 1,
+delivery TINYINT(2) DEFAULT 4,
 mobile INT NOT NULL,
 location_id INT NOT NULL,
-pod_id INT,
+pod INT(1) DEFAULT 1,
 status INT NOT NULL DEFAULT 33,
 open TINYINT(1),
-checkin TINYINT(1),
-sat_open TIME DEFAULT('11:0:0'),
-sat_close TIME DEFAULT('23:0:0'),
-sun_open TIME DEFAULT('11:0:0'),
-sun_close TIME DEFAULT('23:0:0'),
+checkin TINYINT(1) DEFAULT 0,
+bottleneck INT DEFAULT 5,
+work_open TIME DEFAULT '11:0:0',
+work_close TIME DEFAULT '23:0:0',
+sat_open TIME DEFAULT '11:0:0',
+sat_close TIME DEFAULT '23:0:0',
+sun_open TIME DEFAULT '11:0:0',
+sun_close TIME DEFAULT '23:0:0',
 vacation_start DATE DEFAULT NULL,
 vacation_end DATE DEFAULT NULL,
 rating INT DEFAULT 0,
@@ -259,28 +267,30 @@ c_permis INT unsigned NOT NULL DEFAULT 464,
 FOREIGN KEY (uid) REFERENCES user(uid) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (lab) REFERENCES lab(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (pod_id) REFERENCES pod(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT INTO fac (name,bulstat,open,status,mobile,city,location_id,delivery,lab)
-VALUES ('FACtory',205873583,1,7,+359888378946,12,2,1,2);
+VALUES ('FACtory',205873583,1,7,888378946,1,1,1,1);
 
 464 = 111 010 000
 
+==================================
+= NO NEED OF NEXT TABLE          =
+==================================
 # RELATE FAC and Locations
 
-CREATE TABLE fac_location (
-id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-city INT NOT NULL,
-fac INT NOT NULL,
-prime TINYINT(1) NOT NULL DEFAULT 0,
-FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (fac) REFERENCES fac(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-INSERT INTO fac_location (city,fac,prime) VALUES
-(12,2,1);
+# CREATE TABLE fac_location (
+# id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+# city INT NOT NULL,
+# fac INT NOT NULL,
+# prime TINYINT(1) NOT NULL DEFAULT 0,
+# FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE,
+# FOREIGN KEY (fac) REFERENCES fac(id) ON DELETE CASCADE ON UPDATE CASCADE
+# );
+#
+# INSERT INTO fac_location (city,fac,prime) VALUES
+# (12,2,1);
 
 // == STATUSES: ================
 ['authorized','licensed','active','inactive','canceled','pending']
@@ -366,6 +376,7 @@ where fl.location in (4)
 
 CREATE TABLE product (
 id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+list INT DEFAULT NULL,
 name JSON,
 alt JSON,
 tag JSON,
@@ -373,12 +384,12 @@ price DECIMAL(4,2),
 promo INT DEFAULT NULL,
 descr JSON,
 props JSON,
-prod_time INT DEFAULT 6,
 size INT NOT NULL DEFAULT 1,
 category INT NOT NULL DEFAULT 1,
 type INT DEFAULT 1,
 klass INT DEFAULT 1,
 combo INT(1) DEFAULT 0,
+prod_time INT DEFAULT 6,
 supplier INT DEFAULT 2,
 c_status TINYINT unsigned DEFAULT 4,
 c_owner INT unsigned NOT NULL DEFAULT 1,
@@ -389,79 +400,77 @@ FOREIGN KEY (promo) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE
 
 INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
 ('{"bg":"Маргерита","en":"Margherita","es":"Margherita"}',
-6.90,4,1,1,1,5
+7.80,4,1,1,1,1,
 '{"bg":"прясна моцарела, доматен сос, пресен босилек (спанак), риган, зехтин",
 "en":"fresh mozzarella, tomato sauce, basil (spinach), oregano, olive oil",
 "es":"mozzarella fresca, salsa de tomato, basilico (espinaca), oregano, aceite de oliva"}'
 ),
 ('{"bg":"Болонезе","en":"Bolognese","es":"Bolognese"}',
-7.70,4,
+8.70,4,1,1,1,2,
 '{"bg":"кайма, моцарела, доматен сос, гъби, зелени чушлета",
 "en":"ground meat, cheese, tomato sauce, mushrooms, chili pepper",
 "es":"carne molida, queso, salsa de tomato, champiñones, jalapeño"}'
 ),
 ('{"bg":"Пеперони","en":"Pepperoni","es":"Pepperoni"}',
-7.70,4,1,1,1,5,
+8.70,4,1,1,1,5,
 '{"bg":"пеперони, моцарела, доматен сос",
 "en":"pepperoni, cheese, tomato sauce",
 "es":"pepperoni, queso, salsa de tomato"}'
 ),
 ('{"bg":"4 Сирена","en":"Four Cheese","es":"Cuatro Quesos"}',
-8.90,4,
+9.90,4,1,1,1,6,
 '{"bg":"моцарела, доматен сос, сирена: синьо, пармезан, бяло; риган, зехтин",
 "en":"mozzarella, tomato sauce, cheese: blue, parmesan, balkan; oregano, olive oil",
 "es":"mozzarella, salsa de tomato, queso: gorgonzola, parmesan, blanco; oregano, aceite de oliva"}'
 ),
 ('{"bg":"Прошуто","en":"Prosciutto","es":"Prosciutto"}',
-8.90,4,
+9.90,4,1,1,1,3,
 '{"bg":"моцарела, доматен сос, прошуто крудо, рукола, зехтин",
 "en":"mozzarella, tomato sauce, prosciutto crudo, ruccola, olive oil",
 "es":"mozzarella, salsa de tomato, prosciuto crudo, ruccola, aceite de oliva"}'
 ),
 ('{"bg":"Поло","en":"Chicken","es":"Pollo"}',
-7.70,4,
+8.70,4,1,1,1,7,
 '{"bg":"моцарела, доматен сос, пиле, гъби, кисели краставички",
 "en":"mozzarella, tomato sauce, chicken, mushrooms, pickles",
 "es":"mozzarella, salsa de tomate, pollo, champinones, pepinillos"}'
 ),
 ('{"bg":"Капричоза","en":"Capricciosa","es":"Capricciosa"}',
-8.90,4,
+9.90,4,1,1,1,8,
 '{"bg":"моцарела, доматен сос, бекон, артишок, лук, маслини",
 "en":"mozzarella, tomato sauce, becon, artichoke, onion, olives",
 "es":"mozzarella, salsa de tomate, becon, alcachofa"}'
 ),
 ('{"bg":"Вегетариана","en":"Vegetarian","es":"Vegetariana"}',
-6.90,4,
+9.90,4,1,1,1,9,
 '{"bg":"броколи, моцарела, доматен сос, зелени маслини, тиквички, патладжан, чушки",
-"en":"broccoli, mozzarella, tomato sauce, green olives,
-zucchini, eggplant, red bell peper",
-"es":"broccoli, mozzarella, salasa de tomate, aceitunas verdes,
-calavaza, verengena, pimiento"}'
+"en":"broccoli, mozzarella, tomato sauce, green olives, zucchini, eggplant, red bell peper",
+"es":"broccoli, mozzarella, salasa de tomate, aceitunas verdes, calavaza, verengena, pimiento"}'
 );
 
 # ----- DRINKS ------------------------------
 
 INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
 ('{"bg":"Кока-Кола, 1л","en":"Coca-Cola, 1L","es":"Coca-Cola, 1L"}',
-2.90,4,1,1,3,20,
+2.90,4,1,1,3,30,
 '{"bg":"1 литър",
 "en":"1 Litre",
 "es":"1 Litre"}'
 ),
 ('{"bg":"Кока-Кола, 330","en":"Coca-Cola, 330","es":"Coca-Cola, 330"}',
-2.90,4,1,1,3,21,
+2.90,4,1,1,3,31,
 '{"bg":"кутия, 330 млтр.",
 "en":"can, 330 ml",
 "es":"can, 330 ml"}'
 ),
 ('{"bg":"Оранж, 330","en":"Orange, 330","es":"Orange, 330"}',
-2.90,4,1,1,3,22,
+2.90,4,1,1,3,32,
 '{"bg":"кутия, 330 млтр.",
 "en":"can, 330 ml",
 "es":"can, 330 ml"}'
 ),
 ('{"bg":"Оранж, 1л","en":"Orange, 1L","es":"Orange, 1L"}',
-2.90,4,1,1,3,23,
+2.90,4,1,1,3,33,
 '{"bg":"1 Литър",
 "en":"1 Litre",
 "es":"1 Litre"}'
@@ -517,8 +526,8 @@ INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
 3.50,4,1,1,4,42,
 '{"bg":"Лагер бира",
 "en":"lager beer",
-"es":"cerveza lager"}')
-;
+"es":"cerveza lager"}'
+);
 
 # ----- PI2 ------------------------------
 
@@ -595,8 +604,8 @@ c_permis INT unsigned DEFAULT 457
 CREATE TABLE store (
 id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
 product INT NOT NULL,
-fac INT,
-lab INT,
+fac INT NOT NULL,
+lab INT DEFAULT NULL,
 local_price DECIMAL(4,2) DEFAULT NULL,
 on_hand INT,
 reloaded TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -604,7 +613,7 @@ local_promo INT,
 addons INT(1) DEFAULT 0,
 delivery INT DEFAULT 0,
 take_only INT(1) DEFAULT 0,
-add_time INT 5,
+add_time INT DEFAULT 5,
 c_status TINYINT unsigned DEFAULT 4,
 c_owner TINYINT unsigned NOT NULL DEFAULT 1,
 c_group TINYINT(2) signed NOT NULL DEFAULT 4,
@@ -617,27 +626,27 @@ FOREIGN KEY (local_promo) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCA
 );
 
 INSERT INTO store (fac,product,on_hand) VALUES
-(2,1,30),
-(2,2,20),
-(2,4,16),
-(2,5,10),
-(2,3,19),
-(2,6,22),
-(2,7,2),
-(2,8,3),
-(2,11,20),
-(2,16,30),
-(2,17,20),
-(2,18,30),
-(2,19,30),
-(2,20,20),
-(2,21,10),
-(2,27,14),
-(2,28,11),
-(2,29,31),
-(2,24,31),
-(2,25,21),
-(2,26,41);
+(1,1,30),
+(1,2,20),
+(1,4,16),
+(1,5,10),
+(1,3,19),
+(1,6,22),
+(1,7,2),
+(1,8,3),
+(1,11,20),
+(1,16,30),
+(1,17,20),
+(1,18,30),
+(1,19,30),
+(1,20,20),
+(1,21,10),
+(1,27,14),
+(1,28,11),
+(1,29,31),
+(1,24,31),
+(1,25,21),
+(1,26,41);
 
 select p.name,p.id,p.price,s.product,s.on_hand,p.promo,s.local_promo from store s inner join product p where s.product=p.id and p.c_status=4;
 

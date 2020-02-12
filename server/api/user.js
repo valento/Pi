@@ -42,7 +42,7 @@ export default {
     },
     checkOne: (email,scope='*') => {
       const sql = `SELECT ${scope} FROM user WHERE email='${email}' AND c_status=4`
-      console.log('API CheckOne User: ',email)
+
       return new Promise( (resolve, reject) => {
         db.query(sql, ( err,results ) => {
           if(!err) {
@@ -85,8 +85,10 @@ export default {
       } else {
         sql = `SELECT ${scope} FROM ${table} WHERE ${_key}='${_value}'`
       }
+      console.log(sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
+
           if(!err) {
             resolve(results)
           } else {
@@ -132,8 +134,8 @@ export default {
         })
       } )
     },
-// IDS: all user location IDs
-// Get every FAC with all products in FACs STORE
+// ID: location ID
+// Get ever FAC with all products in FACs STORE
     getFac: id => {
       const sql = `SELECT fl.fac,fl.city,fl.prime,
       f.open,f.delivery,f.bottleneck,f.mobile,

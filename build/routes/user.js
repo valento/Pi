@@ -93,7 +93,7 @@ userRouter.get('/', _middleware.getUser, function (req, res, next) {
   });
 });
 
-// GET ALL FACs for All user.locations
+// GET FAC for location
 userRouter.post('/facs', function (req, res, next) {
   var id = req.body.id;
 

@@ -26,7 +26,7 @@ export default class Credentials extends React.Component {
         let loc = locations.map( l => {
           return l.location
         })
-        getFacs(loc)
+        //getFacs(loc)
       })
       //init()
     } else {

@@ -52,7 +52,7 @@ userRouter.get('/', getUser, (req,res,next) => {
   .catch(err => res.status(500).json({ error: { message: err }}))
 })
 
-// GET ALL FACs for All user.locations
+// GET FAC for location
 userRouter.post('/facs', (req,res,next) => {
   const { id } = req.body
   api.getFac(id)

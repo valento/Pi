@@ -88,11 +88,7 @@ console.log(results)
 
     return new Promise( (resolve,reject) => {
       db.query(sql, params, (err,results) => {
-        console.log('getList Error: ',err)
-        if(err) {
-
-          return reject(err)
-        }
+        if(err) return reject(err)
         resolve(results)
       })
     })

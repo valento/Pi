@@ -40,11 +40,10 @@ export const userInit = () => dispatch => {
 
 // Get List of all FACs for each user.city
 export const getLocalFacs = loc => dispatch => {
-  api.user.locationFac(loc).then( facs => {
-    console.log('Action locationFac: ',facs)
-    let FACs = Object.keys(facs).map( k => ({[k]: facs[k]}))
-    //dispatch(setLocationFactories(FACs))
-  })
+  //api.user.locationFac(loc).then( facs => {
+  //  let FACs = Object.keys(facs).map( k => ({[k]: facs[k]}))
+  //  dispatch(setLocationFactories(FACs))
+  //})
 }
 
 export const userAddLocation = data => dispatch => {

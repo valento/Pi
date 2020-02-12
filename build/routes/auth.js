@@ -55,37 +55,39 @@ authRouter.post('/', function (req, res, next) {
   _user2.default.checkOne(email, scope).then(function (results) {
     // --- Login -> User exist but No token: ---
     if (results.length > 0) {
-      //const { uid } = results[0]
+      var uid = results[0].uid;
+
       token = _jsonwebtoken2.default.sign({ email: email, uid: uid }, process.env.JWT_SECRET, jwtOptions);
       //user = Object.assign({},{token: token, new_user: false},results[0])
+
       try {
-        _user2.default.getOne({ email: email }, 'user', scope).then(function (response) {
-          if (response.length === 0) return res.status(401).json({ error: { message: 'User Not Found' } });
+        _user2.default.getOne({ email: email }, 'user', scope).then(function (results) {
+          if (results.length === 0) return res.status(401).json({ error: { message: 'User Not Found' } });
 
           //let user = {}
 
-          var _response$ = response[0],
-              uid = _response$.uid,
-              username = _response$.username,
-              userlast = _response$.userlast,
-              verified = _response$.verified,
-              orders = _response$.orders,
-              credit = _response$.credit,
-              gender = _response$.gender,
-              bday = _response$.bday,
-              membership = _response$.membership,
-              language = _response$.language,
-              status = _response$.status,
-              rest = _objectWithoutProperties(_response$, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
+          var _results$ = results[0],
+              uid = _results$.uid,
+              username = _results$.username,
+              userlast = _results$.userlast,
+              verified = _results$.verified,
+              orders = _results$.orders,
+              credit = _results$.credit,
+              gender = _results$.gender,
+              bday = _results$.bday,
+              membership = _results$.membership,
+              language = _results$.language,
+              status = _results$.status,
+              rest = _objectWithoutProperties(_results$, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
 
           user = Object.assign({}, { token: token, new_user: false }, {
             uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,
             gender: gender, bday: bday, membership: membership, language: language, status: status
           });
 
-          if (response.length > 1) {
+          if (results.length > 1) {
             user.locations = [];
-            response.forEach(function (ent) {
+            results.forEach(function (ent) {
               var mobile = ent.mobile,
                   name = ent.name,
                   location = ent.location,

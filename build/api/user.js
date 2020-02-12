@@ -62,7 +62,7 @@ exports.default = {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '*';
 
     var sql = 'SELECT ' + scope + ' FROM user WHERE email=\'' + email + '\' AND c_status=4';
-    console.log('API CheckOne User: ', email);
+
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (!err) {
@@ -104,8 +104,10 @@ exports.default = {
     } else {
       sql = 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + _key + '=\'' + _value + '\'';
     }
+    console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
+
         if (!err) {
           resolve(results);
         } else {
@@ -158,8 +160,8 @@ exports.default = {
       });
     });
   },
-  // IDS: all user location IDs
-  // Get every FAC with all products in FACs STORE
+  // ID: location ID
+  // Get ever FAC with all products in FACs STORE
   getFac: function getFac(id) {
     var sql = 'SELECT fl.fac,fl.city,fl.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac_location fl\n      JOIN store s ON fl.fac=s.fac AND s.on_hand>0\n      JOIN fac f ON fl.fac=f.id\n      WHERE fl.city=' + id + ' AND fl.prime=1\n      AND f.status=7';
     return new Promise(function (resolve, reject) {

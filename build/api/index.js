@@ -112,11 +112,7 @@ exports.default = {
 
     return new Promise(function (resolve, reject) {
       db.query(sql, params, function (err, results) {
-        console.log('getList Error: ', err);
-        if (err) {
-
-          return reject(err);
-        }
+        if (err) return reject(err);
         resolve(results);
       });
     });

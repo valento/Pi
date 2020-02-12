@@ -52,7 +52,7 @@ if(localStorage.valePizzaJWT){
       })
       let l = [...new Set(loc)]
 //   get all facs for each unique user.location.city
-      store.dispatch(getLocalFacs(l))
+      //store.dispatch(getLocalFacs(l))
     })
     .catch( err => {
       setAuthHeader()

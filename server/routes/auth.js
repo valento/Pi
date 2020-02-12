@@ -24,28 +24,29 @@ authRouter.post('/', (req,res,next) => {
   api.checkOne( email,scope ).then( results => {
 // --- Login -> User exist but No token: ---
     if(results.length > 0){
-      //const { uid } = results[0]
+      const { uid } = results[0]
       token = jwt.sign({email:email,uid:uid},process.env.JWT_SECRET,jwtOptions)
       //user = Object.assign({},{token: token, new_user: false},results[0])
+
       try {
         api.getOne({ email: email },'user',scope)
-        .then( response => {
-          if(response.length === 0) return res.status(401).json({error: {message: 'User Not Found'}})
+        .then( results => {
+          if(results.length === 0) return res.status(401).json({error: {message: 'User Not Found'}})
 
           //let user = {}
           const {
             uid,username,userlast,verified,orders,credit,
             gender,bday,membership,language,status,...rest
-          } = response[0]
+          } = results[0]
 
           user = Object.assign({},{token: token, new_user: false},{
             uid,username,userlast,verified,orders,credit,
             gender,bday,membership,language,status
           })
 
-          if(response.length > 1){
+          if(results.length > 1){
             user.locations =[]
-            response.forEach( ent => {
+            results.forEach( ent => {
               const {mobile,name,location,city,admin,door,floor,bell,id,entry,prime,c_status} = ent
               if(c_status === 4){
                 user.locations.push({mobile,name,location,city,admin,door,floor,bell,id,entry,prime}
