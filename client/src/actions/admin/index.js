@@ -6,5 +6,5 @@ export const addLocation = (data,type) => dispatch => {
 }
 
 export const getList = type => dispatch => {
-  api.getList(type).then()
+  return api.getList(type).then()
 }

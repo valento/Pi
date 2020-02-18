@@ -19,6 +19,16 @@ h2 {
   min-height: 92vh;
   width: 100vw;
 }
+.logo {
+  position: relative;
+  top: -70px;
+  left: 35vw;
+  width: 80px;
+  height: 80px;
+  animation: App-logo-spin infinite 10s linear;
+  transform-origin: 40px 41px;
+}
+
 .init {
   min-height: 92vh;
 }

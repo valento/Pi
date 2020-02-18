@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button,Divider } from 'semantic-ui-react'
+import Logo from '../../pi_badge.svg'
 
 import Credentials from '../forms/credentials'
 import Sign from '../brand/sign'
@@ -29,6 +30,7 @@ const HomePage = ({
   return (
     <div className='App-content topped padded'>
       <div className='init central padded'>
+        <img src={Logo} className="logo" alt="logo" />
 
 {/* LOG or Register: */}
         {city !== undefined &&
