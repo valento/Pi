@@ -2,7 +2,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button,Divider } from 'semantic-ui-react'
-import Logo from '../../pi_badge.svg'
+import LogoCircle from '../../pi_circle.svg'
+import LogoPie from '../../pi_pie.svg'
+import LogoPi from '../../pi_pi.svg'
 
 import Credentials from '../forms/credentials'
 import Sign from '../brand/sign'
@@ -30,7 +32,11 @@ const HomePage = ({
   return (
     <div className='App-content topped padded'>
       <div className='init central padded'>
-        <img src={Logo} className="logo" alt="logo" />
+        <div className='logo-still'>
+          <img src={LogoPie} className='logo' alt='logo' />
+          <img src={LogoPi} className='logo-top' alt='logo' />
+        </div>
+
 
 {/* LOG or Register: */}
         {city !== undefined &&
