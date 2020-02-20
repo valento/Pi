@@ -65,6 +65,7 @@ var SockServer = require('websocket').server;
 
 app.use('/static', _express2.default.static(_path2.default.join(__dirname, '../client/build/static')));
 app.use('/img', _express2.default.static(_path2.default.join(__dirname, '../client/build/img')));
+app.use(_express2.default.static(_path2.default.join(__dirname, '../client/build/')));
 
 // == ROUTES ==============================================
 app.use('/auth', _auth2.default);

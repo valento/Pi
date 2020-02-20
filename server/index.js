@@ -22,6 +22,7 @@ let SockServer = require('websocket').server
 
 app.use('/static', express.static(path.join(__dirname, '../client/build/static')) )
 app.use('/img', express.static(path.join(__dirname, '../client/build/img')) )
+app.use(express.static(path.join(__dirname, '../client/build/')) )
 
 // == ROUTES ==============================================
 app.use('/auth', authRouter)
