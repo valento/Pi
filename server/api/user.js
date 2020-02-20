@@ -142,6 +142,7 @@ export default {
       JOIN store s ON f.id=s.fac AND s.on_hand>0
       WHERE f.city=${id} AND f.prime=1
       AND f.status=7`
+      console.log('Get this FAC store: ', sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
           if(err) return reject(err)
