@@ -149,7 +149,7 @@ export default class AddLocationForm extends React.Component {
                 </div>
               </div>
             }
-{streets.length > 0 && <SearchSetupForm appsetup={true} name='street' list={streets} lan={lan}/>}
+{!streets.length && <SearchSetupForm appsetup={true} name='street' list={streets} lan={lan}/>}
 
 {/* ==== ADD LOCATION: =====================================*/}
             {locate &&

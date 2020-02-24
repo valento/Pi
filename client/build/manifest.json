@@ -1,10 +1,25 @@
 {
   "short_name": "Pizza Pi",
   "name": "Pizza Factory",
+  "orientation": "portrait",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "icons": [
     {
-      "src": "img/logo_icon.svg",
+      "src": "./img/icon.svg",
       "sizes": "145x145 192x192 512x512"
+    },
+    {
+      "src": "./img/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "img/png"
+    }
+    },
+    {
+      "src": "./img/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "img/png"
     }
   ],
   "start_url": ".",

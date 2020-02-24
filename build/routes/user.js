@@ -100,7 +100,7 @@ userRouter.post('/facs', function (req, res, next) {
   _user2.default.getFac(id).then(function (results) {
     var facs = {};
     var _results$ = results[0],
-        fac = _results$.fac,
+        id = _results$.id,
         city = _results$.city,
         prime = _results$.prime,
         open = _results$.open,
@@ -130,7 +130,7 @@ userRouter.post('/facs', function (req, res, next) {
         //}
       };
     });
-    facs = Object.assign({ fac: fac, city: city, prime: prime, open: open, delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products });
+    facs = Object.assign({ id: id, city: city, prime: prime, open: open, delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products });
     res.status(200).json(facs);
   }).catch(function (err) {
     return console.log(err.message);

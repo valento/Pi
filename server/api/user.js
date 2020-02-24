@@ -133,19 +133,20 @@ export default {
     },
 // ID: location ID
 // Get ever FAC with all products in FACs STORE
-    getFac: id => {
+    getFac: city => {
       const sql = `SELECT f.id,f.city,f.prime,
       f.open,f.delivery,f.bottleneck,f.mobile,
       s.product,s.local_promo,s.local_price,
       s.on_hand,s.take_only,s.add_time
       FROM fac f
       JOIN store s ON f.id=s.fac AND s.on_hand>0
-      WHERE f.city=${id} AND f.prime=1
+      WHERE f.city=${city} AND f.prime=1
       AND f.status=7`
-      console.log('Get this FAC store: ', sql)
+
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
           if(err) return reject(err)
+          console.log('Get this FAC store: ', results[0])
           resolve(results)
         })
       })

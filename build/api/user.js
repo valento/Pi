@@ -159,12 +159,13 @@ exports.default = {
   },
   // ID: location ID
   // Get ever FAC with all products in FACs STORE
-  getFac: function getFac(id) {
-    var sql = 'SELECT f.id,f.city,f.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + id + ' AND f.prime=1\n      AND f.status=7';
-    console.log('Get this FAC store: ', sql);
+  getFac: function getFac(city) {
+    var sql = 'SELECT f.id,f.city,f.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
+
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (err) return reject(err);
+        console.log('Get this FAC store: ', results[0]);
         resolve(results);
       });
     });

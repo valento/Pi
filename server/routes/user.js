@@ -58,7 +58,7 @@ userRouter.post('/facs', (req,res,next) => {
   api.getFac(id)
   .then( results => {
     let facs = {}
-    const {fac,city,prime,open,delivery,bottleneck,mobile} = results[0]
+    const {id,city,prime,open,delivery,bottleneck,mobile} = results[0]
     let products = results.map( entry => {
       const {product,local_promo,local_price,on_hand,take_only,add_time} = entry
       return {product,local_promo,local_price,on_hand,take_only,add_time}
@@ -74,7 +74,7 @@ userRouter.post('/facs', (req,res,next) => {
       //  facs = { ...facs, [location]: {open: 0}}
       //}
     })
-    facs = Object.assign({fac,city,prime,open,delivery,bottleneck,mobile},{products:products})
+    facs = Object.assign({id,city,prime,open,delivery,bottleneck,mobile},{products:products})
     res.status(200).json(facs)
   })
   .catch( err => console.log(err.message))
