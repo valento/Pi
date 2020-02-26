@@ -27,11 +27,10 @@ const SubMenu = ({lan,onMenu,subset}) => {
     }
   }
   return (
-    <Button.Group color='blue' widths='5'>
-      <Button onClick={onMenu} name={ui[lan][subset][0]} icon='home' />
-      <Button onClick={onMenu} name={ui[lan][subset][1]} content={ui[lan][subset][1]} />
-      <Button onClick={onMenu} name={ui[lan][subset][2]} content={ui[lan][subset][2]} />
-      <Button onClick={onMenu} name={ui[lan][subset][3]} content={ui[lan][subset][3]} />
+    <Button.Group color='blue' className='submenu'>
+      {ui[lan][subset].map( (itm,indx) => {
+        return <Button onClick={onMenu} name={itm} content={!!indx? itm : ''}  icon={!indx? 'home' : ''} />
+      })}
     </Button.Group>
   )
 }

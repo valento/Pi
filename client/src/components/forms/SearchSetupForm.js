@@ -51,23 +51,24 @@ class SearchSetupForm extends React.Component {
   onSubmit = e => {
     e.preventDefault()
     const { appsetup,onSubmit } = this.props
-    const {data} = this.state
+    const { data } = this.state
     if(appsetup){onSubmit(data)}
   }
 
   render() {
     const {value,results,isLoading,data,message} = this.state
     const ui = this.state.ui[this.props.lan]
-    const source = this.props.list
+    const { name,list,appsetup } = this.props
+    const source = list
     return (
       <div className='custom-form padded'>
-        <Form onSubmit={this.onSubmit}>
-          <Form.Group>
+        <Form.Group onSubmit={this.onSubmit}>
+          <Form>
             <div className='ui grid'>
               <div className='grid column sixteen wide'>
                 <Search
                   fluid
-                  name={this.props.name}
+                  name={name}
                   loading={isLoading}
                   onResultSelect={this.handleResultSelect}
                   onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
@@ -81,12 +82,12 @@ class SearchSetupForm extends React.Component {
                   <p>{ui[2]}</p>
                 </Message>
               }
-              {this.props.appsetup &&
+              {appsetup &&
                 <div className='grid column sixteen wide oval-but extra-padded'>
                   <Button type='submit'
                     basic={Object.keys(data).length===0}
                     disabled={Object.keys(data).length===0}
-                    name={this.props.name}
+                    name={name}
                     color='grey'
                     content={ui[1]}
                   />
@@ -94,8 +95,8 @@ class SearchSetupForm extends React.Component {
               }
             </div>
 
-          </Form.Group>
-        </Form>
+          </Form>
+        </Form.Group>
       </div>
     )
   }

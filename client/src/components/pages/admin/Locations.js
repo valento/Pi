@@ -20,9 +20,14 @@ class Locations extends React.Component {
   render() {
     const { addLocation,lan,city,cities,streets,isAdmin,view } = this.props
     const ui = this.state.ui[lan]
+    let cty = cities.length>0? cities.find(element => {
+      console.log(element.id)
+      return element.id === city
+    }) : ''
+    console.log('city?: ', cities.length, cty.title)
     return (
       <div className='topped padded'>
-        <h3>{ui[0].concat(city? cities[Number(city)-1].title : 'Add City')}</h3>
+        <h3>{ui[0].concat(' ',city? cty.alt : 'Add City')}</h3>
         <Divider horizontal />
         {view === 'add' &&
           <div className='custom-form'>

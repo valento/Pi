@@ -267,6 +267,23 @@ h2 {
     border-top-left-radius: 0!important;
     border-bottom-left-radius: 0!important;
 }
+.carrousel {
+  position: relative;
+  display: flex;
+  left: 0;
+}
+.submenu {
+  margin-left:30px!important;
+  min-width: 90vw;
+}
+.move {
+  -webkit-transition-property: left;
+  -webkit-transition-duration: 2s;
+  -webkit-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  transition-property: left;
+  transition-duration: 2s;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
 
 .submit-but {
   min-width: 160px;

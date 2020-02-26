@@ -38,7 +38,7 @@ class AppSetup extends React.Component {
     if(appsetup){
 // Set CITY:
       setInterface(data)
-// API POST FAC Store:
+// API POST FAC Store: get factory+store for location ID
       getFacStore(data)
     } else {
 // If User Setup:

@@ -71,11 +71,12 @@ export default class AddLocationForm extends React.Component {
   }
 
   onSubmit = () => {
-    console.log('Post these: ', this.state.data)
-    let tp = !this.props.city? 'city' : this.state.locate? 'location' : 'street'
-    const { data } = this.state
-    if(this.props.city){ data.city = this.props.city }
-    this.props.addLocation(data,tp)
+    const { data,locate } = this.state
+    const { city,addLocation } = this.props
+    let tp = !city? 'city' : locate? 'location' : 'street'
+    if(city){ data.city = city }
+    console.log('POST Location: ', data)
+    addLocation(data,tp)
     .then(res => {
       this.setState({...this.state, ...res})
     })
@@ -98,13 +99,13 @@ export default class AddLocationForm extends React.Component {
       _options = opts.map( (entr,ind) => ({
         key:ind+1,
         value:entr.id,
-        text:entr.ttl
+        text:entr.title
       }))
     } else if(streets) {
       _options = streets.map( (entr,ind) => ({
         key:ind+1,
         value:entr.id,
-        text:entr.ttl
+        text:entr.title
       }))
     }
     return (
@@ -125,13 +126,25 @@ export default class AddLocationForm extends React.Component {
             {!city &&
               <div className='row centered'>
                 <div className='twelve wide column' style={{marginBottom: '10px'}}>
-                  <Form.Input fluid name='bg' onChange={this.onChange} value={this.state.bg} placeholder={ui[1]} />
+                  <Form.Input fluid name='bg'
+                     onChange={this.onChange}
+                     value={this.state.bg}
+                     placeholder={ui[1]}
+                   />
                 </div>
                 <div className='twelve wide column' style={{marginBottom: '10px'}}>
-                  <Form.Input fluid name='lat' onChange={this.onChange} value={this.state.lat} placeholder={ui[2]} />
+                  <Form.Input fluid name='lat'
+                     onChange={this.onChange}
+                     value={this.state.lat}
+                     placeholder={ui[2]}
+                   />
                 </div>
                 <div className='twelve wide column'>
-                  <Form.Input fluid name='code' onChange={this.onChange} value={this.state.code} placeholder={ui[3]} />
+                  <Form.Input fluid name='code'
+                     onChange={this.onChange}
+                     value={this.state.code}
+                     placeholder={ui[3]}
+                   />
                 </div>
               </div>
             }
@@ -139,23 +152,50 @@ export default class AddLocationForm extends React.Component {
             {!locate && city &&
               <div className='row centered'>
                 <div className='twelve wide column' style={{marginBottom: '10px'}}>
-                  <Form.Input fluid name='bg' onChange={this.onChange} value={this.state.bg} placeholder={ui[10]} />
+                  <Form.Input fluid name='bg'
+                    onChange={this.onChange}
+                    value={this.state.bg}
+                    placeholder={ui[10]}
+                  />
                 </div>
                 <div className='twelve wide column' style={{marginBottom: '10px'}}>
-                  <Form.Input fluid name='lat' onChange={this.onChange} value={this.state.lat} placeholder={ui[0]} />
+                  <Form.Input fluid name='lat'
+                    onChange={this.onChange}
+                    value={this.state.lat}
+                    placeholder={ui[0]}
+                  />
                 </div>
                 <div className='twelve wide column'>
-                  <Button name='locate' onClick={()=>{this.setState({locate: true})}} content={ui[12]} />
+                  <Button name='locate'
+                    type='submit'
+                    content={ui[12]}
+                  />
                 </div>
               </div>
             }
-{!streets.length && <SearchSetupForm appsetup={true} name='street' list={streets} lan={lan}/>}
 
-{/* ==== ADD LOCATION: =====================================*/}
+            {!!streets.length &&
+              <SearchSetupForm
+                appsetup={true}
+                name='street' lan={lan}
+                list={streets}
+                onSubmit={ data => {
+                  this.setState({data: { ...this.state.data, ...data}, locate: true})
+                }}
+              />
+            }
+
+{/* ==== ADD BUILDING Number: =====================================*/}
             {locate &&
               <div className='row centered'>
                 <div className='twelve wide column' style={{marginBottom: '10px'}}>
-                  <SearchSetupForm appsetup={false} name='street_id' onStreet={this.onStreet} list={streets} lan={lan}/>
+                  {!streets.length &&
+                    <SearchSetupForm
+                      appsetup={false}
+                      name='street_id'
+                      onStreet={this.onStreet}
+                      list={streets} lan={lan}
+                    />}
                 </div>
                 <div className='six wide column' style={{marginBottom: '10px'}}>
                   <Form.Input fluid name='number'

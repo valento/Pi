@@ -2,6 +2,7 @@ import { ADD_LOCATION } from '../../types'
 import api from '../../api/admin'
 
 export const addLocation = (data,type) => dispatch => {
+  console.log('Add location: ',data,type)
   return api.locations.addLocation(data,type).then( res => res )
 }
 
