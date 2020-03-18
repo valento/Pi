@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form,Button,Message } from 'semantic-ui-react'
+import { Form,Button,Message,Divider } from 'semantic-ui-react'
 import SearchSetupForm from '../SearchSetupForm'
 
 /*
@@ -16,13 +16,15 @@ export default class AddLocationForm extends React.Component {
     number: '',
     ui: {
       en: ['Street:lat','City:bg','City:lat','#','Next','Edit','Reset',
-        'System message:','Country','post','Street:bg','Add Location','Add New Street'
+        'System message:','Country','post','Street:bg','Add Location','Add Street'
         ],
       es: ['Calle:lat','Ciudad:bg','City:lat','#','Seguir','Editar',
-        'Cancelar','Mensaje del sistema:','Pais','postal','Calle:bg','Add Location','Add New Street'
+        'Cancelar','Mensaje del sistema:','Pais','postal','Calle:bg','Nueva Locacion',
+        'Nueva Calle'
         ],
       bg: ['Улица:лат','Град:бг','Град:лат','#','Запази','Редактирай',
-        'Изчисти','Системно съобщение:','Държава','код','Улица:бг','Прибави Адрес','Прибави Нова Улица'
+        'Изчисти','Системно съобщение:','Държава','код','Улица:бг','Нов Адрес',
+        'Нова Улица'
         ]
     },
     message: '',
@@ -118,7 +120,7 @@ export default class AddLocationForm extends React.Component {
               <div className='margined full-width'>
                 <Message as='div' positive={true} size='tiny'
                 onDismiss={this.closeMessage}
-                header={ui[6]}
+                header={ui[7]}
                 content={message}
               />
             </div>}
@@ -165,36 +167,46 @@ export default class AddLocationForm extends React.Component {
                     placeholder={ui[0]}
                   />
                 </div>
-                <div className='twelve wide column'>
-                  <Button name='locate'
+                <div className='twelve wide column oval-but'>
+                  <Button fluid
+                    disabled={!this.state.data.bg || !this.state.data.lat}
                     type='submit'
                     content={ui[12]}
+                  />
+                  <Divider horizontal content='or' />
+                  <Button fluid
+                    content={ui[11]}
+                    onClick={e => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      this.setState({data: {}, locate: true})
+                    }}
                   />
                 </div>
               </div>
             }
 
-            {!!streets.length &&
-              <SearchSetupForm
-                appsetup={true}
-                name='street' lan={lan}
-                list={streets}
-                onSubmit={ data => {
-                  this.setState({data: { ...this.state.data, ...data}, locate: true})
-                }}
-              />
+            {//!!streets.length &&
+            //  <SearchSetupForm
+            //    appsetup={true}
+            //    name='street' lan={lan}
+            //    list={streets}
+            //    onSubmit={ data => {
+            //      this.setState({data: { ...this.state.data, ...data}, locate: true})
+            //    }}
+            //  />
             }
 
 {/* ==== ADD BUILDING Number: =====================================*/}
             {locate &&
               <div className='row centered'>
-                <div className='twelve wide column' style={{marginBottom: '10px'}}>
-                  {!streets.length &&
+                <div style={{marginBottom: '10px'}}>
+                  {!!streets.length &&
                     <SearchSetupForm
                       appsetup={false}
                       name='street_id'
-                      onStreet={this.onStreet}
                       list={streets} lan={lan}
+                      onStreet={this.onStreet}
                     />}
                 </div>
                 <div className='six wide column' style={{marginBottom: '10px'}}>
@@ -209,7 +221,7 @@ export default class AddLocationForm extends React.Component {
 {/* ==== IF NOTHING: =====================================*/}
 
               <div className='row centered menu-bar'>
-                <Button.Group widths='2'>
+                <Button.Group widths='2' className='padded'>
                   <Button color='grey' onClick={this.onReset} content={ui[6]} />
                   <Button color='blue' type='submit' content={ui[4]} />
                 </Button.Group>

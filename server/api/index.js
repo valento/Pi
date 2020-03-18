@@ -110,7 +110,8 @@ console.log(sql,params)
   },
   saveOneLocation: (data={},table) => {
     let jsn='',sql=''
-    const {bg,lat} = data
+    const {bg,lat,uid,street_id,city,number} = data
+
     switch(table) {
       case 'city':
         jsn = `'{"bg": "${bg}", "en": "${lat}", "es": "${lat}"}'`
@@ -121,11 +122,13 @@ console.log(sql,params)
         sql = `INSERT INTO ${table} (name,city) VALUES (${jsn},${data.city})`
       break
       case 'location':
-        sql = `INSERT INTO ${table} (uid,city,street_id,number) VALUES ('${data.uid}',${data.city},${data.street_id},${data.number})`
+      console.log(data)
+        sql = `INSERT INTO ${table} (uid,city,street_id,number)
+        VALUES ('${uid}',${city},${street_id},${number})`
       break
     }
 
-  console.log(sql)
+  console.log(sql,data)
     return new Promise( (resolve,reject) => {
       db.query(sql, err => {
         if (err) return reject()

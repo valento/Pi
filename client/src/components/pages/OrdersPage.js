@@ -30,9 +30,9 @@ class OrdersPage extends React.Component {
     const { category,item } = this.state
 
     let l = facs.products
-    .map( p => {
-      let prod = products.find( i => i.id === p.product )
-      return Object.assign(p,prod)
+    .map( entry => {
+      let p = products.find( i => i.id === entry.product )
+      return Object.assign(entry,p)
     })
 
     let cat_list = l.map( i => i.category)

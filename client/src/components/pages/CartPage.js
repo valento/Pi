@@ -17,29 +17,33 @@ class CartPage extends React.Component {
       bg:['Поръчка','За къде:','Поръчай','Откажи','Още','Трябва ни адрес на доставка!','Поръчката е приета','За Вземане', 'Или']
     },
     currentLocation: 0,
+    delivery: true,
     error: {}
   }
 
-  onLocationSlected = id => {
+  onLocationSlected = l => {
+    console.log(l)
     this.setState({
-      currentLocation: id,
+      currentLocation: l,
       error: {}
     })
   }
 
   componentDidMount() {
     const { locations } = this.props.user
+    const { fac,getLocationData } = this.props
+    if(fac.delivery === 4) console.log('Take Away only!')
     if(!locations || locations.length === 0) return
     locations.forEach( (entry,ind) => {
-      this.props.getLocationData(entry.location,ind)
+      getLocationData(entry.location,ind)
     })
     socket.send('Cart Component did mount')
   }
 
   onOrder = e => {
     let prime = 0
-    const {user,cart,lan} = this.props
-    const {currentLocation,error} = this.state
+    const {user,cart,lan,fac} = this.props
+    const {currentLocation,error,delivery} = this.state
     user.locations.forEach( l => {
       if(l.prime && l.prime !== 0){
         prime = l.id
@@ -53,14 +57,14 @@ class CartPage extends React.Component {
       return
     }
     let defLoc = currentLocation!==0? currentLocation : prime
-    this.props.makeCart({location: defLoc, cart: cart})
+    this.props.makeCart({location: defLoc, cart: cart, delivery: delivery})
     //.catch(err => console.log(err))
     //console.log('Deliver this: ' + order.length + ', there:' + delLoc)
   }
 
   render() {
     let prime = 0, total = 0
-    const {user,cart,lan} = this.props
+    const {user,cart,lan,city,fac} = this.props
     const { currentLocation,error } = this.state
     const ui = this.state.ui[lan]
     if(user.locations){
@@ -88,18 +92,20 @@ class CartPage extends React.Component {
           <UserLocations
             view='select'
             stat={true}
+            disabled={fac.delivery === 4}
             current={currentLocation}
-            onLocationClick={this.onLocationSlected}
-            list={user.locations}
+            onLocation={this.onLocationSlected}
+            list={user.locations.filter( l => l.city === city)}
+            city={city}
             lan={lan}
           /> :
           <div><Button as={Link} to='../user/locations' color='red' icon='warning sign' content={ui[1]} /></div>
         }
         {Object.keys(error).length>0 && <Message negative content={error.message} />}
-        <Divider horizontal>{ui[8]}</Divider>
-        <div className='oval-but'>
+        {fac.delivery !== 4 && <Divider horizontal>{ui[8]}</Divider>}
+        {fac.delivery !== 4 && <div className='oval-but'>
           <Button fluid content={ui[7]} icon='hand paper' color='blue'/>
-        </div>
+        </div>}
         <Divider horizontal>{ui[0]}</Divider>
         <OrderList stat={true} cart={cart} onOrder={()=>{}} lan={lan} />
         <Divider horizontal>&#9675;</Divider>
@@ -126,12 +132,15 @@ CartPage.propType = {
   user: PropType.shape({
     uid: PropType.number.isRequired
   }),
-  cart: PropType.array.isRequired
+  cart: PropType.array.isRequired,
+  city: PropType.number.isRequired
 }
 
 const mapStateToProps = state => ({
   lan: state.settings.lan,
   user: state.user,
-  cart: state.cart
+  fac: state.facs,
+  cart: state.cart,
+  city: state.settings.city
 })
 export default connect(mapStateToProps,{ getLocationData,cancelCart,makeCart })(CartPage)

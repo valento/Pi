@@ -68,7 +68,6 @@ adminRouter.get('/location/:type/:by', requestLanguage({
   .catch( err => res.status(500).json({messages: 'Something went wrong!'}))
 })
 
-
 adminRouter.get('/location', requestLanguage({
   languages: ['en','es']
 }), getLan, (req,res,next) => {
@@ -94,15 +93,17 @@ adminRouter.get('/location', requestLanguage({
 adminRouter.post('/location/:type', (req,res,next) => {
   const { data } = req.body
   const { type } = req.params
-  if (type) {
+  let msgCap = type.charAt(0).toUpperCase() + type.slice(1)
+  console.log(msgCap + ' Save: ',data,type)
+  if (type === 'location') {
     data.uid = uniqid.time()
   }
   api.saveOneLocation(data,type)
-  .then(res.status(200).json({message: 'Location Saved!'}))
+  .then(res.status(200).json({message: `${msgCap} Saved!`}))
   .catch( err => console.log('Error',err))
 })
 
-adminRouter.post('/locations/loc')
+//adminRouter.post('/locations/loc')
 
 export default adminRouter
 

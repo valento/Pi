@@ -58,6 +58,7 @@ exports.default = {
       });
     });
   },
+  // chek if user exist
   checkOne: function checkOne(email) {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '*';
 
@@ -75,6 +76,8 @@ exports.default = {
       });
     });
   },
+
+  // check user verified:
   verify: function verify(email) {
     var sql = 'UPDATE user SET verified=1 WHERE email=\'' + email + '\'';
     return new Promise(function (resolve, reject) {
@@ -87,6 +90,7 @@ exports.default = {
       });
     });
   },
+
   // on User.init: returns user and user's locations
   getOne: function getOne() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -115,7 +119,8 @@ exports.default = {
       });
     });
   },
-  // Save user or user_location table
+
+  // insert in user or new user_location table
   saveOne: function saveOne() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var table = arguments[1];
@@ -134,7 +139,8 @@ exports.default = {
       });
     });
   },
-  // Update user table or user_location table
+
+  // Update user or user_location table
   updateOne: function updateOne() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var table = arguments[1];
@@ -157,10 +163,12 @@ exports.default = {
       });
     });
   },
+
   // ID: location ID
   // Get ever FAC with all products in FACs STORE
   getFac: function getFac(city) {
-    var sql = 'SELECT f.id,f.city,f.prime,\n      f.open,f.delivery,f.bottleneck,f.mobile,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
+    //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
+    var sql = 'SELECT\n      f.*,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
 
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {

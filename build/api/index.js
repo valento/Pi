@@ -143,7 +143,12 @@ exports.default = {
     var jsn = '',
         sql = '';
     var bg = data.bg,
-        lat = data.lat;
+        lat = data.lat,
+        uid = data.uid,
+        street_id = data.street_id,
+        city = data.city,
+        number = data.number;
+
 
     switch (table) {
       case 'city':
@@ -155,11 +160,12 @@ exports.default = {
         sql = 'INSERT INTO ' + table + ' (name,city) VALUES (' + jsn + ',' + data.city + ')';
         break;
       case 'location':
-        sql = 'INSERT INTO ' + table + ' (uid,city,street_id,number) VALUES (\'' + data.uid + '\',' + data.city + ',' + data.street_id + ',' + data.number + ')';
+        console.log(data);
+        sql = 'INSERT INTO ' + table + ' (uid,city,street_id,number)\n        VALUES (\'' + uid + '\',' + city + ',' + street_id + ',' + number + ')';
         break;
     }
 
-    console.log(sql);
+    console.log(sql, data);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err) {
         if (err) return reject();

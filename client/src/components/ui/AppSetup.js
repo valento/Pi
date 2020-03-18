@@ -34,6 +34,7 @@ class AppSetup extends React.Component {
 // FORM SUBMIT:
   onSubmit = data => {
     const { appsetup,setInterface,initialUser,getFacStore } = this.props
+    console.log(data)
 // If App Setup:
     if(appsetup){
 // Set CITY:

@@ -135,15 +135,17 @@ adminRouter.post('/location/:type', function (req, res, next) {
   var data = req.body.data;
   var type = req.params.type;
 
-  if (type) {
+  var msgCap = type.charAt(0).toUpperCase() + type.slice(1);
+  console.log(msgCap + ' Save: ', data, type);
+  if (type === 'location') {
     data.uid = _uniqid2.default.time();
   }
-  _api2.default.saveOneLocation(data, type).then(res.status(200).json({ message: 'Location Saved!' })).catch(function (err) {
+  _api2.default.saveOneLocation(data, type).then(res.status(200).json({ message: msgCap + ' Saved!' })).catch(function (err) {
     return console.log('Error', err);
   });
 });
 
-adminRouter.post('/locations/loc');
+//adminRouter.post('/locations/loc')
 
 exports.default = adminRouter;
 

@@ -60,12 +60,13 @@ _dotenv2.default.config({ silent: true });
 var app = (0, _express2.default)();
 var PORT = process.env.PORT || 8080;
 var ENV = process.env.NODE_ENV || 'development';
+var CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0;
 
 var SockServer = require('websocket').server;
 
 app.use('/static', _express2.default.static(_path2.default.join(__dirname, '../client/build/static')));
 app.use('/img', _express2.default.static(_path2.default.join(__dirname, '../client/build/img')));
-app.use(_express2.default.static(_path2.default.join(__dirname, '../client/build')));
+if (ENV === 'production') app.use(_express2.default.static(_path2.default.join(__dirname, '../client/build')));
 
 // == ROUTES ==============================================
 app.use('/auth', _auth2.default);
@@ -88,6 +89,7 @@ app.get('/ui', _middleware.getLan, function (req, res, next) {
   //} else {
 
   data.lan = lan;
+  if (!!CURRENT_CITY) data.city = Number(CURRENT_CITY);
   //}
   // get cities: ? add params {c_status: 4} if needed
   _api2.default.getList('city', ['name', 'id', 'zone', 'code', 'alt'], params).then(function (response) {
@@ -103,6 +105,7 @@ app.get('/ui', _middleware.getLan, function (req, res, next) {
     });
     data.cities = cty;
     data.mob = req.get('user-agent').match(/(Mobile)/g) ? true : false;
+    data.banner = !!(process.env.BANNER == 'true');
     res.status(200).json(data);
   }).catch(function (err) {
     return res.status(500).json({ message: 'Something went wrong...' });

@@ -244,7 +244,7 @@ const mapStateToProps = state => ({
   street: state.settings.street,
   cities: state.settings.cities,
   streets: state.settings.streets,
-  locations: state.settings.locations,
+  locations: state.user.locations,
   lan: state.settings.lan
 })
 

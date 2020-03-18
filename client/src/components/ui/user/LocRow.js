@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon,Checkbox } from 'semantic-ui-react'
 
-const LocationRow = ({ind,prime,lan,view,row,stat,edit,onLocationClick,current}) => {
-  console.log(current,row.location,row.prime)
+const LocationRow = ({ind,prime,lan,view,row,stat,edit,locClick,current}) => {
+  console.log('ULocation row: ',current,row.location,row.prime)
   const addstyle = row.prime? ' selected-row' : ''
   return (
     <div className={'ui grid item'+addstyle}>
@@ -11,8 +11,8 @@ const LocationRow = ({ind,prime,lan,view,row,stat,edit,onLocationClick,current})
         {!stat && prime? <Icon name='pin' /> : ''}
         {stat && view==='select' &&
           <Checkbox
-            checked={current===row.id || !!row.prime&&current===0}//
-            onChange={()=>onLocationClick(row.id)}
+            checked={current===row.location || !!row.prime&&current===0}//
+            onChange={()=>locClick(row.location)}
           />}
       </div>
       <div className='eight wide column nopad'>{row.street}</div>

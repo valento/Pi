@@ -16,18 +16,20 @@ export default class UserLocation extends React.Component {
 
   handleResultSelect = (e, { result,name }) => {
     const {title,id} = result
-    if(name==='street') {this.props.getNumbers('location',id)}
+    const { getInput,getNumbers,onNewData } = this.props
+    if(name==='street') {getNumbers('location',id)}
     this.setState({
       ...this.state,
       value: title,
       data: {...this.state.data, [name]: id}
     })
-    if(name==='location'){this.props.onNewData({[name]: id})}
-    this.props.getInput(title,name)
+    if(name==='location'){onNewData({[name]: id})}
+    getInput(title,name)
   }
 
   handleSearchChange = (e, { value,name }) => {
     this.setState({ isLoading: true, value })
+    const { list,getInput } = this.props
 
     setTimeout(() => {
       if (this.state.value.toString().length < 1) return this.resetComponent()
@@ -37,11 +39,11 @@ export default class UserLocation extends React.Component {
 
       this.setState({
         isLoading: false,
-        results: _.filter(this.props.list, isMatch)
+        results: _.filter(list, isMatch)
       })
     }, 300)
 
-    this.props.getInput(value,name)
+    getInput(value,name)
   }
 
   render() {

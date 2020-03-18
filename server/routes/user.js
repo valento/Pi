@@ -10,6 +10,7 @@ let userRouter = express({
 
 userRouter.use(bodyParser.json())
 
+// get user data: location, user
 userRouter.get('/', getUser, (req,res,next) => {
   const { email } = req
   //let usr = {}
@@ -52,13 +53,16 @@ userRouter.get('/', getUser, (req,res,next) => {
   .catch(err => res.status(500).json({ error: { message: err }}))
 })
 
-// GET FAC for location
+// GET FAC for users location
 userRouter.post('/facs', (req,res,next) => {
   const { id } = req.body
   api.getFac(id)
   .then( results => {
     let facs = {}
-    const {id,city,prime,open,delivery,bottleneck,mobile} = results[0]
+    const {id,city,prime,open,
+      sat_open,sat_close,sun_open,
+      sun_close,vacation_end,vacation_start,
+      delivery,bottleneck,mobile} = results[0]
     let products = results.map( entry => {
       const {product,local_promo,local_price,on_hand,take_only,add_time} = entry
       return {product,local_promo,local_price,on_hand,take_only,add_time}
@@ -74,12 +78,16 @@ userRouter.post('/facs', (req,res,next) => {
       //  facs = { ...facs, [location]: {open: 0}}
       //}
     })
-    facs = Object.assign({id,city,prime,open,delivery,bottleneck,mobile},{products:products})
+    facs = Object.assign({id,city,prime,open,
+      sat_open,sat_close,sun_open,
+      sun_close,vacation_end,vacation_start,
+      delivery,bottleneck,mobile},{products:products})
     res.status(200).json(facs)
   })
   .catch( err => console.log(err.message))
 })
 
+// update users location: location details
 userRouter.post('/location/:id', (req,res,next) => {
   const {data} = req.body
   console.log('User Router: ',data)
@@ -89,6 +97,7 @@ userRouter.post('/location/:id', (req,res,next) => {
   .catch( err => res.status(500).json({errors: {message: 'Something went wrong'}}))
 })
 
+// insert new user location
 userRouter.post('/location', getUser, (req,res,next) => {// or getUserId
   const {data} = req.body
   data.uid = req.uid

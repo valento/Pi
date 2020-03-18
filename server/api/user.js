@@ -40,6 +40,7 @@ export default {
         })
       })
     },
+// chek if user exist
     checkOne: (email,scope='*') => {
       const sql = `SELECT ${scope} FROM user WHERE email='${email}' AND c_status=4`
 
@@ -55,6 +56,8 @@ export default {
         })
       })
     },
+
+// check user verified:
     verify: email => {
       const sql = `UPDATE user SET verified=1 WHERE email='${email}'`
       return new Promise( (resolve, reject) => {
@@ -67,6 +70,7 @@ export default {
         })
       })
     },
+
 // on User.init: returns user and user's locations
     getOne: (data={},table,scope=['*']) => {
       let sql
@@ -96,7 +100,8 @@ export default {
         })
       })
     },
-// Save user or user_location table
+
+// insert in user or new user_location table
     saveOne: (data={},table) => {
       let _keys = Object.keys(data), _values = []
       let params = Object.values(data).map( v => {
@@ -111,7 +116,8 @@ export default {
         })
       })
     },
-// Update user table or user_location table
+
+// Update user or user_location table
     updateOne: (data={},table) => {
       const {id, ...rest} = data
       const _map = Object.keys(rest).map( entry => {
@@ -131,11 +137,13 @@ export default {
         })
       } )
     },
+
 // ID: location ID
 // Get ever FAC with all products in FACs STORE
     getFac: city => {
-      const sql = `SELECT f.id,f.city,f.prime,
-      f.open,f.delivery,f.bottleneck,f.mobile,
+      //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
+      const sql = `SELECT
+      f.*,
       s.product,s.local_promo,s.local_price,
       s.on_hand,s.take_only,s.add_time
       FROM fac f

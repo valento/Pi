@@ -30,6 +30,7 @@ var userRouter = (0, _express2.default)({
 
 userRouter.use(_bodyParser2.default.json());
 
+// get user data: location, user
 userRouter.get('/', _middleware.getUser, function (req, res, next) {
   var email = req.email;
   //let usr = {}
@@ -93,7 +94,7 @@ userRouter.get('/', _middleware.getUser, function (req, res, next) {
   });
 });
 
-// GET FAC for location
+// GET FAC for users location
 userRouter.post('/facs', function (req, res, next) {
   var id = req.body.id;
 
@@ -104,6 +105,12 @@ userRouter.post('/facs', function (req, res, next) {
         city = _results$.city,
         prime = _results$.prime,
         open = _results$.open,
+        sat_open = _results$.sat_open,
+        sat_close = _results$.sat_close,
+        sun_open = _results$.sun_open,
+        sun_close = _results$.sun_close,
+        vacation_end = _results$.vacation_end,
+        vacation_start = _results$.vacation_start,
         delivery = _results$.delivery,
         bottleneck = _results$.bottleneck,
         mobile = _results$.mobile;
@@ -130,13 +137,17 @@ userRouter.post('/facs', function (req, res, next) {
         //}
       };
     });
-    facs = Object.assign({ id: id, city: city, prime: prime, open: open, delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products });
+    facs = Object.assign({ id: id, city: city, prime: prime, open: open,
+      sat_open: sat_open, sat_close: sat_close, sun_open: sun_open,
+      sun_close: sun_close, vacation_end: vacation_end, vacation_start: vacation_start,
+      delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products });
     res.status(200).json(facs);
   }).catch(function (err) {
     return console.log(err.message);
   });
 });
 
+// update users location: location details
 userRouter.post('/location/:id', function (req, res, next) {
   var data = req.body.data;
 
@@ -149,6 +160,7 @@ userRouter.post('/location/:id', function (req, res, next) {
   });
 });
 
+// insert new user location
 userRouter.post('/location', _middleware.getUser, function (req, res, next) {
   // or getUserId
   var data = req.body.data;

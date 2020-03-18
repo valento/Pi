@@ -17,12 +17,13 @@ dotenv.config({silent: true})
 let app = express()
 let PORT = process.env.PORT || 8080
 let ENV = process.env.NODE_ENV || 'development'
+let CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0
 
 let SockServer = require('websocket').server
 
 app.use('/static', express.static(path.join(__dirname, '../client/build/static')) )
 app.use('/img', express.static(path.join(__dirname, '../client/build/img')) )
-app.use(express.static(path.join(__dirname, '../client/build')) )
+if(ENV === 'production') app.use(express.static(path.join(__dirname, '../client/build')) )
 
 // == ROUTES ==============================================
 app.use('/auth', authRouter)
@@ -43,7 +44,8 @@ app.get('/ui', getLan, (req,res,next) => {
   //if(lng === 'lan') {
   //  data.lan = req.language==='es'? 'es' : 'bg'
   //} else {
-    data.lan = lan
+  data.lan = lan
+  if(!!CURRENT_CITY) data.city = Number(CURRENT_CITY)
   //}
 // get cities: ? add params {c_status: 4} if needed
   api.getList('city',['name','id','zone','code','alt'],params).then( response => {//,{c_status: 4}
@@ -58,6 +60,7 @@ app.get('/ui', getLan, (req,res,next) => {
     })
     data.cities = cty
     data.mob = req.get('user-agent').match((/(Mobile)/g)) ? true : false
+    data.banner = !!(process.env.BANNER == 'true')
     res.status(200).json(data)
   })
   .catch( err => res.status(500).json({message: 'Something went wrong...'}))

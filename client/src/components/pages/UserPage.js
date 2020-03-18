@@ -39,17 +39,17 @@ class UserPage extends React.Component {
   }
 
   render() {
-    const {lan,locations} = this.props
+    const {lan,locations,city,fac} = this.props
     const ui = this.state.ui[lan]
     return (
       <div className='App-content topped padded'>
         <Divider horizontal>{ui[0]}</Divider>
-        <UserLocations view='list' stat={false} list={locations} lan={lan} />
+        <UserLocations disabled={fac.delivery === 4} view='list' stat={false} list={locations.filter( l => l.city===city )} lan={lan} />
         <Divider horizontal>&#9675;</Divider>
         <div className='row centered menu-bar'>
           <Button.Group color='grey' widths='2'>
             <Button as={Link} to='/' icon='home' />
-            <Button as={Link} to='/user/locations' icon='plus' content={ui[1]} />
+            <Button disabled={fac.delivery === 4} as={Link} to='/user/locations' icon='plus' content={ui[1]} />
           </Button.Group>
         </div>
       </div>
@@ -58,11 +58,17 @@ class UserPage extends React.Component {
 }
 
 UserPage.propType = {
-  lan: PropType.number.isRequired
+  lan: PropType.number.isRequired,
+  city: PropType.number.isRequired,
+  facs: PropType.shape({
+    delivery: PropType.number.isRequired
+  }).isRequired
 }
 
 const mapStateToProps = state => ({
-  locations: state.user.locations
+  locations: state.user.locations,
+  city: state.settings.city,
+  fac: state.facs
 })
 
 export default connect(mapStateToProps,{ getLocationData })(UserPage)

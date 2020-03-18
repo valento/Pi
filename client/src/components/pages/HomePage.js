@@ -13,10 +13,11 @@ import AppSetup from '../ui/AppSetup'
 
 import { signUp } from '../../actions/auth'
 import { userInit,getLocalFacs } from '../../actions/user'
+import { setInterface,getFacStore } from '../../actions/settup'
 
 const HomePage = ({
   isAdmin,isAuthorized,new_user,lan,membership,name,
-  city,cities,signUp,userInit,getLocalFacs
+  city,one_city,cities,signUp,userInit,getLocalFacs,getFacStore
 }) => {
   const state = {
     ui: {
@@ -28,6 +29,17 @@ const HomePage = ({
 
   let newUser = new_user === undefined || new_user
   console.log('HomePage => New User?: ',newUser)
+  let cty = !!one_city? one_city : city
+  console.log('No city: ',!!!cty)
+  if(!!city){
+    let data = {}
+    data.city = city
+    console.log(data)
+    // Set CITY:
+          //setInterface(data)
+    // API POST FAC Store: get factory+store for location ID
+          getFacStore(data)
+  }
 
   return (
     <div className='App-content topped padded'>
@@ -46,8 +58,8 @@ const HomePage = ({
           </p>
         }
 
-{/* Find available CITY: */}
-        {city === undefined ?
+{/* Find available CITY: !(!!cty) */}
+        { city === undefined ?
           <AppSetup lan={lan} list={cities} appsetup='true' name='city' /> :
           !isAuthorized ? <Credentials submit={signUp} getFacs={getLocalFacs} init={userInit} lan={lan} pass={false} /> :
           <MainMenu lan={lan} />
@@ -69,6 +81,7 @@ const mapStateToProps = state => ({
   lan: state.settings.lan,
   cities: state.settings.cities,
   city: state.settings.city,
+  one_city: state.settings.one_city,
   membership: state.user.membership,
   name: state.user.username,
   isAuthorized: !!state.user.token,
@@ -76,4 +89,4 @@ const mapStateToProps = state => ({
   isAdmin: state.user.membership === 1
 })
 
-export default connect(mapStateToProps, { signUp,userInit,getLocalFacs })(HomePage)
+export default connect(mapStateToProps, { signUp,userInit,getLocalFacs,setInterface,getFacStore })(HomePage)

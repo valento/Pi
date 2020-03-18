@@ -18,7 +18,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const initState = {
   user: {},
   settings: {
-    lan: 'bg'
+    lan: 'bg',
+    one_city: 0,
+    banner: false
   },
   products: [],
   order: {},
@@ -64,6 +66,7 @@ if(localStorage.valePizzaJWT){
 }
 
 setLanHeader('bg')
+// set Global UI: language, one_city-, banner- mode
 store.dispatch(setUI())
 // get full Global Products List from products
 store.dispatch(getProductList('bg'))
