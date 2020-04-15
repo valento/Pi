@@ -153,7 +153,7 @@ exports.default = {
   // Get ever FAC with all products in FACs STORE
   getFac: function getFac(city) {
     //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
-    var sql = 'SELECT\n      f.*,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only,s.add_time\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
+    var sql = 'SELECT\n      f.*,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
 
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {

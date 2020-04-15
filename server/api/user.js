@@ -130,7 +130,7 @@ export default {
       const sql = `SELECT
       f.*,
       s.product,s.local_promo,s.local_price,
-      s.on_hand,s.take_only,s.add_time
+      s.on_hand,s.take_only
       FROM fac f
       JOIN store s ON f.id=s.fac AND s.on_hand>0
       WHERE f.city=${city} AND f.prime=1
