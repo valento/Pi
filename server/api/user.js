@@ -31,12 +31,8 @@ export default {
       console.log('Auth Insert: ',sql)
       return new Promise ((resolve,reject) => {
         db.query(sql, (err,result) => {
-          if(err) {
-            console.log(err)
-            reject(err)
-          } else {
-            resolve(result.insertId)
-          }
+          if(err) return reject(err)
+          resolve(result.insertId)
         })
       })
     },
@@ -46,13 +42,9 @@ export default {
 
       return new Promise( (resolve, reject) => {
         db.query(sql, ( err,results ) => {
-          if(!err) {
-            //if(results[0].c_status !== 4) return reject({ error: { message: 'User Account is canceled' }})
-            resolve(results)
-          } else {
-            console.log('API CheckOne User: ',err)
-            reject(err)
-          }
+          if(err) return reject(err)
+          resolve(results)
+          console.log('API CheckOne User: ',err)
         })
       })
     },
@@ -62,11 +54,8 @@ export default {
       const sql = `UPDATE user SET verified=1 WHERE email='${email}'`
       return new Promise( (resolve, reject) => {
         db.query(sql, ( err,rows ) => {
-          if(!err) {
-            resolve(rows)
-          } else {
-            reject(err)
-          }
+          if(err) return reject(err)
+          resolve(rows)
         })
       })
     },
@@ -91,12 +80,8 @@ export default {
       }
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
-
-          if(!err) {
-            resolve(results)
-          } else {
-            reject(err)
-          }
+          if(err) return reject(err)
+          resolve(results)
         })
       })
     },
@@ -111,7 +96,7 @@ export default {
       const sql = `INSERT INTO ${table} (${_keys}) VALUES (${_values})`
       return new Promise( (resolve,reject) => {
         db.query(sql, params, (err,result) => {
-          if (err) return reject()
+          if (err) return reject(err)
           resolve(result.insertId)
         })
       })
@@ -132,7 +117,7 @@ export default {
       const sql =`UPDATE ${table} SET ${_map} WHERE id=${id}`
       return new Promise( (resolve,reject) => {
         db.query(sql, err => {
-          if (err) return reject()
+          if (err) return reject(err)
           resolve()
         })
       } )

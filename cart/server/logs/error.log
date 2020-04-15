@@ -54,3 +54,6 @@
 2019/09/04 23:41:30 [error] 19920#5412: CreateFile() "C:\Users\User\Documents\project\pi\cart\server/logs/nginx.pid" failed (2: The system cannot find the file specified)
 2019/09/04 23:43:42 [notice] 13764#19504: signal process started
 2019/09/04 23:43:42 [error] 13764#19504: CreateFile() "C:\Users\User\Documents\project\pi\cart\server/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/03/25 09:05:39 [notice] 6424#3088: signal process started
+2020/03/25 09:08:17 [notice] 15392#16700: signal process started
+2020/03/25 09:09:01 [notice] 16832#4976: signal process started

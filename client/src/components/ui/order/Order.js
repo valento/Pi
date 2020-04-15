@@ -30,8 +30,8 @@ class Order extends React.Component {
 
   onAddItem = (item,units) => {
     console.log(Number(units)+ ' of ' +item)
-    let ind = this.state.order.findIndex( ord => {
-      return ord.id === item
+    let ind = this.state.order.findIndex( o => {
+      return o.product === item
     })
     let inx = this.props.products.findIndex( ent => {
       return ent.id === item
@@ -39,15 +39,15 @@ class Order extends React.Component {
     if( ind > -1 ) {
       this.setState({
         order: [...this.state.order.slice(0,ind),
-          {...this.state.order[ind], q: this.state.order[ind].q + Number(units)},
+          {...this.state.order[ind], quant: this.state.order[ind].quant + Number(units)},
           ...this.state.order.slice(ind+1)
         ]
       })
     } else {
       this.setState({
         order: this.state.order.concat({
-          id: item,
-          q: Number(units),
+          product: item,
+          quant: Number(units),
           name: this.props.products[inx].name,
           price: this.props.products[inx].price
         })
@@ -97,7 +97,7 @@ class Order extends React.Component {
     } else {
       items = products.map( (item,ind) => {
         return {
-          value: item.id,
+          value: item.product,
           text: item.name,
           key: ind
         }
@@ -108,7 +108,7 @@ class Order extends React.Component {
     const { order } = this.state
 
     let sum = order.map( o => {
-      return (parseFloat(o.price)*parseFloat(o.q)).toFixed(2)
+      return (parseFloat(o.price)*parseFloat(o.quant)).toFixed(2)
     })
 
     if(sum.length > 0) {

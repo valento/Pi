@@ -117,6 +117,24 @@ exports.default = {
       });
     });
   },
+  saveMany: function saveMany() {
+    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    var table = arguments[1];
+
+    var _keys = Object.keys(data[0]);
+    var params = data.map(function (i) {
+      var v = Object.values(i);
+      return v;
+    });
+    var sql = 'INSERT INTO ' + table + ' (' + _keys + ') VALUES ?';
+    console.log(sql, [params]);
+    return new Promise(function (resolve, reject) {
+      db.query(sql, [params], function (err) {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  },
   saveOne: function saveOne() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var table = arguments[1];
@@ -131,7 +149,7 @@ exports.default = {
     console.log(sql, params);
     return new Promise(function (resolve, reject) {
       db.query(sql, params, function (err, result) {
-        if (err) return reject();
+        if (err) return reject(err);
         resolve(result.insertId);
       });
     });
@@ -187,8 +205,8 @@ exports.default = {
         return entry + '=' + rest[entry];
       }
     });
-    var sql = 'UPDATE ' + table + ' SET ' + _map + ' WHERE id=' + id;
-    console.log('ORM: ', sql);
+    var sql = table === 'user' ? 'UPDATE ' + table + ' SET ' + _map + ' WHERE uid=' + id : 'UPDATE ' + table + ' SET ' + _map + ' WHERE id=' + id;
+    console.log('Update ORM: ', sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err) {
         if (err) return reject();

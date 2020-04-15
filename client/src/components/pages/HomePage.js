@@ -21,9 +21,9 @@ const HomePage = ({
 }) => {
   const state = {
     ui: {
-      es: ['Bienvenido, ','Hola, ','You\'re in:'],
-      en: ['Hello, ','Welcome back, ','Estas en:'],
-      bg: ['Добре дошъл, ','Здравей, ','Намираш се във:']
+      es: ['Bienvenido, ','Hola, ','You\'re in:','Admin','LAB','FAC','PoS','Courier','REP'],
+      en: ['Hello, ','Welcome back, ','Estas en:','Admin','LAB','FAC','PoS','Courier','REP'],
+      bg: ['Добре дошъл, ','Здравей, ','Намираш се във:','Admin','LAB','FAC','PoS','Куриер','REP']
     }
   }
 
@@ -67,9 +67,9 @@ const HomePage = ({
 
 {/* For ADMIN/LAB/FAC/DELIVERY only Interface: */}
         <Divider horizontal />
-        {isAuthorized && isAdmin &&
+        {isAuthorized && membership !==64 &&
           <div>
-            <Button as={Link} basic color='blue' to='/admin/home'>Hello, Admin!</Button>
+            <Button as={Link} disabled={!city} basic color='blue' to='/admin/home'>Hello, {state.ui[lan][3+Math.log2(membership)]}!</Button>
           </div>
         }
       </div>
@@ -86,7 +86,7 @@ const mapStateToProps = state => ({
   name: state.user.username,
   isAuthorized: !!state.user.token,
   new_user: state.user.new_user,
-  isAdmin: state.user.membership === 1
+  isAdmin: state.user.membership < 32
 })
 
 export default connect(mapStateToProps, { signUp,userInit,getLocalFacs,setInterface,getFacStore })(HomePage)

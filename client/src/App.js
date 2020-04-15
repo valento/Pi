@@ -42,7 +42,7 @@ const App = ({location,lan}) => {
       <AdminRoute location={location} path='/admin/location' exact lan={lan} component={Locations}/>
 {/* !!!! MAKE THIS ADMIN ROUTE !!!!! -------------------------------------------------------------------*/}
       {/*<AdminRoute location={location} path='/admin/home' exact lan={lan} component={AdminHome}/>*/}
-      <UserRoute location={location} path='/admin/home' exact lan={lan} component={AdminHome}/>
+      <AdminRoute location={location} path='/admin/home' exact lan={lan} component={AdminHome}/>
 {/* ------------ ----------- ---------- ---------- ---------- ---------- ----------- ----------- -------*/}
       <UserRoute location={location} path='/admin' exact lan={lan} component={AdminLogin}/>
 {/* ========= USER ================== */}

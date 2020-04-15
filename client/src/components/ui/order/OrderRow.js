@@ -20,8 +20,8 @@ const OrderRow = ({stat,empty,row,onDelete,ind,lan}) => {
               {!stat && <Icon name='eye' />}
             </div>
             <div className='six wide column nopad'>{row.name}</div>
-            <div className='three wide column nopad items'><Icon name='x' size='tiny' />{row.q}</div>
-            <div className='three wide column nopad'>{(parseFloat(row.price)*parseFloat(row.q)).toFixed(2)}</div>
+            <div className='three wide column nopad items'><Icon name='x' size='tiny' />{row.quant}</div>
+            <div className='three wide column nopad'>{(parseFloat(row.price)*parseFloat(row.quant)).toFixed(2)}</div>
             <div className='two wide column nopad'>
               {!stat && <span className='' basic onClick={() => onDelete(ind)}><Icon name='minus circle' /></span>}
             </div>

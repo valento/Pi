@@ -28,10 +28,30 @@ orderRouter.use(_bodyParser2.default.json());
 
 orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
   var uid = req.uid;
+  var _req$body$data = req.body.data,
+      user_location = _req$body$data.user_location,
+      delivery = _req$body$data.delivery,
+      fac_id = _req$body$data.fac_id,
+      total = _req$body$data.total,
+      cart = _req$body$data.cart;
+  //console.log(uid, req.body.data)
 
-  console.log(uid);
-  console.log(req.body);
-  res.status(200).json({ message: 'Order recieved' });
+  _api2.default.saveOne(Object.assign({}, { uid: uid }, { user_location: user_location, delivery: delivery, total: total, fac_id: fac_id }), 'orders').then(function (id) {
+    var details = cart.map(function (o) {
+      return { order_id: id, item: o.product, quant: o.quant };
+    });
+    _api2.default.saveMany(details, 'order_detail');
+  }).then(function () {
+    return _api2.default.updateOne({ id: uid, orders: 'orders+1' }, 'user');
+  }).then(function () {
+    return res.status(200).json({ message: 'Order recieved' });
+  }).catch(function (err) {
+    return res.status(500).json({ message: err });
+  });
+});
+
+orderRouter.get('/:fac', function (req, res, next) {
+  // Get Pending Orders:
 });
 
 exports.default = orderRouter;

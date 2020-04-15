@@ -11,15 +11,17 @@ const UserLocations = ({stat,view,lan,list,city,onLocation,current,disabled}) =>
     error: {
       en: ['No Delivery Service!','Your Location has no Delivery Service! Take your pizza from: '],
       es: ['Sin Domcilio!','Esta localidad no tiene servicio a Domicilio. Recibe su pizza a la dirección: '],
-      bg: ['Без доставки','Този район е без доставка! Вземи своята пица от: ']
+      bg: ['Без доставки!','Районът е без доставки! Вземи своята поръчка от: ']
     }
   }
   return (
     <div className={(!list || list.length === 0)? 'order-list empty' : 'order-list'}>
+  {/* No Delivery Message:*/}
       {disabled && <Message negative>
         <Message.Header>{ui.error[lan][0]}</Message.Header>
         <p>{ui.error[lan][1]}</p>
       </Message>}
+  {/*Check if User has Locations:*/}
       {(!disabled && (!list || list.length === 0)) ?
         <div>
           <div>{ui[lan][0]}</div><br/>

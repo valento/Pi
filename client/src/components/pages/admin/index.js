@@ -14,9 +14,9 @@ class AdminHome extends React.Component {
     mView: '',
     sView: '',
     ui: {
-      en: ['Wellcome to Admin Home'],
-      es: ['Administrar'],
-      bg: ['Администрация'],
+      en: ['Admin Home','LAB Admin.','FAC Admin.'],
+      es: ['Admin Home','LAB Admin.','FAC Admin.'],
+      bg: ['Администрация','LAB Админ.','FAC Админ.'],
     }
   }
 
@@ -37,11 +37,12 @@ class AdminHome extends React.Component {
   }
 
   componentDidMount() {
-    if(this.props.city){ this.props.getLocations('street',this.props.city) }
+    const {city,getLocations} = this.props
+    if(city){ getLocations('street',city) }
   }
 
   render() {
-    const {lan,city} = this.props
+    const {lan,city,membership} = this.props
     const { main,indx,sView,mView } = this.state
     const ui = this.state.ui[lan]
 // translation props:
@@ -53,9 +54,9 @@ class AdminHome extends React.Component {
       <div className='App-content padded Admin-Page'>
         <h2>{ui[0]}</h2>
       <div className='menu-bar carrousel move' style={trans}>
-        <MainMenu disabled={!main} lan={lan} onMenu={this.onMainMenu} />
+        <MainMenu lan={lan} member={membership} onMenu={this.onMainMenu} />
         <Divider horizontal />
-        {!main && <SubMenu subset={mView} lan={lan} onMenu={this.onSubMenu} />}
+        {!main && <SubMenu member={membership} subset={mView} lan={lan} onMenu={this.onSubMenu} />}
       </div>
       {/*
 =========================
@@ -73,7 +74,8 @@ class AdminHome extends React.Component {
 
 const mapStateToProps = state => ({
   city: state.settings.city,
-  cities: state.settings.cities
+  cities: state.settings.cities,
+  membership: state.user.membership
 })
 
 export default connect(mapStateToProps,{ getLocations })(AdminHome)

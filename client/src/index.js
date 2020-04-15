@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import 'semantic-ui-css/semantic.min.css'
+
 import './App.css'
 import RootReducer from './RootReducer'
 import { setUI,getProductList } from './actions/settup'
@@ -13,6 +14,7 @@ import { userInit,getLocalFacs } from './actions/user'
 import setAuthHeader from './utils/setAuthHeader'
 import setLanHeader from './utils/setLanHeader'
 import App from './App'
+import { subscribeSocket,fireSocket } from './websocket'
 //import * as serviceWorker from './serviceWorker'
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const initState = {
@@ -36,6 +38,7 @@ const store = createStore(
 window.GS = store
 
 if(localStorage.valePizzaJWT){
+
   let user = {}
   user.new_user = false
   user.token = localStorage.valePizzaJWT
@@ -47,6 +50,7 @@ if(localStorage.valePizzaJWT){
 // If Credentials OK:
   store.dispatch(userInit())
     .then( locations => {
+      fireSocket(null,{message: 'User Initiatetd'})
       if(!locations) return
 //   get all user saved locations
       let loc = locations.map( l => {

@@ -41,10 +41,11 @@ class UserPage extends React.Component {
   render() {
     const {lan,locations,city,fac} = this.props
     const ui = this.state.ui[lan]
+    let listLocations = locations ? locations.filter( l => l.city===city ) : []
     return (
       <div className='App-content topped padded'>
         <Divider horizontal>{ui[0]}</Divider>
-        <UserLocations disabled={fac.delivery === 4} view='list' stat={false} list={locations.filter( l => l.city===city )} lan={lan} />
+        <UserLocations disabled={fac.delivery === 4} view='list' stat={false} list={listLocations} lan={lan} />
         <Divider horizontal>&#9675;</Divider>
         <div className='row centered menu-bar'>
           <Button.Group color='grey' widths='2'>
@@ -62,7 +63,8 @@ UserPage.propType = {
   city: PropType.number.isRequired,
   facs: PropType.shape({
     delivery: PropType.number.isRequired
-  }).isRequired
+  }).isRequired,
+  locations: PropType.array.isRequired
 }
 
 const mapStateToProps = state => ({

@@ -135,11 +135,37 @@ authRouter.post('/', function (req, res, next) {
                 console.log('authRouter:', id);
                 // Generate Token for localStorage:
                 token = _jsonwebtoken2.default.sign({ email: email, uid: id }, process.env.JWT_SECRET, jwtOptions);
-                user = Object.assign({}, { token: token, new_user: true });
-                res.status(200).json({ user: user });
+                try {
+                  _user2.default.getOne({ email: email }, 'user', scope).then(function (results) {
+                    if (results.length === 0) return res.status(401).json({ error: { message: 'User Not Found' } });
+
+                    var _results$2 = results[0],
+                        uid = _results$2.uid,
+                        username = _results$2.username,
+                        userlast = _results$2.userlast,
+                        verified = _results$2.verified,
+                        orders = _results$2.orders,
+                        credit = _results$2.credit,
+                        gender = _results$2.gender,
+                        bday = _results$2.bday,
+                        membership = _results$2.membership,
+                        language = _results$2.language,
+                        status = _results$2.status,
+                        rest = _objectWithoutProperties(_results$2, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
+
+                    user = Object.assign({}, { token: token, new_user: true }, {
+                      uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,
+                      gender: gender, bday: bday, membership: membership, language: language, status: status
+                    });
+
+                    res.status(200).json({ user: user });
+                  });
+                } catch (err) {
+                  res.status(500).json({ error: { message: err } });
+                }
               });
             } catch (err) {
-              res.status(500).json(err);
+              res.status(500).json({ error: { message: err } });
             }
           }
         });

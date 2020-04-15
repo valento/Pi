@@ -19,7 +19,7 @@ let PORT = process.env.PORT || 8080
 let ENV = process.env.NODE_ENV || 'development'
 let CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0
 
-let SockServer = require('websocket').server
+let WS = require('websocket').server
 
 app.use('/static', express.static(path.join(__dirname, '../client/build/static')) )
 app.use('/img', express.static(path.join(__dirname, '../client/build/img')) )
@@ -30,7 +30,7 @@ app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/admin', adminRouter)
 app.use('/products',productRouter)
-app.use('/order',orderRouter)
+app.use('/orders',orderRouter)
 
 // ========================================================
 
@@ -88,7 +88,7 @@ const options = {
   key: fs.readFileSync(__dirname + '/ssl/server.key'),
   cert:fs.readFileSync(__dirname + '/ssl/server.srt'),
 }
-//const server = spdy.createServer(options,app).listen(PORT, error => {
+//let server = spdy.createServer(options,app).listen(PORT, error => {
 //  if(error){
 //    console.log(error)
 //    return process.exit(1)
@@ -96,16 +96,22 @@ const options = {
 //    console.log('H2 running on: ', PORT)
 //  }
 //})
-// # WebSocket-Node Serer #
-let wsServer = new SockServer({
+
+// # WebSocket-Node Server #
+let wss = new WS({
   httpServer: server
 })
 // WebSocketServer Class:
-wsServer.on('request', request => {
+wss.on('request', request => {
 // request is webSocketRequest Object
 // .accept returns webSocketConnection Instance
-  let connection = request.accept(null,request.origin)
+  let connection = request.accept('echo-protocol', request.origin)
+
   connection.on('message', message => {
     console.log('Socket: ',request.origin, message)
   })
+})
+
+wss.on('connect', socket => {
+  console.log('Connection created at: ', new Date())
 })

@@ -38,7 +38,11 @@ export default class AddLocationForm extends React.Component {
       data:{},
       bg:'',
       lat:'',
-      code:''
+      code:'',
+      locate: false,
+      msgClosed: true,
+      message:'',
+      number: ''
     })
   }
 
@@ -150,6 +154,7 @@ export default class AddLocationForm extends React.Component {
                 </div>
               </div>
             }
+
 {/* ==== ADD STREET: =====================================*/}
             {!locate && city &&
               <div className='row centered'>
@@ -173,6 +178,7 @@ export default class AddLocationForm extends React.Component {
                     type='submit'
                     content={ui[12]}
                   />
+                // Or add new location number:
                   <Divider horizontal content='or' />
                   <Button fluid
                     content={ui[11]}

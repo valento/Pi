@@ -11,9 +11,22 @@ orderRouter.use(bodyParser.json())
 
 orderRouter.post('/', getUserId, (req,res,next) => {
   const {uid} = req
-  console.log(uid)
-  console.log(req.body)
-  res.status(200).json({message: 'Order recieved'})
+  const {user_location,delivery,fac_id,total,cart} = req.body.data
+  //console.log(uid, req.body.data)
+  api.saveOne(Object.assign({},{uid},{user_location,delivery,total,fac_id}),'orders')
+  .then( id => {
+    let details = cart.map( o => {
+      return {order_id: id, item: o.product, quant: o.quant}
+    })
+    api.saveMany(details,'order_detail')
+  })
+  .then( () => api.updateOne({id: uid, orders:'orders+1'},'user') )
+  .then( () => res.status(200).json({message: 'Order recieved'}) )
+  .catch( err => res.status(500).json({message: err}) )
+})
+
+orderRouter.get('/:fac', (req,res,next) => {
+  // Get Pending Orders:
 })
 
 export default orderRouter

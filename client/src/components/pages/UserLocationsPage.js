@@ -112,8 +112,10 @@ bg: ['Адрес за доставка','Твоята улица във, ','Но
   onSubmit = e => {
     if(!this.state.locate || this.state.rep ){
       e.preventDefault()
+// update local state
       this.saveLocation()
     } else {
+// API:POST
       this.submitLocation()
       // navigate to /user
     }

@@ -83,11 +83,29 @@ authRouter.post('/', (req,res,next) => {
               console.log('authRouter:',id)
   // Generate Token for localStorage:
               token = jwt.sign({email:email,uid:id},process.env.JWT_SECRET,jwtOptions)
-              user = Object.assign({},{token: token, new_user: true})
-              res.status(200).json({user})
+              try {
+                api.getOne({ email: email },'user',scope)
+                .then( results => {
+                  if(results.length === 0) return res.status(401).json({error: {message: 'User Not Found'}})
+                  const {
+                    uid,username,userlast,verified,orders,credit,
+                    gender,bday,membership,language,status,...rest
+                  } = results[0]
+
+                  user = Object.assign({},{token: token, new_user: true},{
+                    uid,username,userlast,verified,orders,credit,
+                    gender,bday,membership,language,status
+                  })
+
+                  res.status(200).json({user})
+                })
+              } catch(err) {
+                res.status(500).json({ error: { message: err }})
+              }
+
             })
           } catch(err) {
-            res.status(500).json(err)
+            res.status(500).json({ error: { message: err }})
           }
       }})
     }

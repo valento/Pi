@@ -93,6 +93,21 @@ console.log(results)
       })
     })
   },
+  saveMany: (data=[],table) => {
+    let _keys = Object.keys(data[0])
+    let params = data.map( i => {
+      let v = Object.values(i)
+      return v
+    })
+    const sql = `INSERT INTO ${table} (${_keys}) VALUES ?`
+console.log(sql,[params])
+    return new Promise( (resolve,reject) => {
+      db.query(sql, [params], err => {
+        if (err) return reject(err)
+        resolve()
+      })
+    })
+  },
   saveOne: (data={},table) => {
     let _keys = Object.keys(data), _values = []
     let params = Object.values(data).map( v => {
@@ -103,7 +118,7 @@ console.log(results)
 console.log(sql,params)
     return new Promise( (resolve,reject) => {
       db.query(sql, params, (err,result) => {
-        if (err) return reject()
+        if (err) return reject(err)
         resolve(result.insertId)
       })
     })
@@ -147,8 +162,9 @@ console.log(sql,params)
       }
 
     })
-    const sql =`UPDATE ${table} SET ${_map} WHERE id=${id}`
-console.log('ORM: ',sql)
+    const sql = table==='user'? `UPDATE ${table} SET ${_map} WHERE uid=${id}` :
+    `UPDATE ${table} SET ${_map} WHERE id=${id}`
+console.log('Update ORM: ',sql)
     return new Promise( (resolve,reject) => {
       db.query(sql, err => {
         if (err) return reject()

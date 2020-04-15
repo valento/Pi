@@ -49,12 +49,8 @@ exports.default = {
     console.log('Auth Insert: ', sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, result) {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          resolve(result.insertId);
-        }
+        if (err) return reject(err);
+        resolve(result.insertId);
       });
     });
   },
@@ -66,13 +62,9 @@ exports.default = {
 
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
-        if (!err) {
-          //if(results[0].c_status !== 4) return reject({ error: { message: 'User Account is canceled' }})
-          resolve(results);
-        } else {
-          console.log('API CheckOne User: ', err);
-          reject(err);
-        }
+        if (err) return reject(err);
+        resolve(results);
+        console.log('API CheckOne User: ', err);
       });
     });
   },
@@ -82,11 +74,8 @@ exports.default = {
     var sql = 'UPDATE user SET verified=1 WHERE email=\'' + email + '\'';
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, rows) {
-        if (!err) {
-          resolve(rows);
-        } else {
-          reject(err);
-        }
+        if (err) return reject(err);
+        resolve(rows);
       });
     });
   },
@@ -110,12 +99,8 @@ exports.default = {
     }
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
-
-        if (!err) {
-          resolve(results);
-        } else {
-          reject(err);
-        }
+        if (err) return reject(err);
+        resolve(results);
       });
     });
   },
@@ -134,7 +119,7 @@ exports.default = {
     var sql = 'INSERT INTO ' + table + ' (' + _keys + ') VALUES (' + _values + ')';
     return new Promise(function (resolve, reject) {
       db.query(sql, params, function (err, result) {
-        if (err) return reject();
+        if (err) return reject(err);
         resolve(result.insertId);
       });
     });
@@ -158,7 +143,7 @@ exports.default = {
     var sql = 'UPDATE ' + table + ' SET ' + _map + ' WHERE id=' + id;
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err) {
-        if (err) return reject();
+        if (err) return reject(err);
         resolve();
       });
     });

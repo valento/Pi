@@ -62,7 +62,7 @@ var PORT = process.env.PORT || 8080;
 var ENV = process.env.NODE_ENV || 'development';
 var CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0;
 
-var SockServer = require('websocket').server;
+var WS = require('websocket').server;
 
 app.use('/static', _express2.default.static(_path2.default.join(__dirname, '../client/build/static')));
 app.use('/img', _express2.default.static(_path2.default.join(__dirname, '../client/build/img')));
@@ -73,7 +73,7 @@ app.use('/auth', _auth2.default);
 app.use('/user', _user2.default);
 app.use('/admin', _admin2.default);
 app.use('/products', _product2.default);
-app.use('/order', _order2.default);
+app.use('/orders', _order2.default);
 
 // ========================================================
 
@@ -134,7 +134,7 @@ var server = app.listen(PORT, function () {
 var options = {
   key: _fs2.default.readFileSync(__dirname + '/ssl/server.key'),
   cert: _fs2.default.readFileSync(__dirname + '/ssl/server.srt')
-  //const server = spdy.createServer(options,app).listen(PORT, error => {
+  //let server = spdy.createServer(options,app).listen(PORT, error => {
   //  if(error){
   //    console.log(error)
   //    return process.exit(1)
@@ -142,17 +142,23 @@ var options = {
   //    console.log('H2 running on: ', PORT)
   //  }
   //})
-  // # WebSocket-Node Serer #
-};var wsServer = new SockServer({
+
+  // # WebSocket-Node Server #
+};var wss = new WS({
   httpServer: server
 });
 // WebSocketServer Class:
-wsServer.on('request', function (request) {
+wss.on('request', function (request) {
   // request is webSocketRequest Object
   // .accept returns webSocketConnection Instance
-  var connection = request.accept(null, request.origin);
+  var connection = request.accept('echo-protocol', request.origin);
+
   connection.on('message', function (message) {
     console.log('Socket: ', request.origin, message);
   });
+});
+
+wss.on('connect', function (socket) {
+  console.log('Connection created at: ', new Date());
 });
 //# sourceMappingURL=index.js.map
