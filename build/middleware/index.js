@@ -11,6 +11,7 @@ var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var mediator = void 0;
 var getUser = exports.getUser = function getUser(req, res, next) {
   var token = req.get('Authorization');
   try {

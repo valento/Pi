@@ -54,6 +54,8 @@ var _api2 = _interopRequireDefault(_api);
 
 var _middleware = require('./middleware/');
 
+var _events = require('events');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _dotenv2.default.config({ silent: true });
@@ -62,16 +64,38 @@ var PORT = process.env.PORT || 8080;
 var ENV = process.env.NODE_ENV || 'development';
 var CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0;
 
+// Initiate WEB SOCKET:
 var WS = require('websocket').server;
+var WSR = require('websocket').router;
+// WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
+var uconn = [],
+    rconn = [],
+    dconn = [],
+    pconn = [],
+    bconn = [],
+    fconn = [],
+    lconn = [],
+    rootconn = [];
+// WS protocols:
+var prtc = ['root', 'lab', 'fac', 'baker', 'pos', 'dlv', 'test', 'rep', 'customer'];
+
+// Instantiate EVENT EMITTER:
+var mediator = new _events.EventEmitter();
+mediator.on('baker.login', function () {
+  console.log('Baker Here!');
+});
 
 app.use('/static', _express2.default.static(_path2.default.join(__dirname, '../client/build/static')));
 app.use('/img', _express2.default.static(_path2.default.join(__dirname, '../client/build/img')));
 if (ENV === 'production') app.use(_express2.default.static(_path2.default.join(__dirname, '../client/build')));
 
-// == ROUTES ==============================================
+// == ROUTES & ROUTERS =====================================
 app.use('/auth', _auth2.default);
 app.use('/user', _user2.default);
-app.use('/admin', _admin2.default);
+app.use('/admin', function (req, res, next) {
+  req.mediator = mediator;
+  next();
+}, _admin2.default);
 app.use('/products', _product2.default);
 app.use('/orders', _order2.default);
 
@@ -143,22 +167,85 @@ var options = {
   //  }
   //})
 
+  // ==========================================================================
+
   // # WebSocket-Node Server #
-};var wss = new WS({
+};var wsServer = new WS({
   httpServer: server
 });
-// WebSocketServer Class:
-wss.on('request', function (request) {
-  // request is webSocketRequest Object
-  // .accept returns webSocketConnection Instance
-  var connection = request.accept('echo-protocol', request.origin);
+var wsrouter = new WSR();
+wsrouter.attachServer(wsServer);
 
-  connection.on('message', function (message) {
-    console.log('Socket: ', request.origin, message);
+wsrouter.mount('*', 'baker-protocol', function (request) {
+  // get WS.Connection
+  var connection = request.accept(request.origin);
+  var id = request.resourceURL.query.id;
+
+  connection.ID = Number(id);
+  connection.on('message', function (msg) {
+    var _JSON$parse = JSON.parse(msg.utf8Data),
+        user = _JSON$parse.user,
+        fac = _JSON$parse.fac,
+        role = _JSON$parse.role;
+
+    console.log('Connected Bakers: ', bconn.length);
+    // bconn.find( c => c.id===fac.id ).sendUTF(`Message from User: ${user}, recieved`)
+    //connection.sendUTF(`Message from Baker: ${user}, recieved`)
   });
+  // Store baker-Connections:
+  var baker = bconn.find(function (c) {
+    return c.ID === Number(id);
+  });
+  if (!baker) bconn.push(connection);
 });
 
-wss.on('connect', function (socket) {
+wsrouter.mount('*', 'customer-protocol', function (request) {
+  // get WS.Connection:
+  var connection = request.accept(request.origin);
+  var id = request.resourceURL.query.id;
+
+  connection.ID = Number(id);
+
+  connection.on('message', function (msg) {
+    var _JSON$parse2 = JSON.parse(msg.utf8Data),
+        user = _JSON$parse2.user,
+        fac = _JSON$parse2.fac,
+        role = _JSON$parse2.role;
+
+    var c = uconn.indexOf(connection);
+    console.log('Customers online: ' + uconn.length);
+    //bconn.forEach( c => {
+    //  if(c.id===Number(fac)) {
+    //uconn[0].conn.sendUTF(`Message from User: ${user}, recieved`)
+    //  }
+    //})
+    //connection.sendUTF(`Message from User: ${user}, recieved`)
+  });
+  connection.on('close', function (reasonCode, description) {
+    var c = uconn.indexOf(connection);
+    connection.sendUTF('Connection closed!', uconn.length);
+    uconn.splice(c, 1);
+  });
+  // Store customer-connections:
+  var user = uconn.find(function (c) {
+    return c.ID === Number(id);
+  });
+  if (!user) uconn.push(connection);
+});
+
+// WebSocketServer Class:
+//wsServer.on('request', request => {
+//// request is webSocketRequest Object
+//// .accept returns webSocketConnection Instance
+//  let bakerCon = request.accept('baker-protocol', request.origin)
+//
+//})
+
+wsServer.on('connect', function (socket) {
   console.log('Connection created at: ', new Date());
+});
+
+wsServer.on('close', function (conn, reason, dsc) {
+  console.log('Connection closed at: ', conn.ID);
 });
 //# sourceMappingURL=index.js.map

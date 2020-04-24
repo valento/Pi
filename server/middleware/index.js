@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken'
 
+
+let mediator
 export const getUser = (req,res,next) => {
   const token = req.get('Authorization')
   try {

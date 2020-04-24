@@ -14,8 +14,11 @@ let authRouter = express.Router({
 authRouter.use(bodyParser.json())
 
 authRouter.post('/', (req,res,next) => {
-  let new_user = true, user, token, confirmToken, pass
+  let new_user = true, user, username, token, confirmToken, pass
   const { email } = req.body.credentials
+  const tester = email.split('.')[0]==='tester' ? true : false
+  const [ t,...rest ] = email.split('@')[0].split('.')
+  if(tester) { username = rest.join('.') }
   const jwtOptions = { expiresIn: '240d' }
   const scope = [
     'username','userlast','uid','verified','orders','credit',
@@ -72,16 +75,17 @@ authRouter.post('/', (req,res,next) => {
         length: 8,
         numbers: true
       })
+      let u = tester ? {username: rest.join('.'),membership: 64} : {}
 // encrypt password and save it to DB:
       bcrypt.hash(pass, 8, (err,hash) => {
         if(!err){
           try {
-            api.signup({email:email,password:hash,token:confirmToken})
+            api.signup(Object.assign({email:email,password:hash,token:confirmToken},u))
             .then( id => {
   // Send mail to User with confirmToken:
               sendConfirmMail(email,confirmToken)
               console.log('authRouter:',id)
-  // Generate Token for localStorage:
+  // Generate Access User Token for localStorage:
               token = jwt.sign({email:email,uid:id},process.env.JWT_SECRET,jwtOptions)
               try {
                 api.getOne({ email: email },'user',scope)

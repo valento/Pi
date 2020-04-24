@@ -36,19 +36,29 @@ var db = _mysql2.default.createConnection(options);
 exports.default = {
 
   signup: function signup(data) {
-    var sql = '';
+    var sql = void 0;
     var email = data.email,
         password = data.password,
         token = data.token;
 
+
+    var _keys = Object.keys(data),
+        _values = [];
+    var params = Object.values(data).map(function (v) {
+      _values.push('?');
+      return v;
+    });
+    //const sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
+
     if (email === 'valentin.mundrov@gmail.com') {
       sql = 'INSERT INTO user (email,password,token,membership) VALUES(\'' + email + '\',\'' + password + '\',\'' + token + '\',1)';
     } else {
-      sql = 'INSERT INTO user (email,password,token) VALUES(\'' + email + '\',\'' + password + '\',\'' + token + '\');';
+      sql = 'INSERT INTO user (' + _keys + ') VALUES (' + _values + ')';
+      //`INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
     }
     console.log('Auth Insert: ', sql);
     return new Promise(function (resolve, reject) {
-      db.query(sql, function (err, result) {
+      db.query(sql, params, function (err, result) {
         if (err) return reject(err);
         resolve(result.insertId);
       });
@@ -59,7 +69,7 @@ exports.default = {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '*';
 
     var sql = 'SELECT ' + scope + ' FROM user WHERE email=\'' + email + '\' AND c_status=4';
-
+    console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (err) return reject(err);
@@ -153,12 +163,13 @@ exports.default = {
   // Get ever FAC with all products in FACs STORE
   getFac: function getFac(city) {
     //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
-    var sql = 'SELECT\n      f.*,\n      s.product,s.local_promo,s.local_price,\n      s.on_hand,s.take_only\n      FROM fac f\n      JOIN store s ON f.id=s.fac AND s.on_hand>0\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
+    var sql = 'SELECT\n      f.*,\n      s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,\n      st.name AS street,\n      l.number\n      FROM fac f\n      JOIN store s ON s.fac=f.id AND s.on_hand>0\n      JOIN location l ON l.id=f.location_id\n      JOIN street st ON st.id=l.street_id\n      WHERE f.city=' + city + ' AND f.prime=1\n      AND f.status=7';
 
+    console.log('Get FACs: ', sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (err) return reject(err);
-        console.log('Get this FAC store: ', results[0]);
+        //console.log('Get this FAC store: ', results[0])
         resolve(results);
       });
     });

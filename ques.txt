@@ -45,7 +45,7 @@ INSERT INTO city (name,alt,code,zone,c_status) VALUES
 ('{"en": "Sofia-Ivan Vazov","bg":"София-Иван Вазов","es":"Sofia-Ivan Vazov"}',1408,10,4),
 ('{"en": "Sofia-Lagera","bg":"София-Лагера","es":"Sofia-Lagera"}',1612,11,4),
 ('{"en": "Sofia-Lozenets(Borisova Grad.)","bg":"София-Лозенец(Борисова г-на)","es":"Sofia-Lozenets(Borisova Grad.)"}',1164,11,4),
-('{"en": "St.Zagora-Zhabkite","bg":"Стара Загора-Жабките","es":"St.Zagora-Zhabkite"}',6000,61,4);
+('{"en": "Stara Zagora-Zhabkite","bg":"Стара Загора-Жабките","es":"Stara Zagora-Zhabkite"}';
 ;
 
 # LAT-LONG = street direction (long:E/W or lat:N/S)
@@ -71,7 +71,8 @@ INSERT INTO street (name,city) VALUES
 ('{"bg": "Хад. Димитър Асенов", "en": "Hadzhi Dimitar Asenov", "es": "Hadzhi Dimitar Asenov"}',3),
 ('{"bg": "Боруйград", "en": "Boruygrad", "es": "Boruygrad"}',3),
 ('{"bg": "Железни врата", "en": "Zhelezni vrata", "es": "Zhelezni vrata"}',3),
-('{"bg": "Сава Силов", "en": "Sava Silov", "es": "Sava Silov"}',3)
+('{"bg": "Сава Силов", "en": "Sava Silov", "es": "Sava Silov"}',3),
+('{"bg": "Розова долина", "en": "Rozova dolina", "es": "Rozova dolina"}',5);
 
 ('{"bg":"Цветна градина", "en": "Tsvetna gradina", "es": "Tsvetna gradina"}',1)
 
@@ -148,7 +149,8 @@ AND s.id=l.street_id;
 
 # ---------------------------------------------------------
 # === USERS ===============================================
-# user.membership = [root,lab,fac,pos,dlvr,rep,customer]
+# ------------------- 1 - 2 -- 4 -- 8 - 16 - 32 - 64 - 128 -- 256
+# user.membership = [root,lab,fac,baker,pos,dlv,tester,rep,customer]
 # user.orders = orders counter
 
 CREATE TABLE user (
@@ -236,7 +238,7 @@ INSERT INTO lab (city,name,mobile,status) VALUES (1,'FirstLab',877323598,7);
 # fac.checkin = FAC is set to open (baker is in)
 # fac.open = FAC is public
 # fac.delivery = [all,to-door,to-take]
-# fac.pod = FAC is PoD or PoD is apart
+# fac.pod = FAC is PoD=true or PoD is apart=false
 
 CREATE TABLE fac (
 id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
@@ -249,7 +251,7 @@ name TEXT,
 delivery TINYINT(2) DEFAULT 4,
 mobile INT NOT NULL,
 location_id INT NOT NULL,
-pod INT(1) DEFAULT 1,
+pod INT DEFAULT 0,
 status INT NOT NULL DEFAULT 33,
 open TINYINT(1),
 checkin TINYINT(1) DEFAULT 0,
@@ -269,12 +271,13 @@ c_group TINYINT(2) unsigned NOT NULL DEFAULT 4,
 c_permis INT unsigned NOT NULL DEFAULT 464,
 FOREIGN KEY (uid) REFERENCES user(uid) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (lab) REFERENCES lab(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (pod) REFERENCES pod(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO fac (name,bulstat,open,status,mobile,city,location_id,delivery,lab)
-VALUES ('FACtory',205873583,1,7,888378946,1,1,1,1);
+INSERT INTO fac (name,bulstat,open,status,mobile,city,delivery,lab)
+VALUES ('FACtory',205873583,1,7,888378946,5,0,1);
 
 464 = 111 010 000
 
@@ -340,12 +343,15 @@ user_id INT NOT NULL,
 prime TINYINT(1) DEFAULT 0,
 retail_price DECIMAL(4,2) DEFAULT 0,
 location INT NOT NULL,
-open_time TIME DEFAULT('10:0:0'),
-close_time TIME DEFAULT('23:0:0'),
-holyday_start TIME DEFAULT('10:0:0'),
-holyday_end TIME DEFAULT('23:0:0'),
+work_open TIME DEFAULT '11:0:0',
+work_close TIME DEFAULT '23:0:0',
+sat_open TIME DEFAULT '11:0:0',
+sat_close TIME DEFAULT '23:0:0',
+sun_open TIME DEFAULT '11:0:0',
+sun_close TIME DEFAULT '23:0:0',
 vacation_start DATE DEFAULT NULL,
 vacation_end DATE DEFAULT NULL,
+rating INT DEFAULT 0,
 status INT(1) DEFAULT 1,
 c_status TINYINT unsigned DEFAULT 4,
 c_owner TINYINT unsigned NOT NULL DEFAULT 2,
@@ -371,9 +377,9 @@ where fl.location in (4)
 # product.SUPPLIER = (lab,fac,other)
 # product.ALT = (music,tv,football,politics,...)
 # product.TYPE = (commerce,component,row)
-# product.CATEGORY = (pizza,p2,sauce,soft,alch,dessert,salad,pasta,other)
+# product.CATEGORY = (pizza,p2,soft,alch,sauce,dessert,salad,pasta,other)
 # product.KLASS = (basic,premium,roman,new)
-# product.COMBO = (true/false) - product is combo related: offer some combo
+# product.COMBO = (true/false) - product is combo related: search in 'combo' table
 # product.SIZE = (personal,big,family...)
 # product.PROD_TIME = time to produce in minutes
 
@@ -391,7 +397,6 @@ size INT NOT NULL DEFAULT 1,
 category INT NOT NULL DEFAULT 1,
 type INT DEFAULT 1,
 klass INT DEFAULT 1,
-combo INT(1) DEFAULT 0,
 prod_time INT DEFAULT 6,
 supplier INT DEFAULT 2,
 c_status TINYINT unsigned DEFAULT 4,
@@ -401,194 +406,91 @@ c_permis INT unsigned DEFAULT 457,
 FOREIGN KEY (promo) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
-('{"bg":"Маргерита","en":"Margherita","es":"Margherita"}',
-7.80,4,1,1,1,1,
-'{"bg":"прясна моцарела, доматен сос, пресен босилек (спанак), риган, зехтин",
-"en":"fresh mozzarella, tomato sauce, basil (spinach), oregano, olive oil",
-"es":"mozzarella fresca, salsa de tomato, basilico (espinaca), oregano, aceite de oliva"}'
-),
-('{"bg":"Болонезе","en":"Bolognese","es":"Bolognese"}',
-8.70,4,1,1,1,2,
-'{"bg":"кайма, моцарела, доматен сос, гъби, зелени чушлета",
-"en":"ground meat, cheese, tomato sauce, mushrooms, chili pepper",
-"es":"carne molida, queso, salsa de tomato, champiñones, jalapeño"}'
-),
-('{"bg":"Пеперони","en":"Pepperoni","es":"Pepperoni"}',
-8.70,4,1,1,1,5,
-'{"bg":"пеперони, моцарела, доматен сос",
-"en":"pepperoni, cheese, tomato sauce",
-"es":"pepperoni, queso, salsa de tomato"}'
-),
-('{"bg":"4 Сирена","en":"Four Cheese","es":"Cuatro Quesos"}',
-9.90,4,1,1,1,6,
-'{"bg":"моцарела, доматен сос, сирена: синьо, пармезан, бяло; риган, зехтин",
-"en":"mozzarella, tomato sauce, cheese: blue, parmesan, balkan; oregano, olive oil",
-"es":"mozzarella, salsa de tomato, queso: gorgonzola, parmesan, blanco; oregano, aceite de oliva"}'
-),
-('{"bg":"Прошуто","en":"Prosciutto","es":"Prosciutto"}',
-9.90,4,1,1,1,3,
-'{"bg":"моцарела, доматен сос, прошуто крудо, рукола, зехтин",
-"en":"mozzarella, tomato sauce, prosciutto crudo, ruccola, olive oil",
-"es":"mozzarella, salsa de tomato, prosciuto crudo, ruccola, aceite de oliva"}'
-),
-('{"bg":"Поло","en":"Chicken","es":"Pollo"}',
-8.70,4,1,1,1,7,
-'{"bg":"моцарела, доматен сос, пиле, гъби, кисели краставички",
-"en":"mozzarella, tomato sauce, chicken, mushrooms, pickles",
-"es":"mozzarella, salsa de tomate, pollo, champinones, pepinillos"}'
-),
-('{"bg":"Капричоза","en":"Capricciosa","es":"Capricciosa"}',
-9.90,4,1,1,1,8,
-'{"bg":"моцарела, доматен сос, бекон, артишок, лук, маслини",
-"en":"mozzarella, tomato sauce, becon, artichoke, onion, olives",
-"es":"mozzarella, salsa de tomate, becon, alcachofa"}'
-),
-('{"bg":"Вегетариана","en":"Vegetarian","es":"Vegetariana"}',
-9.90,4,1,1,1,9,
-'{"bg":"броколи, моцарела, доматен сос, зелени маслини, тиквички, патладжан, чушки",
-"en":"broccoli, mozzarella, tomato sauce, green olives, zucchini, eggplant, red bell peper",
-"es":"broccoli, mozzarella, salasa de tomate, aceitunas verdes, calavaza, verengena, pimiento"}'
-);
-
-# ----- DRINKS ------------------------------
-
-INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
-('{"bg":"Кока-Кола, 1л","en":"Coca-Cola, 1L","es":"Coca-Cola, 1L"}',
-2.90,4,1,1,3,30,
-'{"bg":"1 литър",
-"en":"1 Litre",
-"es":"1 Litre"}'
-),
-('{"bg":"Кока-Кола, 330","en":"Coca-Cola, 330","es":"Coca-Cola, 330"}',
-2.90,4,1,1,3,31,
-'{"bg":"кутия, 330 млтр.",
-"en":"can, 330 ml",
-"es":"can, 330 ml"}'
-),
-('{"bg":"Оранж, 330","en":"Orange, 330","es":"Orange, 330"}',
-2.90,4,1,1,3,32,
-'{"bg":"кутия, 330 млтр.",
-"en":"can, 330 ml",
-"es":"can, 330 ml"}'
-),
-('{"bg":"Оранж, 1л","en":"Orange, 1L","es":"Orange, 1L"}',
-2.90,4,1,1,3,33,
-'{"bg":"1 Литър",
-"en":"1 Litre",
-"es":"1 Litre"}'
-),
-('{"bg":"Спрайт, 330","en":"Sprite, 330","es":"Sprite, 330"}',
-2.90,4,1,1,3,34,
-'{"bg":"кутия, 330 мл.",
-"en":"can, 330 ml.",
-"es":"can, 330 ml."}'
-),
-('{"bg":"Спрайт, 1л.","en":"Sprite, 1L","es":"Sprite, 1L"}',
-2.90,4,1,1,3,35,
-'{"bg":"кутия, 1 Литър",
-"en":"can, 1 Litre",
-"es":"can, 1 Litre"}'
-),
-
-# ----- SAUCE ------------------------------
-
-INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
-('{"bg":"Айоли(чеснов)","en":"Aioli","es":"Aioli"}',
-0.90,4,1,1,5,50,
-'{"bg":"чесън, яйце, зехтин",
-"en":"garlic, egg, olive oil",
-"es":"ajo, huevo, aceite de oliva"}'
-),
-('{"bg":"Чимичури(пикантен)","en":"Chimichurri","es":"Chimichurri"}',
-0.90,4,1,1,5,51,
-'{"bg":"халапеньо, червена чушка, балсамов оцет, домат, зехтин, кориандър",
-"en":"jalapeno, red pepper, balsamic, tomato, olive oil, coriander",
-"es":"jalapeno, pimenton rojo, balsamico, tomato, aceite de oliva, coriander"}'
-),
-('{"bg":"Гинес(топ сикрет)","en":"Guinness","es":"Guinness"}',
-0.90,4,1,1,5,52,
-'{"bg":"секретна рецепта на база тъмно пиво",
-"en":"secrete recepie on ale malted beer",
-"es":"salsa de ingredientes secretos con base de cerveza negra"}');
-
-# ----- BEER ------------------------------
-
-INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
-('{"bg":"Пиринско","en":"Pirinsko","es":"Pirinsko"}',
-2.90,4,1,1,4,40,
-'{"bg":"Лагер бира",
-"en":"lager beer",
-"es":"cerveza lager"}'),
-('{"bg":"Шуменско","en":"Shumensko","es":"Shumensko"}',
-2.90,4,1,1,4,41,
-'{"bg":"Лагер бира",
-"en":"lager beer",
-"es":"cerveza lager"}'),
-('{"bg":"Старопрамен","en":"Staropramen","es":"Staropramen"}',
-3.50,4,1,1,4,42,
-'{"bg":"Лагер бира",
-"en":"lager beer",
-"es":"cerveza lager"}'
-);
-
-# ----- PI2 ------------------------------
-
-INSERT INTO product (name,price,c_status,klass,type,category,list,descr) VALUES
-('{"bg":"Фокача Класик","en":"Focaccia","es":"Focaccia"}',
-3.60,4,1,1,2,20,
-'{"bg":"фокача хляб с кошер сол, риган и зехтин",
-"en":"focaccia bread with kosher salt, oregano and olive oil",
-"es":"focaccia pan con kosher sal, oregano y aceite de oilva"}'
-),
-('{"bg":"Фокача Маслини","en":"Focaccia Olives","es":"Focaccia Olives"}',
-3.90,4,1,1,2,21,
-'{"bg":"фокача хляб с кошер сол, риган, черни маслини и зехтин",
-"en":"focaccia bread with kosher salt, oregano, olives and olive oil",
-"es":"focaccia pan con kosher sal, oregano, aceitunas y aceite de oilva"}'
-);
-//
-
-
-
-UPDATE product SET descr='{"bg":"фокача хляб с кошер сол, риган и зехтин",
-"en":"focaccia bread with kosher salt, oregano and olive oil",
-"es":"focaccia pan con kosher sal, oregano y aceite de oilva"}' WHERE id=1;
-
-UPDATE product SET descr='{"bg":"мляно месо, сирене, доматен сос, гъби, зелени чушлета",
-"en":"ground meat, cheese, tomato sauce, mushrooms, chili pepper",
-"es":"carne molida, queso, salsa de tomato, champiñones, jalapeño"}' WHERE id=2;
-
-UPDATE product SET descr='{"bg":"моцарела сирене, доматен сос, пресен босилек(спанак), риган, зехтин",
-"en":"mozzarella cheese, tomato sauce, basil (spinach), oregano, olive oil",
-"es":"queso mozzarella, salsa de tomato, basilico(espinaca), oregano, aceite de oliva"}' WHERE id=4;
-
-UPDATE product SET descr='{"bg":"сирена: моцарела, пармиджиано, горгондзола, рикота; песто(спанак), зехтин",
-"en":"cheese: mozzarella, parmigiano, gorgonzola, ricotta; pesto(spinach), olive oil",
-"es":"quesos: mozzarella, parmigiano, gorgonzola, ricotta; pesto(espinaca), aceite de oliva"}' WHERE id=5;
-
 457 = 111 001 001
 
+----------- FROM GOOGLE SQL: --------------------------------------------------
+
+CREATE TABLE `product` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `list` int(11) DEFAULT NULL,
+  `name` json DEFAULT NULL,
+  `alt` json DEFAULT NULL,
+  `tag` json DEFAULT NULL,
+  `price` decimal(4,2) DEFAULT NULL,
+  `promo` int(11) DEFAULT NULL,
+  `descr` json DEFAULT NULL,
+  `props` json DEFAULT NULL,
+  `size` int(11) NOT NULL DEFAULT '1',
+  `category` int(11) NOT NULL DEFAULT '1',
+  `type` int(11) DEFAULT '1',
+  `klass` int(11) DEFAULT '1',
+  `prod_time` int(11) DEFAULT '6',
+  `supplier` int(11) DEFAULT '2',
+  `c_status` tinyint(3) unsigned DEFAULT '4',
+  `c_owner` int(10) unsigned NOT NULL DEFAULT '1',
+  `c_group` tinyint(2) NOT NULL DEFAULT '2',
+  `c_permis` int(10) unsigned DEFAULT '457',
+  PRIMARY KEY (`id`),
+
+-------------------------------------------------------------------------------
+
 # ==== PROMOs =============================================================
-# promo.type = fixed,percent,quantity,loyalty
+# promo.category = user,product,order,delivery
+# promo.scope = global,local
+# promo.type = discount, add
+# promo.percentage = true/false
 # promo.timed = true/false
 # promo.period = XX hours
 
 CREATE TABLE promo (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT UNIQUE,
-name TEXT,
+type TINYINT DEFAULT NULL,
+category TINYINT DEFAULT NULL,
+scope TINYINT DEFAULT NULL,
+name JSON,
 timed TINYINT(1) DEFAULT 0,
 init_date DATE,
 end_date DATE,
 period INT DEFAULT 0,
-type TINYINT DEFAULT NULL,
-number DECIMAL(2,1) NOT NULL,
-percentage INT DEFAULT NULL,
+number DECIMAL(4,1) NOT NULL,
+percent TINYINT(1) DEFAULT 0,
 c_status TINYINT unsigned DEFAULT 2,
 c_owner TINYINT unsigned NOT NULL DEFAULT 1,
 c_group TINYINT(2) NOT NULL DEFAULT 4,
-c_permis INT unsigned DEFAULT 457
+c_permis INT unsigned DEFAULT 414
 );
+
+INSERT INTO promo (scope,category,type,number,name) VALUES (1,2,2,1,'{"bg":"Пица гратис","en":"Free Pizza","es":"Pizza gratis"}');
+
+INSERT INTO combo (price,cat1,cat3) VALUES
+(10,1,14);
+
+CREATE TABLE combo (
+id INT PRIMARY KEY NOT NULL AUTO_INCREMENT UNIQUE,
+klass TINYINT DEFAULT 1,
+scope TINYINT DEFAULT 2,
+name JSON,
+price DECIMAL (4,2) DEFAULT 0,
+cat1 INT,
+cat2 INT,
+cat3 INT,
+cat4 INT,
+cat5 INT,
+cat6 INT,
+active TINYINT(1) DEFAULT 0,
+c_status TINYINT unsigned DEFAULT 2,
+c_owner TINYINT unsigned NOT NULL DEFAULT 1,
+c_group TINYINT(2) NOT NULL DEFAULT 4,
+c_permis INT unsigned DEFAULT 414,
+FOREIGN KEY (cat1) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (cat2) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (cat3) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (cat4) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (cat5) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (cat6) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+INSERT INTO combo ()
 
 --------------------------------------------------------------------------
 # ==== STORE : PRODUCTS LIST per FAC ========================================
@@ -600,9 +502,6 @@ c_permis INT unsigned DEFAULT 457
 # store.RELOADED = LAB last reload DATE
 # store.ADDONS = additional local products to offer
 # store.TAKE_ONLY = product only to takeaway
-# store.DELIVERY = delivery mode on/off (default=0, non-delivery-FAC)
-# store.BOTTLENECK = bottleneck threshold number of orders/pizzas
-# store.ADD_TIME = add time for more than BOTTLENECK
 
 CREATE TABLE store (
 id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
@@ -613,10 +512,9 @@ local_price DECIMAL(4,2) DEFAULT NULL,
 on_hand INT,
 reloaded TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 local_promo INT,
+combo INT DEFAULT NULL,
 addons INT(1) DEFAULT 0,
-delivery INT DEFAULT 0,
 take_only INT(1) DEFAULT 0,
-add_time INT DEFAULT 5,
 c_status TINYINT unsigned DEFAULT 4,
 c_owner TINYINT unsigned NOT NULL DEFAULT 1,
 c_group TINYINT(2) signed NOT NULL DEFAULT 4,
@@ -625,24 +523,61 @@ UNIQUE KEY(fac,product),
 FOREIGN KEY (fac) REFERENCES fac(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (lab) REFERENCES lab(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (product) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (local_promo) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE
+FOREIGN KEY (local_promo) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (combo) REFERENCES combo(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+------------------- FROM GOOGLE SQL: --------------------------------------------
+CREATE TABLE `store` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product` int(11) NOT NULL,
+  `fac` int(11) NOT NULL,
+  `lab` int(11) DEFAULT NULL,
+  `local_price` decimal(4,2) DEFAULT NULL,
+  `on_hand` int(11) DEFAULT NULL,
+  `reloaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `local_promo` int(11) DEFAULT NULL,
+  `addons` int(1) DEFAULT '0',
+  `delivery` int(11) DEFAULT '0',
+  `take_only` int(1) DEFAULT '0',
+  `c_status` tinyint(3) unsigned DEFAULT '4',
+  `c_owner` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `c_group` tinyint(2) NOT NULL DEFAULT '4',
+  `c_permis` int(10) unsigned DEFAULT '457',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `fac` (`fac`,`product`),
+  KEY `lab` (`lab`),
+  KEY `product` (`product`),
+  KEY `local_promo` (`local_promo`),
+  CONSTRAINT `store_ibfk_1` FOREIGN KEY (`fac`) REFERENCES `fac` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `store_ibfk_2` FOREIGN KEY (`lab`) REFERENCES `lab` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `store_ibfk_3` FOREIGN KEY (`product`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `store_ibfk_4` FOREIGN KEY (`local_promo`) REFERENCES `promo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 |
+
+------------------------------------------------------------------------------
+
 INSERT INTO store (fac,product,on_hand) VALUES
-(1,9,30),
-(1,10,20),
-(1,11,16),
-(1,12,10),
-(1,13,19),
-(1,14,22),
-(1,17,2),
-(1,18,3),
-(1,19,20),
-(1,20,30),
-(1,21,20),
-(1,25,30),
-(1,26,30),
-(1,27,20);
+(2,1,5),
+(2,2,8);
+
+INSERT INTO store (fac,product,on_hand) VALUES
+(3,9,4),
+(3,10,6);
+
+INSERT INTO store (fac,product,on_hand) VALUES
+(3,14,14),
+(3,15,16),
+(3,16,10),
+(3,17,10),
+(3,18,12)
+;
+
+INSERT INTO store (fac,product,on_hand) VALUES
+(3,21,14),
+(3,22,16)
+;
 
 select p.name,p.id,p.price,s.product,s.on_hand,p.promo,s.local_promo from store s inner join product p where s.product=p.id and p.c_status=4;
 
@@ -654,31 +589,40 @@ category INT NOT NULL,
 name JSON,
 descr JSON,
 cat_related INT NOT NULL DEFAULT 1,
-)
+);
 
-# order.STATUS = enter,inprocess,exit,transit,delivered,delayed,missing,return,reject
+# ---------------- 1 --- 2 ------- 4 ---- 8 --- 16 ----- 32 ----- 64 --- 128 -- 256 -- 512
+# order.STATUS = enter,recieve,inprocess,exit,transit,delivered,delayed,missing,reject,cancel
 # order.USER_LOCATION = id of user_location -> get location id for delivery-app view
 # order.ADD_TIME = pizza.ADD_TIME average
+# order.DELIVERY = true/false
 
-CREATE TABLE order (
+CREATE TABLE orders (
 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT UNIQUE,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+uid INT NOT NULL,
+delivery TINYINT(1) DEFAULT 0,
+user_location INT DEFAULT NULL,
+fac_id INT NOT NULL,
+ordered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 ready_at TIME DEFAULT NULL,
 delivered_at TIME DEFAULT NULL,
 add_time INT DEFAULT 0,
-uid INT NOT NULL,
-user_location INT NOT NULL,
-fac_id INT NOT NULL,
-pick_up TINYINT(1) DEFAULT 0,
 pick_up_time TIME DEFAULT NULL,
-promo INT,
+promo_id INT,
+combo_id INT,
 status INT DEFAULT 1,
 total DECIMAL(4,2),
+total_paid DECIMAL(4,2),
 paid TINYINT(1) DEFAULT 0,
+c_status TINYINT unsigned DEFAULT 4,
+c_owner TINYINT unsigned NOT NULL DEFAULT 1,
+c_group TINYINT(2) signed NOT NULL DEFAULT 4,
+c_permis INT unsigned DEFAULT 439,
 FOREIGN KEY (uid) REFERENCES user(uid) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (user_location) REFERENCES user_location(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (fac_id) REFERENCES fac(id) ON DELETE NO ACTION ON UPDATE CASCADE,
-FOREIGN KEY (promo) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE
+FOREIGN KEY (promo_id) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (combo_id) REFERENCES combo(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 ## INSERT INTO orders (uid,pick_up_time,pick_up,user_location,fac_id,total) VALUES (30,timestamp('2019-07-26 19:05:00'),1,38,1,10.20);
@@ -691,15 +635,22 @@ CREATE TABLE order_detail (
 id INT PRIMARY KEY NOT NULL UNIQUE AUTO_INCREMENT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 delay DATETIME DEFAULT NULL,
-ready_at DATETIME DEFAULT NULL,
 item INT NOT NULL,
+options JSON,
+promo_id INT,
 quant INT NOT NULL,
-price_unit DECIMAL(4,2),
-subtotal DECIMAL(4,2),
 order_id INT NOT NULL,
+c_status TINYINT unsigned DEFAULT 4,
+c_owner TINYINT unsigned NOT NULL DEFAULT 1,
+c_group TINYINT(2) signed NOT NULL DEFAULT 4,
+c_permis INT unsigned DEFAULT 439,
 FOREIGN KEY (item) REFERENCES product(id),
-FOREIGN KEY (order_id) REFERENCES orders(id)
+FOREIGN KEY (order_id) REFERENCES orders(id),
+FOREIGN KEY (promo_id) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+?? price_unit DECIMAL(4,2),
+?? subtotal DECIMAL(4,2),
 
 // === HARDCODED ====================================================
 // === ARRAYS    ============

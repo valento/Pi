@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 //import api from '../api/user'
 import api from '../api/user'
-import { getUser,getUserId } from '../middleware/'
+import { getUser,getUserId,getLan } from '../middleware/'
 
 let userRouter = express({
   mergeParams: true
@@ -28,10 +28,11 @@ userRouter.get('/', getUser, (req,res,next) => {
       uid,username,userlast,verified,orders,credit,
       gender,bday,membership,language,status,...rest
     } = response[0]
+    let free_pizza = orders%5===0
     user = Object.assign({},{
       uid,username,userlast,verified,orders,credit,
       gender,bday,membership,language,status
-    })
+    },{free_pizza: free_pizza})
 
     if(response.length > 1){
       user.locations =[]
@@ -54,15 +55,17 @@ userRouter.get('/', getUser, (req,res,next) => {
 })
 
 // GET FAC for users location
-userRouter.post('/facs', (req,res,next) => {
+userRouter.post('/facs', getLan, (req,res,next) => {
+  const { lan } = req
   const { id } = req.body
   api.getFac(id)
   .then( results => {
     let facs = {}
-    const {id,city,prime,open,
+    const {id,city,name,street,number,prime,open,
       sat_open,sat_close,sun_open,
       sun_close,vacation_end,vacation_start,
       delivery,bottleneck,mobile} = results[0]
+    const st = JSON.parse(street)[lan]
     let products = results.map( entry => {
       const {product,local_promo,local_price,on_hand,take_only,add_time} = entry
       return {product,local_promo,local_price,on_hand,take_only,add_time}
@@ -78,10 +81,10 @@ userRouter.post('/facs', (req,res,next) => {
       //  facs = { ...facs, [location]: {open: 0}}
       //}
     })
-    facs = Object.assign({id,city,prime,open,
+    facs = Object.assign({id,city,name,number,prime,open,
       sat_open,sat_close,sun_open,
       sun_close,vacation_end,vacation_start,
-      delivery,bottleneck,mobile},{products:products})
+      delivery,bottleneck,mobile},{products:products},{street: st})
     res.status(200).json(facs)
   })
   .catch( err => console.log(err.message))

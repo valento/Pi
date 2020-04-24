@@ -44,7 +44,8 @@ orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
   }).then(function () {
     return _api2.default.updateOne({ id: uid, orders: 'orders+1' }, 'user');
   }).then(function () {
-    return res.status(200).json({ message: 'Order recieved' });
+    //req.mediator.emit('new.incoming.order')
+    res.status(200).json({ message: 'Order recieved' });
   }).catch(function (err) {
     return res.status(500).json({ message: err });
   });

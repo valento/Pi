@@ -21,7 +21,10 @@ orderRouter.post('/', getUserId, (req,res,next) => {
     api.saveMany(details,'order_detail')
   })
   .then( () => api.updateOne({id: uid, orders:'orders+1'},'user') )
-  .then( () => res.status(200).json({message: 'Order recieved'}) )
+  .then( () => {
+    //req.mediator.emit('new.incoming.order')
+    res.status(200).json({message: 'Order recieved'})
+  } )
   .catch( err => res.status(500).json({message: err}) )
 })
 

@@ -11,7 +11,8 @@ import adminRouter from './routes/admin'
 import productRouter from './routes/product'
 import orderRouter from './routes/order'
 import api from './api/'
-import { getLan } from './middleware/'
+import { getLan,orderListener,adminRouterHit } from './middleware/'
+import { EventEmitter } from 'events'
 
 dotenv.config({silent: true})
 let app = express()
@@ -19,18 +20,33 @@ let PORT = process.env.PORT || 8080
 let ENV = process.env.NODE_ENV || 'development'
 let CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0
 
+// Initiate WEB SOCKET:
 let WS = require('websocket').server
+let WSR = require('websocket').router
+// WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
+let uconn=[], rconn=[], dconn=[], pconn=[], bconn=[], fconn=[], lconn=[], rootconn=[]
+// WS protocols:
+var prtc = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
+
+// Instantiate EVENT EMITTER:
+const mediator = new EventEmitter()
+mediator.on('baker.login', () => {
+  console.log('Baker Here!')
+})
 
 app.use('/static', express.static(path.join(__dirname, '../client/build/static')) )
 app.use('/img', express.static(path.join(__dirname, '../client/build/img')) )
 if(ENV === 'production') app.use(express.static(path.join(__dirname, '../client/build')) )
 
-// == ROUTES ==============================================
+// == ROUTES & ROUTERS =====================================
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
-app.use('/admin', adminRouter)
-app.use('/products',productRouter)
-app.use('/orders',orderRouter)
+app.use('/admin', (req,res,next) => {
+  req.mediator = mediator
+  next()
+}, adminRouter)
+app.use('/products', productRouter)
+app.use('/orders', orderRouter)
 
 // ========================================================
 
@@ -97,21 +113,73 @@ const options = {
 //  }
 //})
 
+// ==========================================================================
+
 // # WebSocket-Node Server #
-let wss = new WS({
+let wsServer = new WS({
   httpServer: server
 })
-// WebSocketServer Class:
-wss.on('request', request => {
-// request is webSocketRequest Object
-// .accept returns webSocketConnection Instance
-  let connection = request.accept('echo-protocol', request.origin)
+let wsrouter = new WSR()
+wsrouter.attachServer(wsServer)
 
-  connection.on('message', message => {
-    console.log('Socket: ',request.origin, message)
+wsrouter.mount('*','baker-protocol', request => {
+// get WS.Connection
+  let connection = request.accept(request.origin)
+  const { id } = request.resourceURL.query
+  connection.ID = Number(id)
+  connection.on('message', msg => {
+    const { user,fac,role } = JSON.parse(msg.utf8Data)
+    console.log('Connected Bakers: ', bconn.length)
+    // bconn.find( c => c.id===fac.id ).sendUTF(`Message from User: ${user}, recieved`)
+    //connection.sendUTF(`Message from Baker: ${user}, recieved`)
   })
+// Store baker-Connections:
+  let baker = bconn.find( c => c.ID === Number(id) )
+  if( !baker ) bconn.push(connection)
 })
 
-wss.on('connect', socket => {
+wsrouter.mount('*','customer-protocol', request => {
+// get WS.Connection:
+  let connection = request.accept(request.origin)
+  const { id } = request.resourceURL.query
+  connection.ID = Number(id)
+
+  connection.on('message', msg => {
+    const { user,fac,role } = JSON.parse(msg.utf8Data)
+    let c = uconn.indexOf(connection)
+    console.log(`Customers online: ${uconn.length}`)
+    //bconn.forEach( c => {
+    //  if(c.id===Number(fac)) {
+        //uconn[0].conn.sendUTF(`Message from User: ${user}, recieved`)
+    //  }
+    //})
+    //connection.sendUTF(`Message from User: ${user}, recieved`)
+
+  })
+  connection.on('close', (reasonCode, description) => {
+    let c = uconn.indexOf(connection)
+    connection.sendUTF('Connection closed!', uconn.length)
+    uconn.splice(c,1)
+  })
+// Store customer-connections:
+  let user = uconn.find( c => c.ID === Number(id) )
+  if( !user ) uconn.push(connection)
+
+})
+
+
+// WebSocketServer Class:
+//wsServer.on('request', request => {
+//// request is webSocketRequest Object
+//// .accept returns webSocketConnection Instance
+//  let bakerCon = request.accept('baker-protocol', request.origin)
+//
+//})
+
+wsServer.on('connect', socket => {
   console.log('Connection created at: ', new Date())
+})
+
+wsServer.on('close', (conn, reason, dsc) => {
+  console.log('Connection closed at: ', conn.ID)
 })

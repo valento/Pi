@@ -33,6 +33,7 @@ var adminRouter = _express2.default.Router({
 });
 
 adminRouter.use(_bodyParser2.default.json());
+//adminRouter.use(orderListener(mediator))
 
 adminRouter.get('/location/ref/:uid', (0, _expressRequestLanguage2.default)({
   languages: ['en', 'es']
@@ -144,6 +145,38 @@ adminRouter.post('/location/:type', function (req, res, next) {
     return console.log('Error', err);
   });
 });
+
+// =========== ADMIN FACs: ================================================
+// ----------- BAKER GET ORDERS: ------------------------------------------
+adminRouter.get('/fac/:id/:table', function (req, res, next) {
+  req.mediator.emit('baker.login');
+  var _req$params2 = req.params,
+      id = _req$params2.id,
+      table = _req$params2.table;
+
+  _api2.default.getList(table, ['*'], Object.assign({ fac_id: id }, { status: 1 })).then(function (response) {
+    var list = [];
+    if (response.length > 0) {
+      list = response.map(function (e) {
+        var id = e.id,
+            uid = e.uid,
+            delivery = e.delivery,
+            user_location = e.user_location,
+            fc_id = e.fc_id,
+            ordered_at = e.ordered_at,
+            pick_up_time = e.pick_up_time;
+
+        return { id: id, uid: uid, delivery: delivery, user_location: user_location, fc_id: fc_id, ordered_at: ordered_at, pick_up_time: pick_up_time };
+      });
+      res.status(200).json(list);
+    } else {
+      res.status(401).json({ error: { message: 'New Orders not found!' } });
+    }
+  }).catch(function (err) {
+    return res.status(500).json({ error: { message: 'Something went wrong' } });
+  });
+});
+// ========================================================================
 
 //adminRouter.post('/locations/loc')
 

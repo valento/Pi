@@ -4,9 +4,9 @@ import { Route,Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 const AdminRoute = ({isAdmin, membership, lan, component: Component, ...rest}) => {
-  console.log('?Admin: ',isAdmin,membership)
+  
   return (
-    <Route {...rest} render={ props => (isAdmin || membership<32) ?
+    <Route {...rest} render={ props => (isAdmin || membership<64) ?
         <Component lan={lan} {...props} /> :
         <Redirect to='/admin' />
   }/>)

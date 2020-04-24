@@ -21,16 +21,25 @@ const db = mysql.createConnection(options)
 export default {
 
     signup: data => {
-      let sql = ``
+      let sql
       const { email,password,token } = data
+
+      let _keys = Object.keys(data), _values = []
+      let params = Object.values(data).map( v => {
+        _values.push('?')
+        return v
+      })
+      //const sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
+
       if(email==='valentin.mundrov@gmail.com'){
         sql = `INSERT INTO user (email,password,token,membership) VALUES('${email}','${password}','${token}',1)`
       } else {
-        sql = `INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
+        sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
+        //`INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
       }
       console.log('Auth Insert: ',sql)
       return new Promise ((resolve,reject) => {
-        db.query(sql, (err,result) => {
+        db.query(sql, params, (err,result) => {
           if(err) return reject(err)
           resolve(result.insertId)
         })
@@ -39,12 +48,12 @@ export default {
 // chek if user exist
     checkOne: (email,scope='*') => {
       const sql = `SELECT ${scope} FROM user WHERE email='${email}' AND c_status=4`
-
+console.log(sql)
       return new Promise( (resolve, reject) => {
         db.query(sql, ( err,results ) => {
           if(err) return reject(err)
           resolve(results)
-          console.log('API CheckOne User: ',err)
+console.log('API CheckOne User: ',err)
         })
       })
     },
@@ -129,17 +138,21 @@ export default {
       //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
       const sql = `SELECT
       f.*,
-      s.product,s.local_promo,s.local_price,
-      s.on_hand,s.take_only
+      s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,
+      st.name AS street,
+      l.number
       FROM fac f
-      JOIN store s ON f.id=s.fac AND s.on_hand>0
+      JOIN store s ON s.fac=f.id AND s.on_hand>0
+      JOIN location l ON l.id=f.location_id
+      JOIN street st ON st.id=l.street_id
       WHERE f.city=${city} AND f.prime=1
       AND f.status=7`
 
+console.log('Get FACs: ', sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
           if(err) return reject(err)
-          console.log('Get this FAC store: ', results[0])
+          //console.log('Get this FAC store: ', results[0])
           resolve(results)
         })
       })

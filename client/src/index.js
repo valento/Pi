@@ -14,13 +14,14 @@ import { userInit,getLocalFacs } from './actions/user'
 import setAuthHeader from './utils/setAuthHeader'
 import setLanHeader from './utils/setLanHeader'
 import App from './App'
-import { subscribeSocket,fireSocket } from './websocket'
+//import { subscribeSocket,fireSocket } from './websocket'
 //import * as serviceWorker from './serviceWorker'
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const initState = {
   user: {},
   settings: {
     lan: 'bg',
+    socket: false,
     one_city: 0,
     banner: false
   },
@@ -49,15 +50,16 @@ if(localStorage.valePizzaJWT){
   store.dispatch(userSignedIn(user))
 // If Credentials OK:
   store.dispatch(userInit())
-    .then( locations => {
-      fireSocket(null,{message: 'User Initiatetd'})
+    .then( user => {
+      const { locations } = user
+
       if(!locations) return
-//   get all user saved locations
+// get all user saved locations
       let loc = locations.map( l => {
         return l.city
       })
       let l = [...new Set(loc)]
-//   get all facs for each unique user.location.city
+// get all facs for each unique user.location.city
       //store.dispatch(getLocalFacs(l))
     })
     .catch( err => {

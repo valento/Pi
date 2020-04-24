@@ -3,9 +3,9 @@ import api from '../api'
 
 export const setInterface = data => ({type: SETUP_CHANGED, data})
 
-export const setLocationFactory = facs => ({
+export const setLocationFactory = fac => ({
   type: SET_FAC,
-  facs
+  fac
 })
 
 export const setUI = ui => dispatch =>
@@ -28,7 +28,6 @@ api.settup.getProductList(lan).then( data => {
 
 export const getFacStore = ({city}) => dispatch =>
 api.settup.getLocationFac(city).then( fac => {
-  console.log(fac)
   dispatch(setLocationFactory(fac))
 })
 

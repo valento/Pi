@@ -9,6 +9,7 @@ import OrdersPage from './components/pages/OrdersPage'
 import CatalogPage from './components/pages/CatalogPage'
 import UserRoute from './components/routes/user'
 import AdminRoute from './components/routes/admin'
+import BakerHome from './components/pages/admin/fac/BakerHome'
 import RepeatPage from './components/pages/RepeatPage'
 import AdminLogin from './components/pages/admin/AdminLogin'
 import PlayPage from './components/pages/PlayPage'
@@ -40,9 +41,10 @@ const App = ({location,lan}) => {
       <Route location={location} path='/' component={Top}/>
 {/* ========= ADMIN ================== */}
       <AdminRoute location={location} path='/admin/location' exact lan={lan} component={Locations}/>
+      <AdminRoute location={location} path='/admin/baker' exact lan={lan} component={BakerHome}/>
 {/* !!!! MAKE THIS ADMIN ROUTE !!!!! -------------------------------------------------------------------*/}
       {/*<AdminRoute location={location} path='/admin/home' exact lan={lan} component={AdminHome}/>*/}
-      <AdminRoute location={location} path='/admin/home' exact lan={lan} component={AdminHome}/>
+      <AdminRoute location={location} path='/admin/boss' exact lan={lan} component={AdminHome}/>
 {/* ------------ ----------- ---------- ---------- ---------- ---------- ----------- ----------- -------*/}
       <UserRoute location={location} path='/admin' exact lan={lan} component={AdminLogin}/>
 {/* ========= USER ================== */}

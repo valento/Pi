@@ -27,7 +27,7 @@ export const signUp = (credentials,pass) => dispatch => {
         //console.log('Call userInit()')
         //api.user.initUser().then( user => {
           dispatch(initialUser(user))
-          resolve(user.locations)
+          resolve(user)
         //})
         //}
       })

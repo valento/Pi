@@ -44,6 +44,7 @@ export default {
       })
     })
   },
+
   // GET Location by REP = location.uid
   getOneReference: (data={},table,scope=['*']) => {
     let sql, l
@@ -68,6 +69,7 @@ console.log(results)
       })
     })
   },
+
   getList: (table,scope=['*'],params=null) => {
     let PARAMS = ''
     const _key = params? Object.keys(params) : null
@@ -84,15 +86,18 @@ console.log(results)
     //  PARAMS = `${_key[0]}=${params._key[0]}`
     //}
 
-    let sql = !params? `SELECT ${scope} FROM ${table}`:`SELECT ${scope} FROM ${table} WHERE ${PARAMS}`
-
+    let sql = !params? `SELECT ${scope} FROM ${table}` :
+    `SELECT ${scope} FROM ${table} WHERE ${PARAMS}`
+console.log(`Get all ${table}: `,sql)
     return new Promise( (resolve,reject) => {
-      db.query(sql, params, (err,results) => {
+      db.query(sql, (err,results) => {
+        //console.log(results)
         if(err) return reject(err)
         resolve(results)
       })
     })
   },
+
   saveMany: (data=[],table) => {
     let _keys = Object.keys(data[0])
     let params = data.map( i => {

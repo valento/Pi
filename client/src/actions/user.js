@@ -30,7 +30,7 @@ export const userInit = () => dispatch => {
     api.user.initUser().then( user => {
       dispatch(initialUser(user))
 // Get all FACs for user.locations list
-      resolve(user.locations)
+      resolve(user) // or user.locations
     })
     .catch(error => {
       reject(error)

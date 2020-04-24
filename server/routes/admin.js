@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import requestLanguage from 'express-request-language'
-import { getLan } from '../middleware/'
+import { getLan,orderListener } from '../middleware/'
 import api from '../api/'
 import uniqid from 'uniqid'
 
@@ -10,6 +10,7 @@ let adminRouter = express.Router({
 })
 
 adminRouter.use(bodyParser.json())
+//adminRouter.use(orderListener(mediator))
 
 adminRouter.get('/location/ref/:uid', requestLanguage({
   languages: ['en','es']
@@ -102,6 +103,28 @@ adminRouter.post('/location/:type', (req,res,next) => {
   .then(res.status(200).json({message: `${msgCap} Saved!`}))
   .catch( err => console.log('Error',err))
 })
+
+// =========== ADMIN FACs: ================================================
+// ----------- BAKER GET ORDERS: ------------------------------------------
+adminRouter.get('/fac/:id/:table', (req,res,next) => {
+  req.mediator.emit('baker.login')
+  const { id,table } = req.params
+  api.getList(table,['*'],Object.assign({fac_id:id},{status: 1}))
+  .then( response => {
+    let list = []
+    if( response.length > 0 ) {
+      list = response.map( e => {
+        const { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time } = e
+        return { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time }
+      })
+      res.status(200).json(list)
+    } else {
+      res.status(401).json({error: {message: 'New Orders not found!'}})
+    }
+    })
+  .catch( err => res.status(500).json({error: {message: 'Something went wrong'}}))
+})
+// ========================================================================
 
 //adminRouter.post('/locations/loc')
 

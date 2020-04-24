@@ -36,6 +36,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
 var authRouter = _express2.default.Router({
   mergeParams: true
 });
@@ -45,11 +47,22 @@ authRouter.use(_bodyParser2.default.json());
 authRouter.post('/', function (req, res, next) {
   var new_user = true,
       user = void 0,
+      username = void 0,
       token = void 0,
       confirmToken = void 0,
       pass = void 0;
   var email = req.body.credentials.email;
 
+  var tester = email.split('.')[0] === 'tester' ? true : false;
+
+  var _email$split$0$split = email.split('@')[0].split('.'),
+      _email$split$0$split2 = _toArray(_email$split$0$split),
+      t = _email$split$0$split2[0],
+      rest = _email$split$0$split2.slice(1);
+
+  if (tester) {
+    username = rest.join('.');
+  }
   var jwtOptions = { expiresIn: '240d' };
   var scope = ['username', 'userlast', 'uid', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status'];
   _user2.default.checkOne(email, scope).then(function (results) {
@@ -125,15 +138,16 @@ authRouter.post('/', function (req, res, next) {
           length: 8,
           numbers: true
         });
+        var u = tester ? { username: rest.join('.'), membership: 64 } : {};
         // encrypt password and save it to DB:
         _bcrypt2.default.hash(pass, 8, function (err, hash) {
           if (!err) {
             try {
-              _user2.default.signup({ email: email, password: hash, token: confirmToken }).then(function (id) {
+              _user2.default.signup(Object.assign({ email: email, password: hash, token: confirmToken }, u)).then(function (id) {
                 // Send mail to User with confirmToken:
                 (0, _mailer.sendConfirmMail)(email, confirmToken);
                 console.log('authRouter:', id);
-                // Generate Token for localStorage:
+                // Generate Access User Token for localStorage:
                 token = _jsonwebtoken2.default.sign({ email: email, uid: id }, process.env.JWT_SECRET, jwtOptions);
                 try {
                   _user2.default.getOne({ email: email }, 'user', scope).then(function (results) {

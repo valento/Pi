@@ -5,6 +5,8 @@ import Order from '../ui/order/Order'
 import ProductsList from './product/ProductsList'
 import MenuList from '../ui/menus/categories'
 
+//import { fireSocket,initSocket,closeSocket } from '../../websocket'
+
 
 class OrdersPage extends React.Component {
   state = {
@@ -23,7 +25,23 @@ class OrdersPage extends React.Component {
     this.setState({
       item: value
     })
+    //this.fire()
   }
+
+  //componentDidMount = () => {
+  //  const { uid,membership } = this.props.user
+  //  const { facs } = this.props
+  //}
+  //componentWillUnmount() {
+  //  closeSocket()
+  //}
+
+  //fire = () => {
+  //  const { uid,membership } = this.props.user
+  //  const { facs } = this.props
+  //  console.log('UTF8: ',uid,membership,facs.id)
+  //  fireSocket(null,JSON.stringify({ user: uid, role: membership, fac: facs.id }))
+  //}
 
   render(){
     const { lan,city,products,facs } = this.props
@@ -56,6 +74,7 @@ const mapStateToProps = state => ({
   lan: state.settings.lan,
   facs: state.facs,
   city: state.settings.city,
+  user: state.user,
   products: state.products
 })
 

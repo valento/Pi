@@ -3,15 +3,15 @@ import { Button,Icon,Message } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import LocationRow from './LocRow'
 
-const UserLocations = ({stat,view,lan,list,city,onLocation,current,disabled}) => {
+const UserLocations = ({stat,view,lan,list,city,onLocation,current,disabled,fac}) => {
   const ui = {
     en: ['No Locations','Address','Без доставка!'],
     es: ['No tienes Dirección','Dirección','Без доставка!'],
     bg: ['Нямаш Адрес!','Адрес','Без доставка!'],
     error: {
-      en: ['No Delivery Service!','Your Location has no Delivery Service! Take your pizza from: '],
-      es: ['Sin Domcilio!','Esta localidad no tiene servicio a Domicilio. Recibe su pizza a la dirección: '],
-      bg: ['Без доставки!','Районът е без доставки! Вземи своята поръчка от: ']
+      en: ['No Delivery Service!','Your Location has no Delivery Service! Take your pedido from: '],
+      es: ['Sin Domcilio!','Esta localidad no tiene servicio a Domicilio. Recibe su pedido a la dirección: '],
+      bg: ['Без доставка!','Този район е без доставки. Вземи своята поръчка от адрес: ']
     }
   }
   return (
@@ -19,7 +19,8 @@ const UserLocations = ({stat,view,lan,list,city,onLocation,current,disabled}) =>
   {/* No Delivery Message:*/}
       {disabled && <Message negative>
         <Message.Header>{ui.error[lan][0]}</Message.Header>
-        <p>{ui.error[lan][1]}</p>
+      <p>{ui.error[lan][1]}</p>
+        <b>{`'${fac.street}', ${fac.number}`}</b>
       </Message>}
   {/*Check if User has Locations:*/}
       {(!disabled && (!list || list.length === 0)) ?

@@ -9,7 +9,7 @@ import { getLocations,checkReference } from '../../actions/settup'
 import { addUserLocation,userAddLocation } from '../../actions/user'
 
 import UserLocation from '../forms/ulocation'
-import UserLocationList from '../forms/LocationNumbersList'
+import UserLocationNumber from '../forms/LocationNumbersList'
 import UserDoor from '../forms/userDoor'
 import LocationRow from '../ui/user/LocRow'
 import ReferenceInput from '../forms/RefInput'
@@ -179,7 +179,7 @@ bg: ['Адрес за доставка','Твоята улица във, ','Но
 {/* =====  User is Locate: get Address details and phone  ===============*/}
         {locations && locations.length > 0 && street && !locate && !rep &&
           <p className={location !== undefined && !location? 'left short warent' : 'left short'}>{ui[2]}
-            <UserLocationList
+            <UserLocationNumber
               name='location'
               getInput={this.getInput}
               onNewData={this.addData}

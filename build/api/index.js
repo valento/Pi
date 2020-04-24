@@ -63,6 +63,7 @@ exports.default = {
       });
     });
   },
+
   // GET Location by REP = location.uid
   getOneReference: function getOneReference() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -89,6 +90,7 @@ exports.default = {
       });
     });
   },
+
   getList: function getList(table) {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ['*'];
     var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -109,14 +111,16 @@ exports.default = {
     //}
 
     var sql = !params ? 'SELECT ' + scope + ' FROM ' + table : 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + PARAMS;
-
+    console.log('Get all ' + table + ': ', sql);
     return new Promise(function (resolve, reject) {
-      db.query(sql, params, function (err, results) {
+      db.query(sql, function (err, results) {
+        //console.log(results)
         if (err) return reject(err);
         resolve(results);
       });
     });
   },
+
   saveMany: function saveMany() {
     var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
     var table = arguments[1];

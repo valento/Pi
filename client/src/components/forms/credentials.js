@@ -21,7 +21,10 @@ export default class Credentials extends React.Component {
     this.setState({ errors: err })
     if(Object.keys(err).length !== 0) return
     if(!pass) {
-      submit(data,false).then( locations => {
+      submit(data,false).then( user => {
+        const { uid,membership,locations } = user
+
+// get all user saved locations:
         if(!locations) return
         let loc = locations.map( l => {
           return l.location

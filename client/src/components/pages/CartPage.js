@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button,Divider,Message } from 'semantic-ui-react'
 import PropType from 'prop-types'
 import OrderList from '../ui/order/OrderList'
-import UserLocations from '../ui/user/UserLocationsList'
+import UserLocationsList from '../ui/user/UserLocationsList'
 import { getLocationData } from '../../actions/user'
 import { cancelCart,makeCart } from '../../actions/cart'
 //import socket from '../../websocket'
@@ -109,7 +109,7 @@ class CartPage extends React.Component {
         <Divider horizontal>{ui[1]}</Divider>
     {/*Check if No Delivery of User has Locations:*/}
         {(user.locations || fac.delivery === 4 )?
-          <UserLocations
+          <UserLocationsList
             view='select'
             stat={true}
             disabled={fac.delivery === 4}
@@ -118,6 +118,7 @@ class CartPage extends React.Component {
             list={user.locations? user.locations.filter( l => l.city === city) : []}
             city={city}
             lan={lan}
+            fac={fac}
           /> :
           <div><Button as={Link} to='../user/locations' color='red' icon='warning sign' content={ui[1]} /></div>
         }

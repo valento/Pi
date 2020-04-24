@@ -56,10 +56,11 @@ userRouter.get('/', _middleware.getUser, function (req, res, next) {
         status = _response$.status,
         rest = _objectWithoutProperties(_response$, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
 
+    var free_pizza = orders % 5 === 0;
     user = Object.assign({}, {
       uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,
       gender: gender, bday: bday, membership: membership, language: language, status: status
-    });
+    }, { free_pizza: free_pizza });
 
     if (response.length > 1) {
       user.locations = [];
@@ -95,7 +96,8 @@ userRouter.get('/', _middleware.getUser, function (req, res, next) {
 });
 
 // GET FAC for users location
-userRouter.post('/facs', function (req, res, next) {
+userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
+  var lan = req.lan;
   var id = req.body.id;
 
   _user2.default.getFac(id).then(function (results) {
@@ -103,6 +105,9 @@ userRouter.post('/facs', function (req, res, next) {
     var _results$ = results[0],
         id = _results$.id,
         city = _results$.city,
+        name = _results$.name,
+        street = _results$.street,
+        number = _results$.number,
         prime = _results$.prime,
         open = _results$.open,
         sat_open = _results$.sat_open,
@@ -115,6 +120,7 @@ userRouter.post('/facs', function (req, res, next) {
         bottleneck = _results$.bottleneck,
         mobile = _results$.mobile;
 
+    var st = JSON.parse(street)[lan];
     var products = results.map(function (entry) {
       var product = entry.product,
           local_promo = entry.local_promo,
@@ -137,10 +143,10 @@ userRouter.post('/facs', function (req, res, next) {
         //}
       };
     });
-    facs = Object.assign({ id: id, city: city, prime: prime, open: open,
+    facs = Object.assign({ id: id, city: city, name: name, number: number, prime: prime, open: open,
       sat_open: sat_open, sat_close: sat_close, sun_open: sun_open,
       sun_close: sun_close, vacation_end: vacation_end, vacation_start: vacation_start,
-      delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products });
+      delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products }, { street: st });
     res.status(200).json(facs);
   }).catch(function (err) {
     return console.log(err.message);
