@@ -67,17 +67,6 @@ var CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0;
 // Initiate WEB SOCKET:
 var WS = require('websocket').server;
 var WSR = require('websocket').router;
-// WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
-var uconn = [],
-    rconn = [],
-    dconn = [],
-    pconn = [],
-    bconn = [],
-    fconn = [],
-    lconn = [],
-    rootconn = [];
-// WS protocols:
-var prtc = ['root', 'lab', 'fac', 'baker', 'pos', 'dlv', 'test', 'rep', 'customer'];
 
 // Instantiate EVENT EMITTER:
 var mediator = new _events.EventEmitter();
@@ -167,21 +156,41 @@ var options = {
   //  }
   //})
 
+
+  // ==========================================================================
+  // ==========================================================================
+  // # WebSocket-Node Server #
   // ==========================================================================
 
-  // # WebSocket-Node Server #
-};var wsServer = new WS({
+  // WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
+};var uconn = [],
+    rconn = [],
+    dconn = [],
+    pconn = [],
+    bconn = [],
+    fconn = [],
+    lconn = [],
+    rootconn = [];
+// WS protocols:
+var roles = ['root', 'lab', 'fac', 'baker', 'pos', 'dlv', 'test', 'rep', 'customer'];
+var wsServer = new WS({
   httpServer: server
 });
 var wsrouter = new WSR();
 wsrouter.attachServer(wsServer);
 
+// BAKER: =====================================================================
 wsrouter.mount('*', 'baker-protocol', function (request) {
+  request.on('requestAccepted', function (connection) {
+    connection.sendUTF('WS: Baker is listening!');
+  });
   // get WS.Connection
   var connection = request.accept(request.origin);
   var id = request.resourceURL.query.id;
 
   connection.ID = Number(id);
+
+  // Event handlers:
   connection.on('message', function (msg) {
     var _JSON$parse = JSON.parse(msg.utf8Data),
         user = _JSON$parse.user,
@@ -199,39 +208,82 @@ wsrouter.mount('*', 'baker-protocol', function (request) {
   if (!baker) bconn.push(connection);
 });
 
+// CUSTOMER: ==================================================================
 wsrouter.mount('*', 'customer-protocol', function (request) {
+  request.on('requestAccepted', function (connection) {
+    connection.sendUTF('Customer accepted!');
+  });
   // get WS.Connection:
   var connection = request.accept(request.origin);
   var id = request.resourceURL.query.id;
 
   connection.ID = Number(id);
 
+  // Event handlers:
   connection.on('message', function (msg) {
     var _JSON$parse2 = JSON.parse(msg.utf8Data),
         user = _JSON$parse2.user,
         fac = _JSON$parse2.fac,
-        role = _JSON$parse2.role;
+        role = _JSON$parse2.role,
+        order = _JSON$parse2.order;
 
-    var c = uconn.indexOf(connection);
-    console.log('Customers online: ' + uconn.length);
-    //bconn.forEach( c => {
-    //  if(c.id===Number(fac)) {
-    //uconn[0].conn.sendUTF(`Message from User: ${user}, recieved`)
-    //  }
-    //})
-    //connection.sendUTF(`Message from User: ${user}, recieved`)
+    console.log('Message from:', connection.ID);
+    if (order) {
+      // ping 'baker-protocol'
+      var bkr = bconn.find(function (c) {
+        return c.ID === fac;
+      });
+      if (bkr) bkr.sendUTF('Order from ' + user + ' to ' + fac);
+    }
+    uconn.forEach(function (c) {
+      c.sendUTF('One more User: ' + user + ', recieved');
+    });
+    //connection.sendUTF(`${uconn.length - 1} Messages from User: ${user}, send`)
   });
+
   connection.on('close', function (reasonCode, description) {
     var c = uconn.indexOf(connection);
-    connection.sendUTF('Connection closed!', uconn.length);
+    connection.sendUTF('Connection closed!', uconn[c].ID);
     uconn.splice(c, 1);
   });
-  // Store customer-connections:
+
+  // Store unique customer-connections:
   var user = uconn.find(function (c) {
     return c.ID === Number(id);
   });
   if (!user) uconn.push(connection);
 });
+
+// TESTER: =====================================================================
+wsrouter.mount('*', 'test-protocol', function (request) {
+  request.on('requestAccepted', function (connection) {
+    connection.sendUTF('Baker is listening!');
+  });
+  // get WS.Connection
+  var connection = request.accept(request.origin);
+  var id = request.resourceURL.query.id;
+
+  // Event handlers:
+
+  connection.ID = Number(id);
+  connection.on('message', function (msg) {
+    var _JSON$parse3 = JSON.parse(msg.utf8Data),
+        user = _JSON$parse3.user,
+        fac = _JSON$parse3.fac,
+        role = _JSON$parse3.role;
+
+    console.log('Connected Bakers: ', bconn.length);
+    // bconn.find( c => c.id===fac.id ).sendUTF(`Message from User: ${user}, recieved`)
+    //connection.sendUTF(`Message from Baker: ${user}, recieved`)
+  });
+  // Store baker-Connections:
+  var tester = tconn.find(function (c) {
+    return c.ID === Number(id);
+  });
+  if (!tester) tconn.push(connection);
+});
+// ======================================================================
+
 
 // WebSocketServer Class:
 //wsServer.on('request', request => {

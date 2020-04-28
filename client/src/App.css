@@ -184,6 +184,19 @@ h2 {
   color: #2185d0;
 }
 
+/* --- TABLES -------------------------- */
+.collection-table {
+  width: 100%;
+}
+.collection-table ul {
+  width: 100%;
+}
+.collection-table li {
+  float: left;
+  list-style: none;
+  text-align: center;
+}
+
 
 /* --- ORDER ITEMS UI ------------------ */
 .order-list {
@@ -264,8 +277,8 @@ h2 {
 .menu-bar .ui.buttons .button:last-child {
   border-top-right-radius: 1em!important;
   border-bottom-right-radius: 1em!important;
-    border-top-left-radius: 0!important;
-    border-bottom-left-radius: 0!important;
+  border-top-left-radius: 0!important;
+  border-bottom-left-radius: 0!important;
 }
 .carrousel {
   position: relative;
@@ -380,6 +393,9 @@ p.short {
 }
 .topped {
   padding-top: 35px;
+}
+.dobletopped {
+  padding-top: 25px;
 }
 .no-border {
   border-top: 0!important;

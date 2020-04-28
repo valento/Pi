@@ -20,6 +20,7 @@ export default {
     //locationFac: loc => axios.post('/user/facs', {ids:loc}).then( res => res.data )
   },
   order: {
-    pushOrder: data => axios.post('/orders', { data }).then( res => res.data )
+    pushOrder: data => axios.post('/orders', { data }).then( res => res.data ),
+    collection: id => axios.get(`/admin/fac/${id}/orders`)
   }
 }

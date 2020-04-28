@@ -63,9 +63,9 @@ const HomePage = ({
   }
 
   if(isAuthorized && Object.keys(fac).length>0 && !socket) {
-    setInterface({socket: true})
     initSocket(uid,membership,fac.id)
-    subscribeSocket()
+    setInterface({socket: true})
+    subscribeSocket(msg=>console.log(msg))
   }
 
   return (
@@ -88,15 +88,26 @@ const HomePage = ({
 {/* Find available CITY: !(!!cty) */}
         { !city ?
           <AppSetup lan={lan} list={cities} appsetup='true' name='city' /> :
-          !isAuthorized ? <Credentials submit={signUp} getFacs={getLocalFacs} init={userInit} lan={lan} pass={false} /> :
+          !isAuthorized ? <Credentials
+            submit={signUp}
+            getFacs={getLocalFacs}
+            init={userInit}
+            lan={lan} pass={false}
+          /> :
           <MainMenu lan={lan} />
         }
 
 {/* For ADMIN/LAB/FAC/DELIVERY only Interface: */}
         <Divider horizontal />
-      {isAuthorized && membership && membership < 128 &&
+      {isAuthorized && membership && membership < 128 && Object.keys(fac).length>0 &&
           <div>
-            <Button as={Link} disabled={!city} basic color='blue' to={'/admin/'+member}>Hello, {_mbr[_mbr.length-1]}!</Button>
+            <Button basic color='blue'
+              as={Link}
+              disabled={!city}
+              to={'/admin/home'}
+            >
+              Hello, {_mbr[_mbr.length-1]}!
+            </Button>
           </div>
         }
       </div>
@@ -119,4 +130,8 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-export default connect(mapStateToProps, { signUp,userInit,getLocalFacs,setInterface,getFacStore })(HomePage)
+export default connect(mapStateToProps, {
+  signUp,userInit,
+  getLocalFacs,
+  setInterface,
+  getFacStore } )(HomePage)

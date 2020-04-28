@@ -23,10 +23,6 @@ let CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0
 // Initiate WEB SOCKET:
 let WS = require('websocket').server
 let WSR = require('websocket').router
-// WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
-let uconn=[], rconn=[], dconn=[], pconn=[], bconn=[], fconn=[], lconn=[], rootconn=[]
-// WS protocols:
-var prtc = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
 
 // Instantiate EVENT EMITTER:
 const mediator = new EventEmitter()
@@ -113,20 +109,33 @@ const options = {
 //  }
 //})
 
+
+// ==========================================================================
+// ==========================================================================
+// # WebSocket-Node Server #
 // ==========================================================================
 
-// # WebSocket-Node Server #
+// WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
+let uconn=[], rconn=[], dconn=[], pconn=[], bconn=[], fconn=[], lconn=[], rootconn=[]
+// WS protocols:
+var roles = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
 let wsServer = new WS({
   httpServer: server
 })
 let wsrouter = new WSR()
 wsrouter.attachServer(wsServer)
 
+// BAKER: =====================================================================
 wsrouter.mount('*','baker-protocol', request => {
+  request.on('requestAccepted', connection => {
+    connection.sendUTF('WS: Baker is listening!')
+  })
 // get WS.Connection
   let connection = request.accept(request.origin)
   const { id } = request.resourceURL.query
   connection.ID = Number(id)
+
+// Event handlers:
   connection.on('message', msg => {
     const { user,fac,role } = JSON.parse(msg.utf8Data)
     console.log('Connected Bakers: ', bconn.length)
@@ -138,34 +147,66 @@ wsrouter.mount('*','baker-protocol', request => {
   if( !baker ) bconn.push(connection)
 })
 
+// CUSTOMER: ==================================================================
 wsrouter.mount('*','customer-protocol', request => {
+  request.on('requestAccepted', connection => {
+    connection.sendUTF('Customer accepted!')
+  })
 // get WS.Connection:
   let connection = request.accept(request.origin)
   const { id } = request.resourceURL.query
   connection.ID = Number(id)
 
+// Event handlers:
   connection.on('message', msg => {
-    const { user,fac,role } = JSON.parse(msg.utf8Data)
-    let c = uconn.indexOf(connection)
-    console.log(`Customers online: ${uconn.length}`)
-    //bconn.forEach( c => {
-    //  if(c.id===Number(fac)) {
-        //uconn[0].conn.sendUTF(`Message from User: ${user}, recieved`)
-    //  }
-    //})
-    //connection.sendUTF(`Message from User: ${user}, recieved`)
+    const { user,fac,role,order } = JSON.parse(msg.utf8Data)
+    console.log('Message from:', connection.ID)
+    if(order) {
+      // ping 'baker-protocol'
+      let bkr = bconn.find( c => c.ID === fac )
+      if(bkr) bkr.sendUTF(`Order from ${user} to ${fac}`)
+    }
+    uconn.forEach( c => {
+      c.sendUTF(`One more User: ${user}, recieved`)
+    })
+    //connection.sendUTF(`${uconn.length - 1} Messages from User: ${user}, send`)
 
   })
+
   connection.on('close', (reasonCode, description) => {
     let c = uconn.indexOf(connection)
-    connection.sendUTF('Connection closed!', uconn.length)
+    connection.sendUTF('Connection closed!', uconn[c].ID)
     uconn.splice(c,1)
   })
-// Store customer-connections:
+
+// Store unique customer-connections:
   let user = uconn.find( c => c.ID === Number(id) )
   if( !user ) uconn.push(connection)
 
 })
+
+// TESTER: =====================================================================
+  wsrouter.mount('*','test-protocol', request => {
+    request.on('requestAccepted', connection => {
+      connection.sendUTF('Baker is listening!')
+    })
+  // get WS.Connection
+    let connection = request.accept(request.origin)
+    const { id } = request.resourceURL.query
+
+  // Event handlers:
+    connection.ID = Number(id)
+    connection.on('message', msg => {
+      const { user,fac,role } = JSON.parse(msg.utf8Data)
+      console.log('Connected Bakers: ', bconn.length)
+      // bconn.find( c => c.id===fac.id ).sendUTF(`Message from User: ${user}, recieved`)
+      //connection.sendUTF(`Message from Baker: ${user}, recieved`)
+    })
+  // Store baker-Connections:
+    let tester = tconn.find( c => c.ID === Number(id) )
+    if( !tester ) tconn.push(connection)
+  })
+// ======================================================================
 
 
 // WebSocketServer Class:

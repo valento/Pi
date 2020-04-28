@@ -2,8 +2,9 @@
 
 var userSocket,
     adminSocket,
+    bakerySocket,
 // ------------ 1 --- 2 ---- 4 ---- 8 --- 16 -- 32 -- 64 --- 128 --- 256
-    roles = ['admin','lab','fac','baker','pos','dlv','test','rep','customer']
+    roles = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
 // Check User Role:
 const getID = (member,id,fac,lab) => {
   switch (member) {
@@ -30,7 +31,7 @@ export const initSocket = (id,membership,fac) => {
   if(role === 'rep') role = 'customer'
 
   let URL = process.env.NODE_ENV==='production'?
-  `ws://sapient-tracer-232311.appspot.com/?id=${ID}` :
+  `wss://sapient-tracer-232311.appspot.com/?id=${ID}` :
   `ws://localhost:8080/?id=${ID}`
 
   console.log('Role/ID: ', role, ID)
@@ -44,7 +45,11 @@ export const initSocket = (id,membership,fac) => {
 }
 
 export const subscribeSocket = cb => {
-  userSocket.onmessage = message => console.log(message.data)
+  userSocket.onmessage = message => {
+    if(!cb) return console.log(message.data)
+    //console.log(message.data)
+    cb(message.data)
+  }
 }
 
 export const fireSocket = (action,payload) => userSocket.send(payload)

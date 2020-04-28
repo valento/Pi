@@ -5,12 +5,14 @@ import { Button,Icon,Confirm } from 'semantic-ui-react'
 import PropType from 'prop-types'
 
 import { setInterface,setLocationFactory,cancelCart } from '../../actions/settup'
+import { closeSocket } from '../../websocket'
 import { clearCart } from '../../actions/cart'
 import Sign from '../brand/sign'
 import UserAdmin from '../ui/user/admin'
 
 const Top = ({
-    city,fac,cities,lan,isAuthorized,user,
+    city,fac,cities,lan,isAuthorized,
+    user,
     setInterface,setLocationFactory,clearCart
   }) => {
   const state = {
@@ -51,15 +53,16 @@ const Top = ({
             setConfirmationOpen(false)
             setLocationFactory({})
             clearCart()
-            setInterface({city: null})
+            closeSocket()
+            setInterface({city: null, socket: false})
           }}
         />
-      <Link to='/'  onClick={ e => setConfirmationOpen(true) }>
+        <Link to='/'  onClick={ e => setConfirmationOpen(true) }>
           <Icon color={city? 'blue' : 'grey'} name='map marker' />{cty}
         </Link>
       </div>
       <div className='four wide column'>
-        <UserAdmin lan={lan} disabled={(isAuthorized && city)? false : true} />
+        <UserAdmin lan={lan} disabled={( isAuthorized && city && user.membership>64 )? false : true} />
       </div>
     </div>
   )
