@@ -31,7 +31,7 @@ export const initSocket = (id,membership,fac) => {
   if(role === 'rep') role = 'customer'
 
   let URL = process.env.NODE_ENV==='production'?
-  `wss://sapient-tracer-232311.appspot.com/?id=${ID}` :
+  `wss://pizzapi.co/?id=${ID}` :
   `ws://localhost:8080/?id=${ID}`
 
   console.log('Role/ID: ', role, ID)
