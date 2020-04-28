@@ -4,6 +4,10 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
+var _https = require('https');
+
+var _https2 = _interopRequireDefault(_https);
+
 var _spdy = require('spdy');
 
 var _spdy2 = _interopRequireDefault(_spdy);
@@ -59,9 +63,10 @@ var _events = require('events');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _dotenv2.default.config({ silent: true });
-var app = (0, _express2.default)();
-var PORT = process.env.PORT || 8080;
+var app = (0, _express2.default)(),
+    server = void 0;
 var ENV = process.env.NODE_ENV || 'development';
+var PORT = process.env.NODE_ENV === 'production' ? process.env.PORT || 8080 : 8080;
 var CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0;
 
 // Initiate WEB SOCKET:
@@ -139,31 +144,33 @@ app.get('/*', function (req, res) {
   }
 });
 
-var server = app.listen(PORT, function () {
-  console.log('Server Running in: ', process.env.PORT);
-});
+if (ENV === 'production') {
+  // TRY HTTP2: no ssl-file
+  var options = {
+    key: _fs2.default.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
+    cert: _fs2.default.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
+  };
+  server = _https2.default.createServer(options, app).listen(PORT, function (error) {
+    if (error) {
+      console.log(error);
+      return process.exit(1);
+    } else {
+      console.log('HTTPS running on: ', PORT);
+    }
+  });
+} else {
+  server = app.listen(PORT, function () {
+    return console.log('Server Running on: ', PORT);
+  });
+}
 
-// TRY HTTP2: no ssl-file
-var options = {
-  key: _fs2.default.readFileSync(__dirname + '/ssl/server.key'),
-  cert: _fs2.default.readFileSync(__dirname + '/ssl/server.srt')
-  //let server = spdy.createServer(options,app).listen(PORT, error => {
-  //  if(error){
-  //    console.log(error)
-  //    return process.exit(1)
-  //  } else {
-  //    console.log('H2 running on: ', PORT)
-  //  }
-  //})
+// ==========================================================================
+// ==========================================================================
+// # WebSocket-Node Server #
+// ==========================================================================
 
-
-  // ==========================================================================
-  // ==========================================================================
-  // # WebSocket-Node Server #
-  // ==========================================================================
-
-  // WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
-};var uconn = [],
+// WS Connection Objects List: user,ref,dlv,pos,baker,fac,lab,root
+var uconn = [],
     rconn = [],
     dconn = [],
     pconn = [],
@@ -174,7 +181,8 @@ var options = {
 // WS protocols:
 var roles = ['root', 'lab', 'fac', 'baker', 'pos', 'dlv', 'test', 'rep', 'customer'];
 var wsServer = new WS({
-  httpServer: server
+  httpServer: server,
+  autoAcceptConnections: false
 });
 var wsrouter = new WSR();
 wsrouter.attachServer(wsServer);
@@ -211,7 +219,7 @@ wsrouter.mount('*', 'baker-protocol', function (request) {
 // CUSTOMER: ==================================================================
 wsrouter.mount('*', 'customer-protocol', function (request) {
   request.on('requestAccepted', function (connection) {
-    connection.sendUTF('Customer accepted!');
+    connection.sendUTF('WS: Customer accepted!');
   });
   // get WS.Connection:
   var connection = request.accept(request.origin);
@@ -227,7 +235,7 @@ wsrouter.mount('*', 'customer-protocol', function (request) {
         role = _JSON$parse2.role,
         order = _JSON$parse2.order;
 
-    console.log('Message from:', connection.ID);
+    console.log('Message from customer:', connection.ID);
     if (order) {
       // ping 'baker-protocol'
       var bkr = bconn.find(function (c) {
@@ -236,14 +244,14 @@ wsrouter.mount('*', 'customer-protocol', function (request) {
       if (bkr) bkr.sendUTF('Order from ' + user + ' to ' + fac);
     }
     uconn.forEach(function (c) {
-      c.sendUTF('One more User: ' + user + ', recieved');
+      c.sendUTF('One more Customer: ' + user + ', recieved');
     });
     //connection.sendUTF(`${uconn.length - 1} Messages from User: ${user}, send`)
   });
 
   connection.on('close', function (reasonCode, description) {
     var c = uconn.indexOf(connection);
-    connection.sendUTF('Connection closed!', uconn[c].ID);
+    connection.sendUTF('WS: Customer connection closed!', uconn[c].ID);
     uconn.splice(c, 1);
   });
 
@@ -257,7 +265,7 @@ wsrouter.mount('*', 'customer-protocol', function (request) {
 // TESTER: =====================================================================
 wsrouter.mount('*', 'test-protocol', function (request) {
   request.on('requestAccepted', function (connection) {
-    connection.sendUTF('Baker is listening!');
+    connection.sendUTF('WS: Tester is listening!');
   });
   // get WS.Connection
   var connection = request.accept(request.origin);
@@ -272,7 +280,7 @@ wsrouter.mount('*', 'test-protocol', function (request) {
         fac = _JSON$parse3.fac,
         role = _JSON$parse3.role;
 
-    console.log('Connected Bakers: ', bconn.length);
+    console.log('WS: Connected Testers: ', tconn.length);
     // bconn.find( c => c.id===fac.id ).sendUTF(`Message from User: ${user}, recieved`)
     //connection.sendUTF(`Message from Baker: ${user}, recieved`)
   });

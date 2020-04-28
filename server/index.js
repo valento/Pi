@@ -1,4 +1,5 @@
 import express from 'express'
+import https from 'https'
 import spdy from 'spdy'
 import path from 'path'
 import fs from 'fs'
@@ -15,9 +16,9 @@ import { getLan,orderListener,adminRouterHit } from './middleware/'
 import { EventEmitter } from 'events'
 
 dotenv.config({silent: true})
-let app = express()
-let PORT = process.env.PORT || 8080
+let app = express(), server
 let ENV = process.env.NODE_ENV || 'development'
+let PORT = process.env.NODE_ENV==='production'? process.env.PORT || 8080 : 8080
 let CURRENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 0
 
 // Initiate WEB SOCKET:
@@ -91,23 +92,23 @@ app.get('/*', (req,res) => {
   }
 })
 
-let server = app.listen(PORT, () => {
-  console.log('Server Running in: ',process.env.PORT)
-})
-
+if(ENV==='production') {
 // TRY HTTP2: no ssl-file
-const options = {
-  key: fs.readFileSync(__dirname + '/ssl/server.key'),
-  cert:fs.readFileSync(__dirname + '/ssl/server.srt'),
+  const options = {
+    key: fs.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
+    cert:fs.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
+  }
+  server = https.createServer(options,app).listen(PORT, error => {
+    if(error){
+      console.log(error)
+      return process.exit(1)
+    } else {
+      console.log('HTTPS running on: ', PORT)
+    }
+  })
+} else {
+  server = app.listen(PORT, () => console.log('Server Running on: ',PORT) )
 }
-//let server = spdy.createServer(options,app).listen(PORT, error => {
-//  if(error){
-//    console.log(error)
-//    return process.exit(1)
-//  } else {
-//    console.log('H2 running on: ', PORT)
-//  }
-//})
 
 
 // ==========================================================================
@@ -120,7 +121,8 @@ let uconn=[], rconn=[], dconn=[], pconn=[], bconn=[], fconn=[], lconn=[], rootco
 // WS protocols:
 var roles = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
 let wsServer = new WS({
-  httpServer: server
+  httpServer: server,
+  autoAcceptConnections: false
 })
 let wsrouter = new WSR()
 wsrouter.attachServer(wsServer)
@@ -150,7 +152,7 @@ wsrouter.mount('*','baker-protocol', request => {
 // CUSTOMER: ==================================================================
 wsrouter.mount('*','customer-protocol', request => {
   request.on('requestAccepted', connection => {
-    connection.sendUTF('Customer accepted!')
+    connection.sendUTF('WS: Customer accepted!')
   })
 // get WS.Connection:
   let connection = request.accept(request.origin)
@@ -160,14 +162,14 @@ wsrouter.mount('*','customer-protocol', request => {
 // Event handlers:
   connection.on('message', msg => {
     const { user,fac,role,order } = JSON.parse(msg.utf8Data)
-    console.log('Message from:', connection.ID)
+    console.log('Message from customer:', connection.ID)
     if(order) {
       // ping 'baker-protocol'
       let bkr = bconn.find( c => c.ID === fac )
       if(bkr) bkr.sendUTF(`Order from ${user} to ${fac}`)
     }
     uconn.forEach( c => {
-      c.sendUTF(`One more User: ${user}, recieved`)
+      c.sendUTF(`One more Customer: ${user}, recieved`)
     })
     //connection.sendUTF(`${uconn.length - 1} Messages from User: ${user}, send`)
 
@@ -175,7 +177,7 @@ wsrouter.mount('*','customer-protocol', request => {
 
   connection.on('close', (reasonCode, description) => {
     let c = uconn.indexOf(connection)
-    connection.sendUTF('Connection closed!', uconn[c].ID)
+    connection.sendUTF('WS: Customer connection closed!', uconn[c].ID)
     uconn.splice(c,1)
   })
 
@@ -188,7 +190,7 @@ wsrouter.mount('*','customer-protocol', request => {
 // TESTER: =====================================================================
   wsrouter.mount('*','test-protocol', request => {
     request.on('requestAccepted', connection => {
-      connection.sendUTF('Baker is listening!')
+      connection.sendUTF('WS: Tester is listening!')
     })
   // get WS.Connection
     let connection = request.accept(request.origin)
@@ -198,7 +200,7 @@ wsrouter.mount('*','customer-protocol', request => {
     connection.ID = Number(id)
     connection.on('message', msg => {
       const { user,fac,role } = JSON.parse(msg.utf8Data)
-      console.log('Connected Bakers: ', bconn.length)
+      console.log('WS: Connected Testers: ', tconn.length)
       // bconn.find( c => c.id===fac.id ).sendUTF(`Message from User: ${user}, recieved`)
       //connection.sendUTF(`Message from Baker: ${user}, recieved`)
     })
