@@ -5,7 +5,8 @@ const config = require('../../config')
 const options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
-  database: config.get('MYSQL_DB')
+  database: config.get('MYSQL_DB'),
+  host: '172.17.0.6'
 }
 
 if( config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'production' ) {

@@ -5,5 +5,6 @@
   "MYSQL_USER":"root",
   "MYSQL_PASSWORD":"K0l0mbin0",
   "MYSQL_DB":"pzzaappdb",
-  "INSTANCE_CONNECTION_NAME":"sapient-tracer-232311:europe-west1:pzzdb"
+  "INSTANCE_CONNECTION_NAME":"sapient-tracer-232311:europe-west1:pzzdb",
+  "NODE_ENV": "production"
 }
