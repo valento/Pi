@@ -1,9 +1,12 @@
 {
   "name": "server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "pilab api",
   "main": "index.js",
   "repository": "https://github.com/valento/Pi.git",
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "author": "v.mundrov",
   "license": "MIT",
   "scripts": {
