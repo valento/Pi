@@ -22,16 +22,19 @@ var options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
   database: config.get('MYSQL_DB'),
-  host: '172.17.0.6'
+  host: 'localhost'
 };
 
 if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'production') {
   options.socketPath = '/cloudsql/' + config.get('INSTANCE_CONNECTION_NAME');
-} else {
-  options.host = 'localhost';
+  //options.host = '172.17.0.6'
+  options.port = 3306;
 }
 
-var db = _mysql2.default.createConnection(options);
+var db = _mysql2.default.createPool(options);
+db.on('connection', function (connection) {
+  return console.log('DB connected');
+});
 
 exports.default = {
   getOne: function getOne() {

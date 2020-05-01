@@ -19,16 +19,17 @@ var config = require('../../config');
 var options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
-  database: config.get('MYSQL_DB')
+  database: config.get('MYSQL_DB'),
+  host: 'localhost'
 };
 
 if (config.get('INSTANCE_CONNECTION_NAME') && config.get('NODE_ENV') === 'production') {
   options.socketPath = '/cloudsql/' + config.get('INSTANCE_CONNECTION_NAME');
-} else {
-  options.host = 'localhost';
+  options.port = 3306;
 }
 
-var db = _mysql2.default.createConnection(options);
+//db = mysql.createConnection(options)
+var db = _mysql2.default.createPool(options);
 
 exports.default = {
   getOne: function getOne() {

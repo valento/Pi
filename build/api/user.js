@@ -22,16 +22,22 @@ _dotenv2.default.config({ silent: true });
 var options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
-  database: config.get('MYSQL_DB')
+  database: config.get('MYSQL_DB'),
+  host: 'localhost' // 172.17.0.6
 };
 
 if (config.get('INSTANCE_CONNECTION_NAME') && process.env.NODE_ENV === 'production') {
   options.socketPath = '/cloudsql/' + config.get('INSTANCE_CONNECTION_NAME');
-} else {
-  options.host = 'localhost';
+  options.port = 3306;
 }
 
-var db = _mysql2.default.createConnection(options);
+console.log('Pool options: ', options);
+
+var db = _mysql2.default.createPool(options);
+db.on('connection', function (connection) {
+  return console.log('DB connected');
+});
+//db = mysql.createConnection(options)
 
 exports.default = {
 

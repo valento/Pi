@@ -7,16 +7,20 @@ dotenv.config({silent: true})
 const options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
-  database: config.get('MYSQL_DB')
+  database: config.get('MYSQL_DB'),
+  host: 'localhost'// 172.17.0.6
 }
 
 if( config.get('INSTANCE_CONNECTION_NAME') && process.env.NODE_ENV === 'production' ) {
   options.socketPath = `/cloudsql/${config.get('INSTANCE_CONNECTION_NAME')}`
-} else {
-  options.host = 'localhost'
+  options.port = 3306
 }
 
-const db = mysql.createConnection(options)
+console.log('Pool options: ',options)
+
+const db = mysql.createPool(options)
+db.on('connection', connection => console.log('DB connected'))
+//db = mysql.createConnection(options)
 
 export default {
 
