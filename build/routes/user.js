@@ -121,6 +121,7 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
         number = _results$.number,
         prime = _results$.prime,
         open = _results$.open,
+        checkin = _results$.checkin,
         sat_open = _results$.sat_open,
         sat_close = _results$.sat_close,
         sun_open = _results$.sun_open,
@@ -154,8 +155,8 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
         //}
       };
     });
-    facs = Object.assign({ id: id, city: city, name: name, number: number, prime: prime, open: open,
-      sat_open: sat_open, sat_close: sat_close, sun_open: sun_open, checkin: checkin,
+    facs = Object.assign({ id: id, city: city, name: name, number: number, prime: prime, open: open, checkin: checkin,
+      sat_open: sat_open, sat_close: sat_close, sun_open: sun_open,
       sun_close: sun_close, vacation_end: vacation_end, vacation_start: vacation_start,
       delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products }, { street: st });
     res.status(200).json(facs);

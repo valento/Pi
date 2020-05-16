@@ -68,7 +68,9 @@ const Top = ({
         </Link>
       </div>
       <div className='four wide column'>
-        <UserAdmin lan={lan} disabled={( isAuthorized && city && user.membership>64 )? false : true} />
+        <UserAdmin lan={lan}
+          disabled={( isAuthorized && city && user.membership>64 && user.membership!==1 )? false : true} 
+        />
       </div>
     </div>
   )

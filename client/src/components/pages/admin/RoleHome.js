@@ -3,17 +3,20 @@ import { connect } from 'react-redux'
 import { Button,Divider } from 'semantic-ui-react'
 import { Route,Switch,Link } from 'react-router-dom'
 
+import { userSignedIn } from '../../../actions/auth'
+import setAuthHeader from '../../../utils/setAuthHeader'
+
 import BakerAdmin from './fac/BakerAdmin'
 import TesterPage from './TesterPage'
 import AllAdminHome from './AllHome'
 
 import { subscribeSocket,fireSocket,initSocket } from '../../../websocket'
 
-const RoleHome = ({uid,lan,membership,...rest}) => {
+const RoleHome = ({uid,lan,membership,userSignedIn,dispatch,...rest}) => {
   //initSocket(uid,membership,fac.id)
   //subscribeSocket()
 
-  const state={
+  const state = {
     ui: {
       en:['Bakery: ','Open Session','boss','lab','fac','baker','delivery','tester','logout'],
       es:['Panadería: ','Iniciar sesión','boss','lab','fac','baker','delivery','tester','logout'],
@@ -22,7 +25,10 @@ const RoleHome = ({uid,lan,membership,...rest}) => {
   }
 
   const logout = () => {
-    if(membership < 64) console.log(membership)
+    console.log('Logout this User')
+    localStorage.clear()
+    setAuthHeader()
+    userSignedIn({})
   }
 
   const { url,path } = rest.match
@@ -50,7 +56,7 @@ console.log('Role: ', _path, membership)
               icon='stop circle outline'
               color='blue'
               content={state.ui[lan][8]}
-              onCLick={e=>logout()}
+              onClick={e => logout()}
             />
         </Button.Group>
       </div>
@@ -75,4 +81,4 @@ const mapStateToProps = state => ({
   fac: state.facs
 })
 
-export default connect(mapStateToProps)(RoleHome)
+export default connect(mapStateToProps, { userSignedIn })(RoleHome)
