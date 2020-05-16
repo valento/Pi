@@ -1,8 +1,7 @@
-//let WebSocketClient = require('websocket').w3cwebsocket
+// let WebSocketClient = require('websocket').w3cwebsocket
+import api from './api'
 
 var userSocket,
-    adminSocket,
-    bakerySocket,
 // ------------ 1 --- 2 ---- 4 ---- 8 --- 16 -- 32 -- 64 --- 128 --- 256
     roles = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
 // Check User Role:
@@ -38,22 +37,30 @@ export const initSocket = (id,membership,fac) => {
   console.log('WS on: ', URL)
 
   userSocket = new WebSocket(URL,`${role}-protocol`)
-  // listening for any userSocket error
+// listening for any userSocket error
   userSocket.onerror = error => console.log('WebSocket error: ' + error)
 
-  userSocket.onopen = () => console.log('Socket on Client')
+  userSocket.onopen = () => console.log(`${role}-Socket on Client`)
+
+// api.settup.userSocket.member = membership
 }
 
 export const subscribeSocket = cb => {
+console.log('Socket Subscribed')
   userSocket.onmessage = message => {
+    console.log(message.data)
     if(!cb) return console.log(message.data)
-    //console.log(message.data)
+// console.log(message.data)
     cb(message.data)
   }
 }
 
-export const fireSocket = (action,payload) => userSocket.send(payload)
+export const fireSocket = (action,payload) => {
+// todo: check action type
+  userSocket.send(payload)
+}
 
 export const closeSocket = id => {
+  //api.settup.setupFac({ data: {open: false}, id:id })
   userSocket.close()
 }

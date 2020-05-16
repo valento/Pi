@@ -107,7 +107,7 @@ adminRouter.post('/location/:type', (req,res,next) => {
 // =========== ADMIN FACs: ================================================
 // ----------- BAKER GET ORDERS: ------------------------------------------
 adminRouter.get('/fac/:id/:table', (req,res,next) => {
-  req.mediator.emit('baker.login')
+  //req.mediator.emit('baker.login')
   const { id,table } = req.params
   api.getList(table,['*'],Object.assign({fac_id:id},{status: 1}))
   .then( response => {

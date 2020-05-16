@@ -14,15 +14,15 @@ import AppSetup from '../ui/AppSetup'
 
 import { signUp } from '../../actions/auth'
 import { userInit,getLocalFacs } from '../../actions/user'
-import { setInterface,getFacStore } from '../../actions/settup'
-import { initSocket,subscribeSocket } from '../../websocket'
+import { setInterface,getFacStore,countNewOrders } from '../../actions/settup'
+import { initSocket,subscribeSocket,fireSocket } from '../../websocket'
 
 const HomePage = ({
   isAuthorized,user,
   fac,
   lan,
   city,one_city,cities,socket,
-  signUp,userInit,getLocalFacs,getFacStore,setInterface
+  signUp,userInit,getLocalFacs,getFacStore,setInterface,countNewOrders
 }) => {
   const state = {
     ui: {
@@ -35,7 +35,6 @@ const HomePage = ({
   const { membership,new_user,username,uid } = user
 
   let newUser = new_user === undefined || new_user
-  console.log('HomePage-New User?: ', newUser)
   let cty = !!one_city? one_city : city
 
 // Check User Role:
@@ -65,7 +64,16 @@ const HomePage = ({
   if(isAuthorized && Object.keys(fac).length>0 && !socket) {
     initSocket(uid,membership,fac.id)
     setInterface({socket: true})
-    subscribeSocket(msg=>console.log(msg))
+    switch(membership) {
+      case 8 :
+        //subscribeSocket(countNewOrders)
+        break
+      case 12 :
+        //subscribeSocket(countNewOrders)
+        break
+      default :
+        subscribeSocket( msg => console.log(msg))
+    }
   }
 
   return (
@@ -104,7 +112,7 @@ const HomePage = ({
             <Button basic color='blue'
               as={Link}
               disabled={!city}
-              to={'/admin/home'}
+              to={membership === 1 ? '/admin/boss' : '/admin/home'}
             >
               Hello, {_mbr[_mbr.length-1]}!
             </Button>
@@ -134,4 +142,5 @@ export default connect(mapStateToProps, {
   signUp,userInit,
   getLocalFacs,
   setInterface,
-  getFacStore } )(HomePage)
+  getFacStore,
+  countNewOrders } )(HomePage)

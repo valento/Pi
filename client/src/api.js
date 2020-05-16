@@ -6,7 +6,8 @@ export default {
     getLocationList: (item,id) => axios.get('/admin/location/'+item+'/'+id).then( res => res.data ),
     getProductList: lan => axios.get('/products/'+lan).then( res => res.data ),
     getLocation: ref => axios.get('/admin/location/ref/'+ref).then( res => res.data ),
-    getLocationFac: loc => axios.post('/user/facs', {id:loc}).then( res => res.data )
+    getLocationFac: loc => axios.post('/user/facs', {id:loc}).then( res => res.data ),
+    setupFac: ({id,...rest}) => axios.post('/user/fac/'+id, rest).then( res => {})
   },
   user: {
     signup: credentials => axios.post('/auth', { credentials }).then( res => res.data.user ),

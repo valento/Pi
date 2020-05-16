@@ -30,8 +30,8 @@ const CollectionTable =
             return (
               <Grid.Row>
                 <Grid.Column width={8}>{e.id}</Grid.Column>
-              <Grid.Column width={4}>{e.ordered_at? `${ordered.getHours()}:${ordered.getMinutes()}`: '--'}</Grid.Column>
-            <Grid.Column width={4}>{e.pick_up_time? `${pickup.getHours()}:${pickup.getMinutes()}`: '--'}</Grid.Column>
+                <Grid.Column width={4}>{e.ordered_at? `${ordered.getHours()}:${ordered.getMinutes()}`: '--'}</Grid.Column>
+                <Grid.Column width={4}>{e.pick_up_time? `${pickup.getHours()}:${pickup.getMinutes()}`: '--'}</Grid.Column>
               </Grid.Row>
             )
           })}

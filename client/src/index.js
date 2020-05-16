@@ -23,7 +23,8 @@ const initState = {
     lan: 'bg',
     socket: false,
     one_city: 0,
-    banner: false
+    banner: false,
+    order_counter: 0
   },
   products: [],
   order: {},

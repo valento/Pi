@@ -40,25 +40,25 @@ const App = ({location,lan}) => {
       <Route location={location} path='/' exact component={HomePage}/>
       <Route location={location} path='/' component={Top}/>
 {/* ========= ADMIN ================== */}
-      <AdminRoute location={location} path='/admin/location' exact lan={lan} component={Locations}/>
-      <AdminRoute location={location} path='/admin/home' lan={lan} component={RoleHome}/>
-    {/*<AdminRoute location={location} path='/admin/:role' exact lan={lan} component={RoleHome}/>*/}
+      <AdminRoute location={location} path='/admin/location' exact component={Locations}/>
+      <AdminRoute location={location} path='/admin/home' component={RoleHome}/>
+    {/*<AdminRoute location={location} path='/admin/:role' exact component={RoleHome}/>*/}
 {/* !!!! MAKE THIS ADMIN ROUTE !!!!! -------------------------------------------------------------------*/}
-      {/*<AdminRoute location={location} path='/admin/home' exact lan={lan} component={AdminHome}/>*/}
-      <AdminRoute location={location} path='/admin/boss' exact lan={lan} component={AdminHome}/>
+      {/*<AdminRoute location={location} path='/admin/home' exact component={AdminHome}/>*/}
+      <AdminRoute location={location} path='/admin/boss' exact component={AdminHome}/>
 {/* ------------ ----------- ---------- ---------- ---------- ---------- ----------- ----------- -------*/}
-      <UserRoute location={location} path='/admin' exact lan={lan} component={AdminLogin}/>
+      <UserRoute location={location} path='/admin' exact component={AdminLogin}/>
 {/* ========= USER ================== */}
-      <UserRoute location={location} path='/order' exact lan={lan} component={OrdersPage}/>
-      <UserRoute location={location} path='/catalog' exact lan={lan} component={CatalogPage}/>
-      <UserRoute location={location} path='/repeat' exact lan={lan} component={RepeatPage}/>
-      <UserRoute location={location} path='/play' exact lan={lan} component={PlayPage}/>
+      <UserRoute location={location} path='/order' exact component={OrdersPage}/>
+      <UserRoute location={location} path='/catalog' exact component={CatalogPage}/>
+      <UserRoute location={location} path='/repeat' exact component={RepeatPage}/>
+      <UserRoute location={location} path='/play' exact component={PlayPage}/>
 {/* Switch this for mmicrofrontend CART-route */}
 {/*<Route location={location} path='/cart' exact component={Cart} />*/}
-      <UserRoute location={location} path='/cart' exact lan={lan} component={CartPage}/>
-      <UserRoute location={location} path='/user' exact lan={lan} component={UserPage}/>
-      <UserRoute location={location} path='/user/locations' exact lan={lan} component={UserLocationsPage}/>
-      <UserRoute location={location} path='/user/location/:id' exact lan={lan} component={UserLocationEdit}/>
+      <UserRoute location={location} path='/cart' exact component={CartPage}/>
+      <UserRoute location={location} path='/user' exact component={UserPage}/>
+      <UserRoute location={location} path='/user/locations' exact component={UserLocationsPage}/>
+      <UserRoute location={location} path='/user/location/:id' exact component={UserLocationEdit}/>
     </div>
   )
 }

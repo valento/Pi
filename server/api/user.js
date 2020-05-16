@@ -57,7 +57,6 @@ console.log(sql)
         db.query(sql, ( err,results ) => {
           if(err) return reject(err)
           resolve(results)
-console.log('API CheckOne User: ',err)
         })
       })
     },

@@ -53,6 +53,17 @@ userRouter.get('/', getUser, (req,res,next) => {
   })
   .catch(err => res.status(500).json({ error: { message: err }}))
 })
+// UPDATE FAC: state
+userRouter.post('/fac/:id', (req,res,next) => {
+  const { data } = req.body
+  data.id = Number(req.params.id)
+  api.updateOne(data,'fac')
+  .then( () => {
+    res.status(200).json({})
+  })
+  .catch( err => res.status(500).json({ error: { message: err }}))
+})
+
 
 // GET FAC for users location
 userRouter.post('/facs', getLan, (req,res,next) => {
@@ -82,7 +93,7 @@ userRouter.post('/facs', getLan, (req,res,next) => {
       //}
     })
     facs = Object.assign({id,city,name,number,prime,open,
-      sat_open,sat_close,sun_open,
+      sat_open,sat_close,sun_open,checkin,
       sun_close,vacation_end,vacation_start,
       delivery,bottleneck,mobile},{products:products},{street: st})
     res.status(200).json(facs)
@@ -92,7 +103,7 @@ userRouter.post('/facs', getLan, (req,res,next) => {
 
 // update users location: location details
 userRouter.post('/location/:id', (req,res,next) => {
-  const {data} = req.body
+  const { data } = req.body
   console.log('User Router: ',data)
   data.id = Number(req.params.id)
   api.updateOne(data,'user_location')

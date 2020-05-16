@@ -149,7 +149,7 @@ adminRouter.post('/location/:type', function (req, res, next) {
 // =========== ADMIN FACs: ================================================
 // ----------- BAKER GET ORDERS: ------------------------------------------
 adminRouter.get('/fac/:id/:table', function (req, res, next) {
-  req.mediator.emit('baker.login');
+  //req.mediator.emit('baker.login')
   var _req$params2 = req.params,
       id = _req$params2.id,
       table = _req$params2.table;

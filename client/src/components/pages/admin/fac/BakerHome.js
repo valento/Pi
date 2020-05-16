@@ -1,57 +1,51 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Button,Divider,Table } from 'semantic-ui-react'
+import { Button,Divider,Checkbox,Grid } from 'semantic-ui-react'
+import { subscribeSocket,fireSocket,closeSocket } from '../../../../websocket'
+import { countNewOrders,countNewFacCustomers,setFac } from '../../../../actions/settup'
 
-import { setInterface } from '../../../../actions/settup'
-import { getOrders } from '../../../../actions/order'
-import { subscribeSocket,fireSocket,initSocket } from '../../../../websocket'
+class BakerHome extends React.Component {
+  state = {
+    checkin: false,
+    open: false
+  }
 
-import CollectionTable from '../../../ui/order/CollectionTable'
-
-const BakerHome = ({uid,lan,fac,membership,socket,getOrders}) => {
-
-  const state={
-    ui: {
-      en:['Bakery: ','Open Session'],
-      es:['Panadería: ','Iniciar sesión'],
-      bg:['Пекарна: ','Отвори Сесия']
+  onChange = (e,{name}) => {
+    this.setState(prevState => ({[name]: !prevState[name]}))
+    this.props.setFac({data: {[name]: !this.state[name]}, id: this.props.id })
+    if( name==='checkin' && !this.state.checkin ) {
+      subscribeSocket(this.props.countNewOrders)
+    } else if( name==='open' && this.state.open ) {
+      closeSocket(this.props.id)
     }
   }
 
-  const [ data, setData ] = useState([])
-
-  const fetchOrders = () => {
-    getOrders(fac.id)
-    .then( data => setData(data) )
-    .catch( err => console.log(err.message) )
-  }
-
-  return (
-      <div className='init padded oval-but'>
-        <Divider horizontal>{`${state.ui[lan][0]}${fac.name}`}</Divider>
-      {/* Incoming Orders Table */}
-        <CollectionTable data={data} member={membership} lan={lan} />
-      {/* =============================================================== */}
-        <Button fluid
-          color='blue'
-          content={state.ui[lan][1]}
-          onClick={e => {
-            console.log('Baker Call API: fetchOrders')
-            fetchOrders()
-            //initSocket(uid,membership,fac.id)
-            //subscribeSocket(setInterface)
-            //fireSocket(null,JSON.stringify({ user: uid, role: membership, fac: fac.id }))
-          }} />
-      </div>
-  )
+  render() {
+    return (
+    <div className='oval-but'>
+      <Divider horizontal>Baker Controls</Divider>
+      <Grid columns={2}>
+        <Grid.Row>
+          <Grid.Column>
+            <Checkbox name='checkin'
+              disabled={this.state.open}
+              label={<label>{this.state.checkin? 'Check-out' : 'Check-in'}</label>}
+              onChange={this.onChange} toggle
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Checkbox name='open'
+              disabled={!this.state.checkin}
+              label={<label>{this.state.open? 'Close' : 'Open'}</label>}
+              onChange={this.onChange} toggle
+            />
+          </Grid.Column>
+        </Grid.Row>
+      </Grid><br/>
+      <Button fluid color='orange' content='CLOSE' /><br/>
+      <Button fluid color='gray' content='PAUSE' />
+    </div>
+  )}
 }
 
-const mapStateToProps = state => ({
-  uid: state.user.uid,
-  socket: state.settings.socket,
-  lan: state.settings.lan,
-  membership: state.user.membership,
-  fac: state.facs
-})
-
-export default connect(mapStateToProps,{ getOrders })(BakerHome)
+export default connect(null,{ countNewOrders,countNewFacCustomers,setFac })(BakerHome)

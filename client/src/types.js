@@ -7,6 +7,9 @@ export const USER_UPDATE_LOCATION = 'USER_UPDATE_LOCATION'
 
 export const SETUP_CHANGED = 'SETUP_CHANGED'
 export const SET_FAC = 'SET_FAC'
+export const FAC_STATE = 'FAC_STATE'
+export const ORDER_COUNTER = 'ORDER_COUNTER'
+export const CUSTOMER_COUNTER = 'CUSTOMER_COUNTER'
 
 export const ORDER_LIST = 'ORDER_LIST'
 export const ORDER_CLEAR = 'ORDER_CLEAR'

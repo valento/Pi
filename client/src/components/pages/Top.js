@@ -11,7 +11,7 @@ import Sign from '../brand/sign'
 import UserAdmin from '../ui/user/admin'
 
 const Top = ({
-    city,fac,cities,lan,isAuthorized,
+    city,fac,cities,lan,isAuthorized,socket,
     user,
     setInterface,setLocationFactory,clearCart
   }) => {
@@ -36,7 +36,13 @@ const Top = ({
   return (
     <div className='ui grid Top'>
       <div className='four wide column'>
-        <Link to='/'><Icon name='home' /></Link>
+        <Link to={ location => {
+          if((!fac.checkin && user.membership < 128) || user.membership > 128) {
+            return {...location, pathname: '/'}
+          }
+        }}>
+          <Icon name='home' color = {!fac.checkin? 'black' : 'grey'} />
+        </Link>
           {city &&
             <Icon.Group>
               <Icon color={fac.open ? 'blue' : 'grey'} name='clock' />
@@ -53,7 +59,7 @@ const Top = ({
             setConfirmationOpen(false)
             setLocationFactory({})
             clearCart()
-            closeSocket()
+            if (socket) closeSocket()
             setInterface({city: null, socket: false})
           }}
         />
@@ -75,6 +81,7 @@ Top.propType = {
 }
 const mapStateToProps = state => ({
   lan: state.settings.lan,
+  socket: state.settings.socket,
   city: state.settings.city,
   fac: state.facs,
   cities: state.settings.cities,

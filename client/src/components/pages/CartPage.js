@@ -7,7 +7,8 @@ import OrderList from '../ui/order/OrderList'
 import UserLocationsList from '../ui/user/UserLocationsList'
 import { getLocationData } from '../../actions/user'
 import { cancelCart,makeCart } from '../../actions/cart'
-//import socket from '../../websocket'
+import { fireSocket } from '../../websocket'
+// import socket from '../../websocket'
 
 class CartPage extends React.Component {
   state = {
@@ -40,7 +41,7 @@ class CartPage extends React.Component {
     locations.forEach( (entry,ind) => {
       getLocationData(entry.location,ind)
     })
-    //socket.send('Cart Component did mount')
+// socket.send('Cart Component did mount')
   }
 
   onOrder = e => {
@@ -54,8 +55,19 @@ class CartPage extends React.Component {
     let total = sum.reduce((acc, cv) => (parseFloat(acc) + parseFloat(cv)).toFixed(2))
 
     if(!delivery){
-      this.props.makeCart({user_location: null, cart: cart, delivery: delivery, fac_id:fac.id, total: total})
-        .then( msg => this.setState({ message: {stat: msg} }) )
+      this.props.makeCart({
+          user_location: null, cart: cart,
+          delivery: delivery, fac_id:fac.id, total: total
+        })
+        .then( msg => {
+          this.setState({ message: {stat: msg} })
+          console.log('Fire Socket!')
+// socket message Object: {sction-type, payload}
+          fireSocket(null,JSON.stringify({
+                user: user.uid, mem: user.membership,
+                fac: fac.id, ordered: true
+              }))
+        } )
         .catch( err => this.setState({ message: {err} }) )
     } else {
       user.locations.forEach( l => {
@@ -77,8 +89,8 @@ class CartPage extends React.Component {
     }
 
 
-    //.catch(err => console.log(err))
-    //console.log('Deliver this: ' + order.length + ', there:' + delLoc)
+// .catch(err => console.log(err))
+// console.log('Deliver this: ' + order.length + ', there:' + delLoc)
   }
 
   render() {

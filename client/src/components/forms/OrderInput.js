@@ -47,6 +47,11 @@ class OrderInput extends React.Component {
     })
   }
 
+  shouldComponentUpdate = nextProps => {
+    if(this.props.category !== nextProps.category) this.setState({item: { id:null, units:null}})
+    return true
+  }
+
   render() {
     const { lan,onAdd,items,category } = this.props
     const { errors,item } = this.state

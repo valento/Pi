@@ -80,7 +80,6 @@ exports.default = {
       db.query(sql, function (err, results) {
         if (err) return reject(err);
         resolve(results);
-        console.log('API CheckOne User: ', err);
       });
     });
   },

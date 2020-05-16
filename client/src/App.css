@@ -391,6 +391,9 @@ p.short {
   flex-direction: column;
   justify-content: center;
 }
+.top-15 {
+  padding-top: 15px;
+}
 .topped {
   padding-top: 35px;
 }
@@ -421,13 +424,24 @@ p.short {
   body {
     color: #666;
   }
+  .ui.input {
+    display: block;
+  }
+  .logo-still {
+    display: block;
+    position: relative;
+    left: 1.5vw;
+    margin: 0 auto;
+  }
   .App-content {
-    height: 95vh;
-    margin: 20px auto;
-    max-width: 460px;
+    margin: 45px auto;
+    max-width: 520px;
     height: 90vh;
     border: 8px solid white;
     border-radius: 24px;
+  }
+  .Top {
+    position: fixed;
   }
   .padded {
     padding-left: 16px;

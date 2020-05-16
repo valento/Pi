@@ -1,12 +1,15 @@
-import { SETUP_CHANGED,PRODUCT_LIST,SET_FAC } from '../types.js'
+import { SETUP_CHANGED,PRODUCT_LIST,
+  SET_FAC,ORDER_COUNTER,CUSTOMER_COUNTER,FAC_STATE
+} from '../types.js'
 import api from '../api'
 
 export const setInterface = data => ({type: SETUP_CHANGED, data})
 
-export const setLocationFactory = fac => ({
-  type: SET_FAC,
-  fac
-})
+export const countNewOrders = () => ({type: ORDER_COUNTER})
+export const countNewFacCustomers = () => ({type: CUSTOMER_COUNTER})
+export const facSetup = data => ({type: FAC_STATE, data})
+
+export const setLocationFactory = fac => ({type: SET_FAC, fac})
 
 export const setUI = ui => dispatch =>
 api.settup.setUI(ui).then( data => {
@@ -29,6 +32,12 @@ api.settup.getProductList(lan).then( data => {
 export const getFacStore = ({city}) => dispatch =>
 api.settup.getLocationFac(city).then( fac => {
   dispatch(setLocationFactory(fac))
+})
+
+export const setFac = settings => dispatch =>
+api.settup.setupFac(settings).then( () => {
+  const { data } = settings
+  dispatch(facSetup(data))
 })
 
 export const checkReference = ref => dispatch =>

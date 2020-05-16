@@ -1,4 +1,4 @@
-import { SET_FAC } from '../types'
+import { SET_FAC,FAC_STATE } from '../types'
 
 export const facs = (state={},action) => {
 
@@ -6,6 +6,8 @@ export const facs = (state={},action) => {
     case SET_FAC:
     console.log('New fac?: ',action.facs)
       return action.fac
+    case FAC_STATE:
+      return {...state, ...action.data}
     default:
       return state
   }

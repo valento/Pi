@@ -253,7 +253,7 @@ mobile INT NOT NULL,
 location_id INT NOT NULL,
 pod INT DEFAULT 0,
 status INT NOT NULL DEFAULT 33,
-open TINYINT(1),
+open TINYINT(1) DEFAULT 0,
 checkin TINYINT(1) DEFAULT 0,
 bottleneck INT DEFAULT 5,
 work_open TIME DEFAULT '11:0:0',
@@ -593,6 +593,17 @@ cat_related INT NOT NULL DEFAULT 1,
 
 # ---------------- 1 --- 2 ------- 4 ---- 8 --- 16 ----- 32 ----- 64 --- 128 -- 256 -- 512
 # order.STATUS = enter,recieve,inprocess,exit,transit,delivered,delayed,missing,reject,cancel
+# order.status {
+enter = system
+recieved = FAC pulled that order
+inprocess = FAC is working on it
+exit = FAC has finieshed
+transit = DLVR took it
+delayed = delayed for any reason (baking or transit)
+missing = lost for some reason
+rejected = CUSTOMER rejected order
+calnceled = CUSTOMER canceled order
+}
 # order.USER_LOCATION = id of user_location -> get location id for delivery-app view
 # order.ADD_TIME = pizza.ADD_TIME average
 # order.DELIVERY = true/false
