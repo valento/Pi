@@ -102,7 +102,7 @@ const HomePage = ({
             init={userInit}
             lan={lan} pass={false}
           /> :
-          <MainMenu lan={lan} />
+          membership>64? <MainMenu lan={lan} /> : null
         }
 
 {/* For ADMIN/LAB/FAC/DELIVERY only Interface: */}

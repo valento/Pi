@@ -5,15 +5,18 @@ import PropType from 'prop-types'
 import { Divider,Button,Icon } from 'semantic-ui-react'
 import UserLocationsList from '../ui/user/UserLocationsList'
 import UserPerksList from '../ui/user/UserPerksList'
+
+import { userSignedIn } from '../../actions/auth'
+import setAuthHeader from '../../utils/setAuthHeader'
 import { getLocationData } from '../../actions/user'
 
 class UserPage extends React.Component {
 
   state = {
     ui: {
-      en: ['Your Locations:','New','Edit','Your Perks:'],
-      es: ['Tus direciones:','Nueva','Editar','Tus obsequios:'],
-      bg: ['Твоите Адреси:','Адрес','Промени','Твоите награди:']
+      en: ['Your Locations:','New','Edit','Dashboard:','Your Perks:'],
+      es: ['Tus direciones:','Nueva','Editar','Controles:','Tus obsequios:'],
+      bg: ['Твоите Адреси:','Адрес','Промени','Контроли:','Твоите награди:']
     }
   }
 
@@ -39,12 +42,19 @@ class UserPage extends React.Component {
     })
   }
 
+  logout = () => {
+    console.log('Logout this User')
+    localStorage.clear()
+    setAuthHeader()
+    this.props.userSignedIn({})
+  }
+
   render() {
     const {lan,user,locations,free_pizza,city,fac} = this.props
     const ui = this.state.ui[lan]
     let listLocations = locations ? locations.filter( l => l.city===city ) : []
     return (
-      <div className='App-content topped padded'>
+      <div className='App-content topped padded oval-but'>
         <Divider horizontal>{ui[0]}</Divider>
       <UserLocationsList disabled={fac.delivery === 4} view='list' stat={false} fac={fac} list={listLocations} lan={lan} />
         {(fac.delivery !== 4 || listLocations.length !== 0) && <Divider horizontal>&#9675;</Divider>}
@@ -55,7 +65,16 @@ class UserPage extends React.Component {
           </Button.Group>
         </div>}
         <Divider horizontal>{ui[3]}</Divider>
+        <Divider horizontal>{ui[4]}</Divider>
         <UserPerksList has_perks={free_pizza} new_user={user.new_user} />
+        <Divider horizontal />
+        <Button fluid color='red'
+          content='LOGOUT'
+          as={Link} to={'/'}
+          onClick={e => {
+            this.logout()
+          }}
+        />
       </div>
     )
   }
@@ -79,4 +98,4 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-export default connect(mapStateToProps,{ getLocationData })(UserPage)
+export default connect(mapStateToProps,{ getLocationData,userSignedIn })(UserPage)

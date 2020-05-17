@@ -28,7 +28,7 @@ class MainMenu extends React.Component {
       <div className='menu-bar'>
         <Button.Group color='grey'>
           <Button as={Link} to='/play' icon='play circle' content={ui[0]}/>
-          <Button disabled={membership<64} as={Link} to='/order' icon='food' content={ui[1]} />
+          <Button as={Link} to='/order' icon='food' content={ui[1]} />
           <Button as={Link} to='/repeat' icon='undo' content={ui[2]} />
         </Button.Group>
       </div>

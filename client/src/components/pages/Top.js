@@ -37,7 +37,7 @@ const Top = ({
     <div className='ui grid Top'>
       <div className='four wide column'>
         <Link to={ location => {
-          if((!fac.checkin && user.membership < 128) || user.membership > 128) {
+          if((!fac.checkin && user.membership < 63) || user.membership > 63) {
             return {...location, pathname: '/'}
           }
         }}>
@@ -69,7 +69,7 @@ const Top = ({
       </div>
       <div className='four wide column'>
         <UserAdmin lan={lan}
-          disabled={( isAuthorized && city && user.membership>64 && user.membership!==1 )? false : true} 
+          disabled={( isAuthorized && city && user.membership>64 && user.membership!==1 )? false : true}
         />
       </div>
     </div>
