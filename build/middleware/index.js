@@ -20,7 +20,7 @@ var getUser = exports.getUser = function getUser(req, res, next) {
     console.log('/user API-decoded: ', decoded);
     req.email = decoded.email;
     req.uid = decoded.uid;
-    req.member = decoded.uid;
+    req.member = decoded.member;
     next();
   } catch (err) {
     return res.status(401).json({ error: { message: 'Invalid token' } });
