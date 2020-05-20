@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button,Divider } from 'semantic-ui-react'
 
 const TesterPage = ({member,lan}) => {
   return (

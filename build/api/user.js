@@ -56,12 +56,13 @@ exports.default = {
     });
     //const sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
 
-    if (email === 'valentin.mundrov@gmail.com') {
-      sql = 'INSERT INTO user (email,password,token,membership) VALUES(\'' + email + '\',\'' + password + '\',\'' + token + '\',1)';
-    } else {
-      sql = 'INSERT INTO user (' + _keys + ') VALUES (' + _values + ')';
-      //`INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
-    }
+    sql = 'INSERT INTO user (' + _keys + ') VALUES (' + _values + ')';
+    //if(email==='valentin.mundrov@gmail.com'){
+    //  sql = `INSERT INTO user (email,password,token,membership) VALUES('${email}','${password}','${token}',1)`
+    //} else {
+    //
+    //  //`INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
+    //}
     console.log('Auth Insert: ', sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, params, function (err, result) {
@@ -174,7 +175,6 @@ exports.default = {
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         if (err) return reject(err);
-        //console.log('Get this FAC store: ', results[0])
         resolve(results);
       });
     });

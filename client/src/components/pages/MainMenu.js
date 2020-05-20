@@ -1,10 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import PropType from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
-
-import { getProductList } from '../../actions/settup'
 
 class MainMenu extends React.Component {
 
@@ -16,13 +12,8 @@ class MainMenu extends React.Component {
     }
   }
 
-  componentDidMount() {
-    const { city, getProductList } = this.props
-    //getProductList(city)
-  }
-
   render(){
-    const { lan,city,membership } = this.props
+    const { lan } = this.props
     const ui = this.state.ui[lan]
     return (
       <div className='menu-bar'>
@@ -37,16 +28,4 @@ class MainMenu extends React.Component {
 
 }
 
-MainMenu.propType = {
-  city: PropType.number.isRequired,
-  user: PropType.shape({
-    membership: PropType.number.isRequired
-  }).isRequired
-}
-
-const mapStateToProps = state => ({
-  city: state.settings.city,
-  membership: state.user.membership
-})
-
-export default connect(mapStateToProps, { getProductList })(MainMenu)
+export default MainMenu

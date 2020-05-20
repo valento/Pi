@@ -1,9 +1,8 @@
-// let WebSocketClient = require('websocket').w3cwebsocket
-import api from './api'
-
 var userSocket,
 // ------------ 1 --- 2 ---- 4 ---- 8 --- 16 -- 32 -- 64 --- 128 --- 256
-    roles = ['root','lab','fac','baker','pos','dlv','test','rep','customer']
+    roles = ['root','lab','fac','baker','pos','dlv','test','rep','customer'],
+    role
+
 // Check User Role:
 const getID = (member,id,fac,lab) => {
   switch (member) {
@@ -14,6 +13,7 @@ const getID = (member,id,fac,lab) => {
     default : return id
   }
 }
+
 const getRole = member => {
   let adm = member ? (member).toString(2).split('').reverse() : 0
   console.log('memberships: ',adm)
@@ -23,10 +23,10 @@ const getRole = member => {
   return r = _roles.length > 1 ? _roles[_roles.length - 1] : _roles[0]
 }
 
-
-export const initSocket = (id,membership,fac) => {
+// Inititate Socket Connection:
+export const initSocket = (id,membership,fac,cb) => {
   let ID = getID(membership,id,fac,null)
-  let role = getRole(membership)
+  role = getRole(membership)
   if(role === 'rep') role = 'customer'
 
   let URL = process.env.NODE_ENV==='production'?
@@ -40,18 +40,20 @@ export const initSocket = (id,membership,fac) => {
 // listening for any userSocket error
   userSocket.onerror = error => console.log('WebSocket error: ' + error)
 
-  userSocket.onopen = () => console.log(`${role}-Socket on Client`)
-
+  userSocket.onopen = () => {
+    console.log(`${role}-Socket on Client`)
+    cb({socket: true})
+  }
 // api.settup.userSocket.member = membership
 }
 
 export const subscribeSocket = cb => {
-console.log('Socket Subscribed')
+  console.log(`${role} Suscribed: ${cb}`)
   userSocket.onmessage = message => {
-    console.log(message.data)
+  console.log('WS: ',message.data)
+    const data = JSON.parse(message.data)
     if(!cb) return console.log(message.data)
-// console.log(message.data)
-    cb(message.data)
+    cb(data)
   }
 }
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Form, Button } from 'semantic-ui-react'
 
 import Credentials from '../../forms/credentials'
 

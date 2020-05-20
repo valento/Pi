@@ -29,7 +29,7 @@ class Catalog extends React.Component {
 
     return (
       <div className='App-content topped padded'>
-        <ProductsList view='ver' onOrder={this.onOrder} products={list} />
+        <ProductsList view='ver' lan={lan} onOrder={this.onOrder} products={list} />
       </div>
     )
   }

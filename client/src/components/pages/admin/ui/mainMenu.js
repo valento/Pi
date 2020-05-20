@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
 
 const MainMenu = ({lan,member,onMenu}) => {
@@ -9,7 +8,7 @@ const MainMenu = ({lan,member,onMenu}) => {
     es: ['USER','LOC','PRO','LAB','FAC'],
     bg: ['USER','LOC','PRO','LAB','FAC']
   }
-console.log(Math.log2(member)+2)
+  
   return (
     <Button.Group color='blue' widths={ui[lan].length}>
       {ui[lan].map( (el,ind) =>

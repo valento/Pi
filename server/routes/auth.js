@@ -14,11 +14,33 @@ let authRouter = express.Router({
 authRouter.use(bodyParser.json())
 
 authRouter.post('/', (req,res,next) => {
-  let new_user = true, user, username, token, confirmToken, pass
+  let new_user = true, user, uname,
+      token, confirmToken, pass, role, member
   const { email } = req.body.credentials
-  const tester = email.split('.')[0]==='tester' ? true : false
+  console.log(email.split('.')[0])
+// Tester User:
   const [ t,...rest ] = email.split('@')[0].split('.')
-  if(tester) { username = rest.join('.') }
+// Check ROLE-USER: (baker,tester,boss)
+  switch( email.split('.')[0] ) {
+    case 'boss':
+      role = email.split('.')[0]
+      member = 1
+      uname = 'Boss Valento'
+    break
+    case 'baker':
+      role = email.split('.')[0]
+      member = 8
+      uname = rest.join('.')
+    break
+    case 'tester':
+      role = email.split('.')[0]
+      member = 64
+      uname = rest.join('.')
+    break
+    default: role = null
+  }
+  //if(tester) {  }
+
   const jwtOptions = { expiresIn: '240d' }
   const scope = [
     'username','userlast','uid','verified','orders','credit',
@@ -28,7 +50,6 @@ authRouter.post('/', (req,res,next) => {
 // --- Login -> User exist but No token: ---
     if(results.length > 0){
       const { uid } = results[0]
-      token = jwt.sign({email:email,uid:uid},process.env.JWT_SECRET,jwtOptions)
       //user = Object.assign({},{token: token, new_user: false},results[0])
 
       try {
@@ -41,6 +62,8 @@ authRouter.post('/', (req,res,next) => {
             uid,username,userlast,verified,orders,credit,
             gender,bday,membership,language,status,...rest
           } = results[0]
+
+          token = jwt.sign({email:email,uid:uid,member:membership},process.env.JWT_SECRET,jwtOptions)
 
           user = Object.assign({},{token: token, new_user: false},{
             uid,username,userlast,verified,orders,credit,
@@ -69,13 +92,15 @@ authRouter.post('/', (req,res,next) => {
     }
 // --- SignUp -> New User: ---
     else {
+      console.log('Insert New User',role)
 // Generate Pass and Confirmation Token:
       confirmToken = jwt.sign({ email },process.env.JWT_SECRET,jwtOptions)
       pass = generator.generate({
         length: 8,
         numbers: true
       })
-      let u = tester ? {username: rest.join('.'),membership: 64} : {}
+      let u = role ? {username: uname,membership: member} : {}
+      console.log('Object to Insert: ',u)
 // encrypt password and save it to DB:
       bcrypt.hash(pass, 8, (err,hash) => {
         if(!err){
@@ -84,9 +109,9 @@ authRouter.post('/', (req,res,next) => {
             .then( id => {
   // Send mail to User with confirmToken:
               sendConfirmMail(email,confirmToken)
-              console.log('authRouter:',id)
+              console.log('authRouter:',id,member)
   // Generate Access User Token for localStorage:
-              token = jwt.sign({email:email,uid:id},process.env.JWT_SECRET,jwtOptions)
+
               try {
                 api.getOne({ email: email },'user',scope)
                 .then( results => {
@@ -95,6 +120,8 @@ authRouter.post('/', (req,res,next) => {
                     uid,username,userlast,verified,orders,credit,
                     gender,bday,membership,language,status,...rest
                   } = results[0]
+
+                  token = jwt.sign({email:email,uid:id,member:membership},process.env.JWT_SECRET,jwtOptions)
 
                   user = Object.assign({},{token: token, new_user: true},{
                     uid,username,userlast,verified,orders,credit,

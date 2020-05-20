@@ -2,13 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PropType from 'prop-types'
-import { Divider,Button,Icon } from 'semantic-ui-react'
+import { Divider,Button } from 'semantic-ui-react'
 import UserLocationsList from '../ui/user/UserLocationsList'
 import UserPerksList from '../ui/user/UserPerksList'
 
 import { userSignedIn } from '../../actions/auth'
 import setAuthHeader from '../../utils/setAuthHeader'
 import { getLocationData } from '../../actions/user'
+import { setInterface } from '../../actions/settup'
+import { closeSocket } from '../../websocket'
 
 class UserPage extends React.Component {
 
@@ -47,6 +49,8 @@ class UserPage extends React.Component {
     localStorage.clear()
     setAuthHeader()
     this.props.userSignedIn({})
+    closeSocket()
+    this.props.setInterface({socket: false})
   }
 
   render() {
@@ -98,4 +102,4 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-export default connect(mapStateToProps,{ getLocationData,userSignedIn })(UserPage)
+export default connect(mapStateToProps,{ getLocationData,userSignedIn,setInterface })(UserPage)

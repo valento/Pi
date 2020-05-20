@@ -47,30 +47,51 @@ authRouter.use(_bodyParser2.default.json());
 authRouter.post('/', function (req, res, next) {
   var new_user = true,
       user = void 0,
-      username = void 0,
+      uname = void 0,
       token = void 0,
       confirmToken = void 0,
-      pass = void 0;
+      pass = void 0,
+      role = void 0,
+      member = void 0;
   var email = req.body.credentials.email;
 
-  var tester = email.split('.')[0] === 'tester' ? true : false;
+  console.log(email.split('.')[0]);
+  // Tester User:
 
   var _email$split$0$split = email.split('@')[0].split('.'),
       _email$split$0$split2 = _toArray(_email$split$0$split),
       t = _email$split$0$split2[0],
       rest = _email$split$0$split2.slice(1);
+  // Check ROLE-USER: (baker,tester,boss)
 
-  if (tester) {
-    username = rest.join('.');
+
+  switch (email.split('.')[0]) {
+    case 'boss':
+      role = email.split('.')[0];
+      member = 1;
+      uname = 'Boss Valento';
+      break;
+    case 'baker':
+      role = email.split('.')[0];
+      member = 8;
+      uname = rest.join('.');
+      break;
+    case 'tester':
+      role = email.split('.')[0];
+      member = 64;
+      uname = rest.join('.');
+      break;
+    default:
+      role = null;
   }
+  //if(tester) {  }
+
   var jwtOptions = { expiresIn: '240d' };
   var scope = ['username', 'userlast', 'uid', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status'];
   _user2.default.checkOne(email, scope).then(function (results) {
     // --- Login -> User exist but No token: ---
     if (results.length > 0) {
       var uid = results[0].uid;
-
-      token = _jsonwebtoken2.default.sign({ email: email, uid: uid }, process.env.JWT_SECRET, jwtOptions);
       //user = Object.assign({},{token: token, new_user: false},results[0])
 
       try {
@@ -92,6 +113,8 @@ authRouter.post('/', function (req, res, next) {
               language = _results$.language,
               status = _results$.status,
               rest = _objectWithoutProperties(_results$, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
+
+          token = _jsonwebtoken2.default.sign({ email: email, uid: uid, member: membership }, process.env.JWT_SECRET, jwtOptions);
 
           user = Object.assign({}, { token: token, new_user: false }, {
             uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,
@@ -132,13 +155,15 @@ authRouter.post('/', function (req, res, next) {
     }
     // --- SignUp -> New User: ---
     else {
+        console.log('Insert New User', role);
         // Generate Pass and Confirmation Token:
         confirmToken = _jsonwebtoken2.default.sign({ email: email }, process.env.JWT_SECRET, jwtOptions);
         pass = _generatePassword2.default.generate({
           length: 8,
           numbers: true
         });
-        var u = tester ? { username: rest.join('.'), membership: 64 } : {};
+        var u = role ? { username: uname, membership: member } : {};
+        console.log('Object to Insert: ', u);
         // encrypt password and save it to DB:
         _bcrypt2.default.hash(pass, 8, function (err, hash) {
           if (!err) {
@@ -146,9 +171,9 @@ authRouter.post('/', function (req, res, next) {
               _user2.default.signup(Object.assign({ email: email, password: hash, token: confirmToken }, u)).then(function (id) {
                 // Send mail to User with confirmToken:
                 (0, _mailer.sendConfirmMail)(email, confirmToken);
-                console.log('authRouter:', id);
+                console.log('authRouter:', id, member);
                 // Generate Access User Token for localStorage:
-                token = _jsonwebtoken2.default.sign({ email: email, uid: id }, process.env.JWT_SECRET, jwtOptions);
+
                 try {
                   _user2.default.getOne({ email: email }, 'user', scope).then(function (results) {
                     if (results.length === 0) return res.status(401).json({ error: { message: 'User Not Found' } });
@@ -166,6 +191,8 @@ authRouter.post('/', function (req, res, next) {
                         language = _results$2.language,
                         status = _results$2.status,
                         rest = _objectWithoutProperties(_results$2, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
+
+                    token = _jsonwebtoken2.default.sign({ email: email, uid: id, member: membership }, process.env.JWT_SECRET, jwtOptions);
 
                     user = Object.assign({}, { token: token, new_user: true }, {
                       uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,

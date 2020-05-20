@@ -1,6 +1,6 @@
 import React from 'react'
 import Validator from 'validator'
-import { Icon,Message,Button,Form } from 'semantic-ui-react'
+import { Message,Button,Form } from 'semantic-ui-react'
 
 export default class Credentials extends React.Component {
   state = {
@@ -15,20 +15,20 @@ export default class Credentials extends React.Component {
   }
 
   onSubmit = () => {
-    const {data, errors} = this.state
-    const { pass,submit,getFacs,login } = this.props
+    const { data } = this.state
+    const { pass,submit,login } = this.props
     const err = this.validate(data)
     this.setState({ errors: err })
     if(Object.keys(err).length !== 0) return
     if(!pass) {
       submit(data,false).then( user => {
-        const { uid,membership,locations } = user
+        //const { locations } = user
 
 // get all user saved locations:
-        if(!locations) return
-        let loc = locations.map( l => {
-          return l.location
-        })
+        //if(!locations) return
+        //let loc = locations.map( l => {
+        //  return l.location
+        //})
         //getFacs(loc)
       })
       //init()

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Divider } from 'semantic-ui-react'
 import Order from '../ui/order/Order'
 import ProductsList from './product/ProductsList'
 import MenuList from '../ui/menus/categories'
@@ -44,7 +43,7 @@ class OrdersPage extends React.Component {
   //}
 
   render(){
-    const { lan,city,products,facs } = this.props
+    const { lan,products,facs } = this.props
     const { category,item } = this.state
 
     let l = facs.products
@@ -73,7 +72,6 @@ class OrdersPage extends React.Component {
 const mapStateToProps = state => ({
   lan: state.settings.lan,
   facs: state.facs,
-  city: state.settings.city,
   user: state.user,
   products: state.products
 })

@@ -10,7 +10,7 @@ import './App.css'
 import RootReducer from './RootReducer'
 import { setUI,getProductList } from './actions/settup'
 import { userSignedIn } from './actions/auth'
-import { userInit,getLocalFacs } from './actions/user'
+import { userInit } from './actions/user'
 import setAuthHeader from './utils/setAuthHeader'
 import setLanHeader from './utils/setLanHeader'
 import App from './App'
@@ -24,7 +24,8 @@ const initState = {
     socket: false,
     one_city: 0,
     banner: false,
-    order_counter: 0
+    order_counter: 0,
+    customer_counter: 0
   },
   products: [],
   order: {},
@@ -56,10 +57,10 @@ if(localStorage.valePizzaJWT){
 
       if(!locations) return
 // get all user saved locations
-      let loc = locations.map( l => {
-        return l.city
-      })
-      let l = [...new Set(loc)]
+      //let loc = locations.map( l => {
+      //  return l.city
+      //})
+      //let l = [...new Set(loc)]
 // get all facs for each unique user.location.city
       //store.dispatch(getLocalFacs(l))
     })

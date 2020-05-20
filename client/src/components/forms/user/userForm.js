@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form,Divider,Button,Icon} from 'semantic-ui-react'
+import { Form,Button } from 'semantic-ui-react'
 
 export default class UserForm extends React.Component {
   render() {

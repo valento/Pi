@@ -91,12 +91,11 @@ export default class AddLocationForm extends React.Component {
 
   render() {
     const { lan,city,cities,streets } = this.props
-    const { data,message,msgClosed,locate } = this.state
+    const { message,locate } = this.state
     const ui = this.state.ui[lan]
-    const str = 'street_bg'
-    const cty = 'city_bg'
-    let _options= [],
-        opts = []
+    //const str = 'street_bg'
+    //const cty = 'city_bg'
+    let _options, opts = []
     if(cities && !streets){
       opts = cities['bg'].map( e => {
         return e.c
@@ -178,7 +177,7 @@ export default class AddLocationForm extends React.Component {
                     type='submit'
                     content={ui[12]}
                   />
-                // Or add new location number:
+{/* Or add new location number: */}
                   <Divider horizontal content='or' />
                   <Button fluid
                     content={ui[11]}

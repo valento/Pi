@@ -13,10 +13,10 @@ const CollectionTable =
       en: ['no','yes'],
       es: ['no','si'],
       bg: ['не','да']
-    },
+    }
   }
   let tabs = state.table[lan]
-  let ui = state.ui[lan]
+// let ui = state.ui[lan]
   return (
         <Grid celled>
           <Grid.Row>

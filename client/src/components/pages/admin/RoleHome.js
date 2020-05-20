@@ -1,20 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Button,Divider } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
 import { Route,Switch,Link } from 'react-router-dom'
 
 import { userSignedIn } from '../../../actions/auth'
+import { setInterface } from '../../../actions/settup'
 import setAuthHeader from '../../../utils/setAuthHeader'
 
 import BakerAdmin from './fac/BakerAdmin'
 import TesterPage from './TesterPage'
 import AllAdminHome from './AllHome'
 
-import { subscribeSocket,fireSocket,initSocket } from '../../../websocket'
+import { closeSocket } from '../../../websocket'
 
-const RoleHome = ({uid,lan,membership,userSignedIn,dispatch,...rest}) => {
-  //initSocket(uid,membership,fac.id)
-  //subscribeSocket()
+const RoleHome = ({uid,lan,membership,userSignedIn,setInterface,dispatch,...rest}) => {
 
   const state = {
     ui: {
@@ -29,12 +28,14 @@ const RoleHome = ({uid,lan,membership,userSignedIn,dispatch,...rest}) => {
     localStorage.clear()
     setAuthHeader()
     userSignedIn({})
+    closeSocket()
+    setInterface({socket: false})
   }
 
-  const { url,path } = rest.match
+  const { url } = rest.match
   //let id = Number(locations[match.params.id].id)
-  let _path = path.split('/').reverse()[0]
-console.log('Role: ', _path, membership)
+  //let _path = path.split('/').reverse()[0]
+
   return (
     <div className='App-content topped padded'>
       <div className='menu-bar dobletopped'>
@@ -47,7 +48,11 @@ console.log('Role: ', _path, membership)
           {membership === (4 || 12) &&
             <Button as={Link} to={`${url}/${state.ui[lan][4]}`} content={state.ui[lan][4]} />}
           {membership === (8 || 12) &&
-            <Button as={Link} to={`${url}/${state.ui[lan][5]}`} content={state.ui[lan][5]} />}
+            <Button as={Link}
+              to={`${url}/${state.ui[lan][5]}`}
+              content={state.ui[lan][5]}
+              desabled={!rest.fac.open}
+            />}
           {membership === 32 &&
             <Button as={Link} to={`${url}/${state.ui[lan][6]}`} content={state.ui[lan][6]} />}
           {membership === 64 &&
@@ -66,7 +71,7 @@ console.log('Role: ', _path, membership)
         <Route path={`${rest.match.url}/${state.ui[lan][2]}`} component={AllAdminHome} />
         <Route path={`${rest.match.url}/${state.ui[lan][3]}`} component={AllAdminHome} />
         <Route path={`${rest.match.url}/${state.ui[lan][4]}`} component={AllAdminHome} />
-      <Route path={`${rest.match.url}/${state.ui[lan][5]}`} component={BakerAdmin} />
+        <Route path={`${rest.match.url}/${state.ui[lan][5]}`} component={BakerAdmin} />
         <Route path={`${rest.match.url}/${state.ui[lan][6]}`} component={AllAdminHome} />
         <Route path={`${rest.match.url}/${state.ui[lan][7]}`}
           render={ () => <TesterPage lan={lan} member={membership} />} />
@@ -81,4 +86,4 @@ const mapStateToProps = state => ({
   fac: state.facs
 })
 
-export default connect(mapStateToProps, { userSignedIn })(RoleHome)
+export default connect(mapStateToProps, { userSignedIn,setInterface })(RoleHome)

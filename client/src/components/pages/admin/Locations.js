@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Divider,Button } from 'semantic-ui-react'
+import { Divider } from 'semantic-ui-react'
 
 import AddLocationForm from '../../forms/admin/addLocation'
 import AddRep from './addRep'
-import AdminMenu from './ui/menu'
 import { addLocation } from '../../../actions/admin/'
 
 class Locations extends React.Component {
@@ -18,7 +17,7 @@ class Locations extends React.Component {
   }
 
   render() {
-    const { addLocation,lan,city,cities,streets,isAdmin,view } = this.props
+    const { addLocation,lan,city,cities,streets,view } = this.props
     const ui = this.state.ui[lan]
     let cty = cities.length>0? cities.find(element => {
       console.log(element.id)
@@ -42,7 +41,6 @@ class Locations extends React.Component {
 }
 const mapStateToProps = state => ({
   cities: state.settings.cities,
-  streets: state.settings.streets,
-  isAdmin: state.user.membership === 1
+  streets: state.settings.streets
 })
 export default connect(mapStateToProps,{ addLocation })(Locations)

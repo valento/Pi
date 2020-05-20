@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import { Search, Button } from 'semantic-ui-react'
+import { Search } from 'semantic-ui-react'
 
 export default class UserLocation extends React.Component {
   state = {
@@ -48,7 +48,7 @@ export default class UserLocation extends React.Component {
 
   render() {
     const { isLoading,value,results } = this.state
-    const { name,list } = this.props
+    const { name } = this.props
     return (
       <div>
         <div className={name==='street'? 'full-width' : 'short'}>

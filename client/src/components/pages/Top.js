@@ -1,13 +1,12 @@
 import React, {useState} from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Button,Icon,Confirm } from 'semantic-ui-react'
+import { Icon,Confirm } from 'semantic-ui-react'
 import PropType from 'prop-types'
 
-import { setInterface,setLocationFactory,cancelCart } from '../../actions/settup'
+import { setInterface,setLocationFactory } from '../../actions/settup'
 import { closeSocket } from '../../websocket'
 import { clearCart } from '../../actions/cart'
-import Sign from '../brand/sign'
 import UserAdmin from '../ui/user/admin'
 
 const Top = ({
@@ -41,7 +40,7 @@ const Top = ({
             return {...location, pathname: '/'}
           }
         }}>
-          <Icon name='home' color = {!fac.checkin? 'black' : 'grey'} />
+          <Icon name='home' color = {(!fac.checkin || user.membership > 63) ? 'black' : 'grey'} />
         </Link>
           {city &&
             <Icon.Group>

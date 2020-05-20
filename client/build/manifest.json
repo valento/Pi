@@ -8,7 +8,8 @@
   "icons": [
     {
       "src": "./img/icon.svg",
-      "sizes": "145x145 192x192 512x512"
+      "sizes": "145x145 192x192 512x512",
+      "type":"img/png"
     },
     {
       "src": "./img/icon-144x144.png",
@@ -18,6 +19,11 @@
     {
       "src": "./img/icon-192x192.png",
       "sizes": "192x192",
+      "type": "img/png"
+    },
+    {
+      "src": "./img/icon-192x192.png",
+      "sizes": "512x512",
       "type": "img/png"
     }
   ],

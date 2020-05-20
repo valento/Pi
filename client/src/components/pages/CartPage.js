@@ -47,7 +47,7 @@ class CartPage extends React.Component {
   onOrder = e => {
     let prime = 0, defLoc
     const {user,cart,lan,fac} = this.props
-    const {currentLocation,message,delivery} = this.state
+    const {currentLocation,delivery} = this.state
 // Sum Total to Pay:
     let sum = cart.map( o => {
       return (parseFloat(o.price)*parseFloat(o.quant)).toFixed(2)
@@ -94,14 +94,16 @@ class CartPage extends React.Component {
   }
 
   render() {
-    let prime = 0, total = 0
+    //let prime = 0
+    let total = 0
     const { user,cart,lan,city,fac } = this.props
     const { currentLocation,message,delivery } = this.state
     const ui = this.state.ui[lan]
+
     if(user.locations){
       user.locations.forEach( l => {
         if(l.prime !== 0){
-          prime = l.id
+          //prime = l.id
         }
       })
     }

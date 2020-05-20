@@ -1,6 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Icon, Button } from 'semantic-ui-react'
 
 import MainMenu from './mainMenu'
 import SubMenu from './subMenu'

@@ -52,7 +52,7 @@ export default class UserDoor extends React.Component {
   render() {
     const {lan,edit,loc} = this.props
     const ui = this.state.ui[lan]
-    const { valid,empty,data } = this.state
+    const { valid,data } = this.state
     return (
         <Form>
           <Form.Group>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button,Divider,Checkbox,Grid } from 'semantic-ui-react'
+import { Button,Divider } from 'semantic-ui-react'
 
 import BakerHome from './fac/BakerHome'
 import AdminDashboard from './AdminDashboard'
@@ -23,17 +23,10 @@ const TesterHome = () => {
 }
 
 const AllAdminHome = props => {
-  const state = {
-    ui: {
-      en:['boss','lab','fac','baker','delivery','tester'],
-      es:['boss','lab','fac','baker','delivery','tester'],
-      bg:['boss','lab','fac','baker','delivery','tester']
-    }
-  }
 
-  const { member,lan,id } = props
+  const { member,id } = props
 
-  let role = Math.log2(member)
+//  let role = Math.log2(member)
 
   return (
     <div className='init top-15 padded oval-but'>

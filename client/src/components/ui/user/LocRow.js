@@ -11,12 +11,12 @@ const LocationRow = ({ind,prime,lan,view,row,stat,edit,locClick,current}) => {
         {!stat && prime? <Icon name='pin' /> : ''}
         {stat && view==='select' &&
           <Checkbox
-            checked={current===row.location || !!row.prime&&current===0}//
+            checked={current===row.location || (!!row.prime && current===0)}
             onChange={()=>locClick(row.location)}
           />}
       </div>
       <div className='eight wide column nopad'>{row.street}</div>
-      <div className='two wide column nopad'>{row.number||row.location}</div>
+      <div className='two wide column nopad'>{row.number || row.location}</div>
       <div className='two wide column nopad'>
         {!stat && <span basic onClick={null}><Icon color='red' name='minus circle' /></span>}
       </div>

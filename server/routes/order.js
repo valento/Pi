@@ -10,7 +10,12 @@ let orderRouter = express.Router({
 orderRouter.use(bodyParser.json())
 
 orderRouter.post('/', getUserId, (req,res,next) => {
-  const {uid} = req
+  const {uid,member} = req
+  console.log('Dont save this order! ',member)
+// If Tester, don't INSERT in DB
+  if(member===64) return res.status(200).json({message: 'Order recieved'})
+
+// Prepare SQL Data Object:
   const {user_location,delivery,fac_id,total,cart} = req.body.data
   //console.log(uid, req.body.data)
   api.saveOne(Object.assign({},{uid},{user_location,delivery,total,fac_id}),'orders')

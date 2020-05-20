@@ -35,12 +35,13 @@ export default {
       })
       //const sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
 
-      if(email==='valentin.mundrov@gmail.com'){
-        sql = `INSERT INTO user (email,password,token,membership) VALUES('${email}','${password}','${token}',1)`
-      } else {
-        sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
-        //`INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
-      }
+      sql = `INSERT INTO user (${_keys}) VALUES (${_values})`
+      //if(email==='valentin.mundrov@gmail.com'){
+      //  sql = `INSERT INTO user (email,password,token,membership) VALUES('${email}','${password}','${token}',1)`
+      //} else {
+      //
+      //  //`INSERT INTO user (email,password,token) VALUES('${email}','${password}','${token}');`
+      //}
       console.log('Auth Insert: ',sql)
       return new Promise ((resolve,reject) => {
         db.query(sql, params, (err,result) => {
@@ -155,7 +156,6 @@ console.log('Get FACs: ', sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
           if(err) return reject(err)
-          //console.log('Get this FAC store: ', results[0])
           resolve(results)
         })
       })

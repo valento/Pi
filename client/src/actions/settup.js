@@ -5,8 +5,9 @@ import api from '../api'
 
 export const setInterface = data => ({type: SETUP_CHANGED, data})
 
-export const countNewOrders = () => ({type: ORDER_COUNTER})
-export const countNewFacCustomers = () => ({type: CUSTOMER_COUNTER})
+export const countOrders = () => ({type: ORDER_COUNTER})
+export const countCustomers = data => ({type: CUSTOMER_COUNTER, data})
+
 export const facSetup = data => ({type: FAC_STATE, data})
 
 export const setLocationFactory = fac => ({type: SET_FAC, fac})
@@ -39,6 +40,15 @@ api.settup.setupFac(settings).then( () => {
   const { data } = settings
   dispatch(facSetup(data))
 })
+
+export const socketCounter = data => dispatch => {
+  console.log('Socket Action: ',data)
+  if(data.order) {
+    return dispatch(countOrders())
+  } else {
+    return dispatch(countCustomers(data))
+  }
+}
 
 export const checkReference = ref => dispatch =>
 api.settup.getLocation(ref).then( data => {

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 
 
 let mediator
+
 export const getUser = (req,res,next) => {
   const token = req.get('Authorization')
   try {
@@ -9,6 +10,7 @@ export const getUser = (req,res,next) => {
     console.log('/user API-decoded: ',decoded)
     req.email = decoded.email
     req.uid = decoded.uid
+    req.member = decoded.uid
     next()
   } catch(err) {
     return res.status(401).json({ error: { message: 'Invalid token' }})
@@ -29,6 +31,7 @@ export const getUserId = (req,res,next) => {
     const decoded = jwt.verify(token,process.env.JWT_SECRET)
     console.log('/user API-decoded: ',decoded)
     req.uid = decoded.uid
+    req.member = decoded.member
   } catch(err) {
     return res.status(401).json({ error: { message: 'Invalid token' }})
   }

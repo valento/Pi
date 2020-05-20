@@ -70,8 +70,8 @@ class Order extends React.Component {
   }
 
   render() {
-    let total = 0, primary_loc_id = 0, primary_loc_fac_open = 0, items, product_index
-    const { lan,products,facs,user,cart,category,itemSelected } = this.props
+    let total = 0, primary_loc_id = 0, primary_loc_fac_open = 0, items
+    const { lan,products,facs,user,category,itemSelected } = this.props
 
     if(user.locations) {
       user.locations.forEach( loc => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form,Button,Select,Message } from 'semantic-ui-react'
+import { Form,Button,Message } from 'semantic-ui-react'
 import Validator from 'validator'
 
 class OrderInput extends React.Component {
@@ -53,7 +53,7 @@ class OrderInput extends React.Component {
   }
 
   render() {
-    const { lan,onAdd,items,category } = this.props
+    const { lan,items,category } = this.props
     const { errors,item } = this.state
     const ui = this.state.ui[lan]
     //const _items = items.map( (itm,indx) => ({

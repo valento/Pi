@@ -1,5 +1,4 @@
 import React from 'react'
-import PropType from 'prop-types'
 import {Icon} from 'semantic-ui-react'
 
 const MenuList = ({lan,category,onCategory,cats}) => {

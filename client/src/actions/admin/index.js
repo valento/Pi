@@ -1,4 +1,3 @@
-import { ADD_LOCATION } from '../../types'
 import api from '../../api/admin'
 
 export const addLocation = (data,type) => dispatch => {

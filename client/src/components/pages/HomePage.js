@@ -1,9 +1,8 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import PropType from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Button,Divider } from 'semantic-ui-react'
-import LogoCircle from '../../pi_circle.svg'
 import LogoPie from '../../pi_pie.svg'
 import LogoPi from '../../pi_pi.svg'
 
@@ -14,15 +13,15 @@ import AppSetup from '../ui/AppSetup'
 
 import { signUp } from '../../actions/auth'
 import { userInit,getLocalFacs } from '../../actions/user'
-import { setInterface,getFacStore,countNewOrders } from '../../actions/settup'
-import { initSocket,subscribeSocket,fireSocket } from '../../websocket'
+import { setInterface,getFacStore,socketCounter } from '../../actions/settup'
+import { initSocket,subscribeSocket } from '../../websocket'
 
 const HomePage = ({
   isAuthorized,user,
   fac,
   lan,
   city,one_city,cities,socket,
-  signUp,userInit,getLocalFacs,getFacStore,setInterface,countNewOrders
+  signUp,userInit,getLocalFacs,getFacStore,setInterface,socketCounter
 }) => {
   const state = {
     ui: {
@@ -35,7 +34,7 @@ const HomePage = ({
   const { membership,new_user,username,uid } = user
 
   let newUser = new_user === undefined || new_user
-  let cty = !!one_city? one_city : city
+//  let cty = !!one_city? one_city : city
 
 // Check User Role:
   const mbr = ['boss','lab','fac','baker','pos','dlv', 'tester','rep','customer']
@@ -62,17 +61,16 @@ const HomePage = ({
   }
 
   if(isAuthorized && Object.keys(fac).length>0 && !socket) {
-    initSocket(uid,membership,fac.id)
-    setInterface({socket: true})
+    initSocket(uid,membership,fac.id,setInterface)
     switch(membership) {
       case 8 :
-        //subscribeSocket(countNewOrders)
+        subscribeSocket(socketCounter)
         break
       case 12 :
-        //subscribeSocket(countNewOrders)
+        subscribeSocket(socketCounter)
         break
       default :
-        subscribeSocket( msg => console.log(msg))
+        subscribeSocket(socketCounter)
     }
   }
 
@@ -102,17 +100,17 @@ const HomePage = ({
             init={userInit}
             lan={lan} pass={false}
           /> :
-          membership>64? <MainMenu lan={lan} /> : null
+          membership>63? <MainMenu lan={lan} /> : null
         }
 
 {/* For ADMIN/LAB/FAC/DELIVERY only Interface: */}
         <Divider horizontal />
-      {isAuthorized && membership && membership < 128 && Object.keys(fac).length>0 &&
+      {isAuthorized && membership && membership < 128 &&
           <div>
             <Button basic color='blue'
               as={Link}
               disabled={!city}
-              to={membership === 1 ? '/admin/boss' : '/admin/home'}
+              to={(membership !== 1 && Object.keys(fac).length>0) ? '/admin/home' : '/admin/boss'}
             >
               Hello, {_mbr[_mbr.length-1]}!
             </Button>
@@ -143,4 +141,5 @@ export default connect(mapStateToProps, {
   getLocalFacs,
   setInterface,
   getFacStore,
-  countNewOrders } )(HomePage)
+  socketCounter
+} )(HomePage)

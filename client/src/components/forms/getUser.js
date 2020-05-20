@@ -1,6 +1,6 @@
 import React from 'react'
 import Validator from 'validator'
-import { Icon,Message,Button,Form } from 'semantic-ui-react'
+import { Message,Button,Form } from 'semantic-ui-react'
 
 export default class GetUser extends React.Component {
   state = {
@@ -15,7 +15,7 @@ export default class GetUser extends React.Component {
   }
 
   onSubmit = () => {
-    const {data, errors} = this.state
+    const { data } = this.state
     const { submit,login,init,pass } = this.props
     const err = this.validate(data)
     this.setState({ errors: err })

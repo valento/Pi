@@ -24,8 +24,8 @@ export default class UserLocationList extends React.Component {
   }
 
   render() {
-    const { value,ui } = this.state
-    const { name,list,lan } = this.props
+    const { ui } = this.state
+    const { name,list } = this.props
     let options
     if(list){
       options = list.map( (entry,ind) => ({

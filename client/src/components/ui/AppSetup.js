@@ -5,7 +5,7 @@ import { Button,Divider } from 'semantic-ui-react'
 import setLanHeader from '../../utils/setLanHeader'
 import SearchSetupForm from '../forms/SearchSetupForm'
 import { initialUser } from '../../actions/user'
-import { setInterface,setUI,getProductList,getFacStore } from '../../actions/settup'
+import { setInterface,setUI,getProductList } from '../../actions/settup'
 
 // First: Set USER: Reg/Log
 // Second: Set CITY/Zone
@@ -33,7 +33,7 @@ class AppSetup extends React.Component {
 
 // FORM SUBMIT:
   onSubmit = data => {
-    const { appsetup,setInterface,initialUser,getFacStore } = this.props
+    const { appsetup,setInterface,initialUser } = this.props
     console.log(data)
 // If App Setup:
     if(appsetup){
@@ -76,4 +76,4 @@ class AppSetup extends React.Component {
 const mapStateToProps = state => ({
   lan: state.settings.lan
 })
-export default connect(mapStateToProps,{initialUser,setInterface,setUI,getProductList,getFacStore})(AppSetup)
+export default connect(mapStateToProps,{initialUser,setInterface,setUI,getProductList})(AppSetup)

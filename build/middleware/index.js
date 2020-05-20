@@ -12,6 +12,7 @@ var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mediator = void 0;
+
 var getUser = exports.getUser = function getUser(req, res, next) {
   var token = req.get('Authorization');
   try {
@@ -19,6 +20,7 @@ var getUser = exports.getUser = function getUser(req, res, next) {
     console.log('/user API-decoded: ', decoded);
     req.email = decoded.email;
     req.uid = decoded.uid;
+    req.member = decoded.uid;
     next();
   } catch (err) {
     return res.status(401).json({ error: { message: 'Invalid token' } });
@@ -39,6 +41,7 @@ var getUserId = exports.getUserId = function getUserId(req, res, next) {
     var decoded = _jsonwebtoken2.default.verify(token, process.env.JWT_SECRET);
     console.log('/user API-decoded: ', decoded);
     req.uid = decoded.uid;
+    req.member = decoded.member;
   } catch (err) {
     return res.status(401).json({ error: { message: 'Invalid token' } });
   }

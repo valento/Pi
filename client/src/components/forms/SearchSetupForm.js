@@ -1,7 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import _ from 'lodash'
-import { Form,Button,Icon,Search,Message } from 'semantic-ui-react'
+import { Form,Button,Search,Message } from 'semantic-ui-react'
 
 class SearchSetupForm extends React.Component {
   state = {
@@ -58,8 +57,7 @@ class SearchSetupForm extends React.Component {
   render() {
     const {value,results,isLoading,data,message} = this.state
     const ui = this.state.ui[this.props.lan]
-    const { name,list,appsetup } = this.props
-    const source = list
+    const { name,appsetup } = this.props
     return (
       <div className='custom-form padded'>
         <Form.Group onSubmit={this.onSubmit}>

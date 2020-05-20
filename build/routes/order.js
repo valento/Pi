@@ -27,7 +27,14 @@ var orderRouter = _express2.default.Router({
 orderRouter.use(_bodyParser2.default.json());
 
 orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
-  var uid = req.uid;
+  var uid = req.uid,
+      member = req.member;
+
+  console.log('Dont save this order! ', member);
+  // If Tester, don't INSERT in DB
+  if (member === 64) return res.status(200).json({ message: 'Order recieved' });
+
+  // Prepare SQL Data Object:
   var _req$body$data = req.body.data,
       user_location = _req$body$data.user_location,
       delivery = _req$body$data.delivery,

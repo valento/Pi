@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button,Icon } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
 
 const OrderRow = ({stat,empty,row,onDelete,ind,lan}) => {
   const state = {

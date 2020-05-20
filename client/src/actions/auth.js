@@ -1,4 +1,4 @@
-import { USER_SIGNED, USER_LOGGED, USER_INIT } from '../types'
+import { USER_SIGNED, USER_INIT } from '../types'
 import api from '../api'
 import setAuthHeader from '../utils/setAuthHeader'
 
