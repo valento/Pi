@@ -115,6 +115,7 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
     var facs = {};
     var _results$ = results[0],
         id = _results$.id,
+        uid = _results$.uid,
         city = _results$.city,
         name = _results$.name,
         street = _results$.street,
@@ -155,7 +156,7 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
         //}
       };
     });
-    facs = Object.assign({ id: id, city: city, name: name, number: number, prime: prime, open: open, checkin: checkin,
+    facs = Object.assign({ id: id, uid: uid, city: city, name: name, number: number, prime: prime, open: open, checkin: checkin,
       sat_open: sat_open, sat_close: sat_close, sun_open: sun_open,
       sun_close: sun_close, vacation_end: vacation_end, vacation_start: vacation_start,
       delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products }, { street: st });

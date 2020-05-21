@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Button,Divider } from 'semantic-ui-react'
+import { Button,Divider,Confirm,Icon } from 'semantic-ui-react'
 
 import { setInterface } from '../../../../actions/settup'
 import { getOrders } from '../../../../actions/order'
@@ -14,18 +14,27 @@ const BakerAdmin = ({uid,lan,fac,membership,order_counter,socket,getOrders,setIn
       en:['Bakery: ','Open Session','New Orders: '],
       es:['Panadería: ','Iniciar sesión','Nueva Orden: '],
       bg:['Пекарна: ','Отвори Сесия','Нови поръчки: ']
+    },
+    error: {
+      header: 'Not Your Bakery!',
+      message: 'Change Zone/City?'
     }
   }
 
   const [ data, setData ] = useState([])
+  const [ openConfirmation, setConfirmationOpen ] = useState(false)
 
   const fetchOrders = () => {
-    getOrders(fac.id)
-    .then( data => {
-        setData(data)
-        setInterface({order_counter: 0})
-      } )
-    .catch( err => console.log(err.message) )
+    if(fac.uid === uid) {
+      getOrders(fac.id)
+      .then( data => {
+          setData(data)
+          setInterface({order_counter: 0})
+        } )
+      .catch( err => console.log(err.message) )
+    } else {
+      setConfirmationOpen(true)
+    }
   }
 
   return (
@@ -40,7 +49,23 @@ const BakerAdmin = ({uid,lan,fac,membership,order_counter,socket,getOrders,setIn
           onClick={e => {
             fetchOrders()
           }} />
+          <div className='eight wide column'>
+            <Confirm
+              header={state.error.header}
+              content={state.error.message}
+              open={openConfirmation}
+              onCancel={е => setConfirmationOpen(false)}
+              onConfirm={ e => {
+                setInterface({
+                  city: null,
+                  socket: false,
+                  order_counter: 0
+                })
+              }}
+            />
+          </div>
       </div>
+
   )
 }
 

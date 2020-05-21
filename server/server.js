@@ -47,14 +47,15 @@ const start = options => {
       if(!!CURRENT_CITY) data.city = Number(CURRENT_CITY)
       //}
     // get cities: ? add params {c_status: 4} if needed
-      api.getList('city',['name','id','zone','code','alt'],params).then( response => {//,{c_status: 4}
+      api.getList('city',['name','status','id','zone','code','alt'],params).then( response => {//,{c_status: 4}
         const cty = response.map( entry => {
     //switch BG to req.language in production
           return {
             title: JSON.parse(entry.name)[data.lan],
             id: entry.id,
             //status: entry.c_status,
-            alt: entry.alt ? JSON.parse(entry.alt)[data.lan] : NULL
+            alt: entry.alt ? JSON.parse(entry.alt)[data.lan] : NULL,
+            status: entry.status
           }
         })
         data.cities = cty

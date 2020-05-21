@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Button,Divider } from 'semantic-ui-react'
+import { Button,Divider,Confirm } from 'semantic-ui-react'
 
 import setLanHeader from '../../utils/setLanHeader'
 import SearchSetupForm from '../forms/SearchSetupForm'
@@ -17,7 +17,23 @@ class AppSetup extends React.Component {
       en: ['Your City/Zone:','ENG','ESP','БГ'],
       es: ['Tu Ciudad/Zona:','ENG','ESP','БГ'],
       bg: ['Избери Град/Зона:','ENG','ESP','БГ']
-    }
+    },
+    errors: {
+      en: {
+        header: ['Not your City/Zone'],
+        message:['Pick a Zone/City closer to you']
+      },
+      es: {
+        header: ['No se tu Zona o Ciudad'],
+        message:['Seleccione una Zona/Ciudad mas cercana']
+      },
+      bg: {
+        header: ['Не е твоят Град/Зона'],
+        message:['Избери зона или град, близки до теб']
+      }
+    },
+    confirm: false,
+    error: 0
   }
 
   onLanguage = (e, {name}) => {
@@ -38,6 +54,8 @@ class AppSetup extends React.Component {
 // If App Setup:
     if(appsetup){
 // Set CITY:
+      let c = this.props.list.find( c => c.id === data.city )
+      if(c.status !== 1) return this.setState({error: 1, confirm: true})
       setInterface(data)
 // API POST FAC Store: get factory+store for location ID
   //  getFacStore('AppSetup',data)
@@ -68,6 +86,16 @@ class AppSetup extends React.Component {
             <Button onClick={this.onLanguage} disabled={lan==='es'} name='es' content={ui[2]} />
             <Button onClick={this.onLanguage} disabled={lan==='bg'} name='bg' content={ui[3]} />
           </Button.Group>
+        </div>
+{/* === MESSAGES: ===================================== */}
+        <div className='eight wide column'>
+          <Confirm
+            header={this.state.errors[lan].header[this.state.error - 1]}
+            content={this.state.errors[lan].message[this.state.error - 1]}
+            open={this.state.confirm}
+            onCancel={е => this.setState({confirm: false, error: 0})}
+            onConfirm={ e => this.setState({confirm: false, error: 0})}
+          />
         </div>
       </div>
     )

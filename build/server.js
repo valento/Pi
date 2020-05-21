@@ -88,7 +88,7 @@ var start = function start(options) {
       if (!!CURRENT_CITY) data.city = Number(CURRENT_CITY);
       //}
       // get cities: ? add params {c_status: 4} if needed
-      _api2.default.getList('city', ['name', 'id', 'zone', 'code', 'alt'], params).then(function (response) {
+      _api2.default.getList('city', ['name', 'status', 'id', 'zone', 'code', 'alt'], params).then(function (response) {
         //,{c_status: 4}
         var cty = response.map(function (entry) {
           //switch BG to req.language in production
@@ -96,7 +96,8 @@ var start = function start(options) {
             title: JSON.parse(entry.name)[data.lan],
             id: entry.id,
             //status: entry.c_status,
-            alt: entry.alt ? JSON.parse(entry.alt)[data.lan] : NULL
+            alt: entry.alt ? JSON.parse(entry.alt)[data.lan] : NULL,
+            status: entry.status
           };
         });
         data.cities = cty;

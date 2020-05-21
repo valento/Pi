@@ -90,7 +90,7 @@ const HomePage = ({
             {username? username : <Sign size='huge'/>}
           </p>
         }
-
+{/* ===== NO CITY ====================================== */}
 {/* Find available CITY: !(!!cty) */}
         { !city ?
           <AppSetup lan={lan} list={cities} appsetup='true' name='city' /> :

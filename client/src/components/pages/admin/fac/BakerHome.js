@@ -85,20 +85,12 @@ class BakerHome extends React.Component {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-
       <br/>
+{/* ===== FAC CONTROLS ============================= */}
       <Button fluid color='blue'
         icon='motorcycle'
         disabled={!this.state.checkin || this.props.fac.delivery === 4}
         content={this.state.dlvr? `Delivery: ${ui[4]}` : `Delivery: ${ui[3]}`}
-        onClick={this.closeShop}
-      />
-      <br/>
-      <br/>
-      <Button fluid color='red'
-        icon='attention'
-        disabled={!this.state.open || !this.state.checkin}
-        content={ui[0]}
         onClick={this.closeShop}
       />
       <br/>
@@ -107,6 +99,13 @@ class BakerHome extends React.Component {
         content={ui[1]}
         disabled={!this.state.open}
         onClick={this.pauseShop}
+      />
+      <br/>
+      <Button fluid color='red'
+        icon='attention'
+        disabled={!this.state.open || !this.state.checkin}
+        content={ui[0]}
+        onClick={this.closeShop}
       />
     </div>
   )}
