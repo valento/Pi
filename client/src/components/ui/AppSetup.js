@@ -24,7 +24,7 @@ class AppSetup extends React.Component {
         message:['Pick a Zone/City closer to you']
       },
       es: {
-        header: ['No se tu Zona o Ciudad'],
+        header: ['No es tu Zona o Ciudad'],
         message:['Seleccione una Zona/Ciudad mas cercana']
       },
       bg: {

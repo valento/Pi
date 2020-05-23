@@ -28,6 +28,8 @@ var _uniqid2 = _interopRequireDefault(_uniqid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 var adminRouter = _express2.default.Router({
   mergeParams: true
 });
@@ -154,7 +156,7 @@ adminRouter.get('/fac/:id/:table', function (req, res, next) {
       id = _req$params2.id,
       table = _req$params2.table;
 
-  _api2.default.getList(table, ['*'], Object.assign({ fac_id: id }, { status: 1 })).then(function (response) {
+  _api2.default.getList(table, ['*'], { fac_id: id, status: 1 }).then(function (response) {
     var list = [];
     if (response.length > 0) {
       list = response.map(function (e) {
@@ -164,9 +166,11 @@ adminRouter.get('/fac/:id/:table', function (req, res, next) {
             user_location = e.user_location,
             fc_id = e.fc_id,
             ordered_at = e.ordered_at,
-            pick_up_time = e.pick_up_time;
+            pick_up_time = e.pick_up_time,
+            order_promo = e.order_promo,
+            rest = _objectWithoutProperties(e, ['id', 'uid', 'delivery', 'user_location', 'fc_id', 'ordered_at', 'pick_up_time', 'order_promo']);
 
-        return { id: id, uid: uid, delivery: delivery, user_location: user_location, fc_id: fc_id, ordered_at: ordered_at, pick_up_time: pick_up_time };
+        return { id: id, uid: uid, delivery: delivery, user_location: user_location, fc_id: fc_id, ordered_at: ordered_at, pick_up_time: pick_up_time, order_promo: order_promo, rest: rest };
       });
       res.status(200).json(list);
     } else {

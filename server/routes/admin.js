@@ -109,13 +109,13 @@ adminRouter.post('/location/:type', (req,res,next) => {
 adminRouter.get('/fac/:id/:table', (req,res,next) => {
   //req.mediator.emit('baker.login')
   const { id,table } = req.params
-  api.getList(table,['*'],Object.assign({fac_id:id},{status: 1}))
+  api.getList(table,['*'],{fac_id:id, status: 1})
   .then( response => {
     let list = []
     if( response.length > 0 ) {
       list = response.map( e => {
-        const { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time } = e
-        return { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time }
+const { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time,order_promo,...rest} = e
+return { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time,order_promo,rest }
       })
       res.status(200).json(list)
     } else {

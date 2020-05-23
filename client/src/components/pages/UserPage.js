@@ -54,9 +54,9 @@ class UserPage extends React.Component {
   }
 
   render() {
-    const {lan,user,locations,free_pizza,city,fac} = this.props
+    const {lan,user,city,fac} = this.props
     const ui = this.state.ui[lan]
-    let listLocations = locations ? locations.filter( l => l.city===city ) : []
+    let listLocations = user.locations ? user.locations.filter( l => l.city===city ) : []
     return (
       <div className='App-content topped padded oval-but'>
         <Divider horizontal>{ui[0]}</Divider>
@@ -70,7 +70,7 @@ class UserPage extends React.Component {
         </div>}
         <Divider horizontal>{ui[3]}</Divider>
         <Divider horizontal>{ui[4]}</Divider>
-        <UserPerksList has_perks={free_pizza} new_user={user.new_user} />
+        <UserPerksList lan={lan} has_perks={user.free_pizza} new_user={user.new_user} />
         <Divider horizontal />
         <Button fluid color='red'
           content='LOGOUT'

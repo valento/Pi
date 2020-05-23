@@ -70,31 +70,10 @@ class Order extends React.Component {
   }
 
   render() {
-    let total = 0, primary_loc_id = 0, primary_loc_fac_open = 0, items
+    let total = 0, items
     const { lan,products,facs,user,category,itemSelected } = this.props
 
-    if(user.locations) {
-      user.locations.forEach( loc => {
-        if(loc.prime) {
-          primary_loc_fac_open = facs[loc.location].open
-          primary_loc_id = loc.location
-        }
-      })
-    }
-
-    console.log('List Products for FAC on: ', primary_loc_id, primary_loc_fac_open)
-    if(primary_loc_id>0 && primary_loc_fac_open) {
-      items = facs[primary_loc_id].products.map( (item,ind) => {
-        let i = products.findIndex( it => {
-          return it.id === item.product
-        })
-        return {
-          value: item.product,
-          text: products[i].name,
-          key: ind
-        }
-      })
-    } else {
+    //if(primary_loc_id>0 && primary_loc_fac_open) {
       items = products.map( (item,ind) => {
         return {
           value: item.product,
@@ -102,7 +81,6 @@ class Order extends React.Component {
           key: ind
         }
       })
-    }
 
     const ui = this.state.ui[lan]
     const { order } = this.state

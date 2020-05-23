@@ -28,7 +28,7 @@ userRouter.get('/', getUser, (req,res,next) => {
       uid,username,userlast,verified,orders,credit,
       gender,bday,membership,language,status,...rest
     } = response[0]
-    let free_pizza = orders%5===0
+    let free_pizza = orders>0 && orders%5===0
     user = Object.assign({},{
       uid,username,userlast,verified,orders,credit,
       gender,bday,membership,language,status
@@ -78,8 +78,8 @@ userRouter.post('/facs', getLan, (req,res,next) => {
       delivery,bottleneck,mobile} = results[0]
     const st = JSON.parse(street)[lan]
     let products = results.map( entry => {
-      const {product,local_promo,local_price,on_hand,take_only,add_time} = entry
-      return {product,local_promo,local_price,on_hand,take_only,add_time}
+      const {product,list,local_promo,local_price,on_hand,take_only,add_time} = entry
+      return {product,list,local_promo,local_price,on_hand,take_only,add_time}
       //if(open){
         //facs = { ...facs, [city]: facs[city]?
         //  {...facs[city],
@@ -95,7 +95,7 @@ userRouter.post('/facs', getLan, (req,res,next) => {
     facs = Object.assign({id,uid,city,name,number,prime,open,checkin,
       sat_open,sat_close,sun_open,
       sun_close,vacation_end,vacation_start,
-      delivery,bottleneck,mobile},{products:products},{street: st})
+      delivery,bottleneck,mobile},{products:products, street: st})
     res.status(200).json(facs)
   })
   .catch( err => console.log(err.message))

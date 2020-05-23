@@ -1,5 +1,6 @@
 import React from 'react'
 import { Grid,Icon } from 'semantic-ui-react'
+import OrderLine from './OrderLine'
 
 const CollectionTable =
 ({lan,data,membership}) => {
@@ -24,15 +25,14 @@ const CollectionTable =
             <Grid.Column width={4}><Icon name='clock' /></Grid.Column>
             <Grid.Column width={4}><Icon name='clock outline' /></Grid.Column>
           </Grid.Row>
-          {data.map( e => {
-            let ordered = new Date(e.ordered_at)
-            let pickup = new Date(e.pick_up_time)
+          {data.map( entry => {
+            const { id,ordered_at,pick_up_time,...rest} = entry
             return (
-              <Grid.Row>
-                <Grid.Column width={8}>{e.id}</Grid.Column>
-                <Grid.Column width={4}>{e.ordered_at? `${ordered.getHours()}:${ordered.getMinutes()}`: '--'}</Grid.Column>
-                <Grid.Column width={4}>{e.pick_up_time? `${pickup.getHours()}:${pickup.getMinutes()}`: '--'}</Grid.Column>
-              </Grid.Row>
+              <OrderLine key={entry.id} id={entry.id}
+                data={rest}
+                ordered={new Date(entry.ordered_at)}
+                pickup={new Date(entry.pick_up_time)}
+              />
             )
           })}
 

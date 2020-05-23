@@ -73,11 +73,11 @@ console.log(results)
   },
 
   getList: (table,scope=['*'],params=null) => {
-    let PARAMS = ''
+    let PARAMS = '', sql
     const _key = params? Object.keys(params) : null
     if(_key && _key.length > 0) {
       const kk = _key.map( k => {
-        return `${k}=${params[k]}`
+        return table==='orders'? `o.${k}=${params[k]}` : `${k}=${params[k]}`
       })
       PARAMS = (_key.length > 1)? kk.join(' AND ') : kk[0]
       if( table === 'product' ) {
@@ -87,10 +87,18 @@ console.log(results)
     //else if(_key) {
     //  PARAMS = `${_key[0]}=${params._key[0]}`
     //}
-
-    let sql = !params? `SELECT ${scope} FROM ${table}` :
-    `SELECT ${scope} FROM ${table} WHERE ${PARAMS}`
-console.log(`Get all ${table}: `,sql)
+    if (table==='orders') {
+      sql = `SELECT
+      o.id,o.uid,o.promo_id as order_promo,o.ordered_at,o.pick_up_time,o.delivery,o.user_location,
+      od.item,od.quant,od.delay,od.promo_id,od.options
+      FROM orders o
+      JOIN order_detail od ON od.order_id=o.id
+      WHERE ${PARAMS}`
+    } else {
+      sql = !params? `SELECT {${scope}} FROM ${table}` :
+      `SELECT ${scope} FROM ${table} WHERE ${PARAMS}`
+    }
+console.log(sql)
     return new Promise( (resolve,reject) => {
       db.query(sql, (err,results) => {
         //console.log(results)

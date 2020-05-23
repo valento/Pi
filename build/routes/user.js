@@ -56,7 +56,7 @@ userRouter.get('/', _middleware.getUser, function (req, res, next) {
         status = _response$.status,
         rest = _objectWithoutProperties(_response$, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
 
-    var free_pizza = orders % 5 === 0;
+    var free_pizza = orders > 0 && orders % 5 === 0;
     user = Object.assign({}, {
       uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,
       gender: gender, bday: bday, membership: membership, language: language, status: status
@@ -136,13 +136,14 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
     var st = JSON.parse(street)[lan];
     var products = results.map(function (entry) {
       var product = entry.product,
+          list = entry.list,
           local_promo = entry.local_promo,
           local_price = entry.local_price,
           on_hand = entry.on_hand,
           take_only = entry.take_only,
           add_time = entry.add_time;
 
-      return { product: product, local_promo: local_promo, local_price: local_price, on_hand: on_hand, take_only: take_only, add_time: add_time
+      return { product: product, list: list, local_promo: local_promo, local_price: local_price, on_hand: on_hand, take_only: take_only, add_time: add_time
         //if(open){
         //facs = { ...facs, [city]: facs[city]?
         //  {...facs[city],
@@ -159,7 +160,7 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
     facs = Object.assign({ id: id, uid: uid, city: city, name: name, number: number, prime: prime, open: open, checkin: checkin,
       sat_open: sat_open, sat_close: sat_close, sun_open: sun_open,
       sun_close: sun_close, vacation_end: vacation_end, vacation_start: vacation_start,
-      delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products }, { street: st });
+      delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products, street: st });
     res.status(200).json(facs);
   }).catch(function (err) {
     return console.log(err.message);

@@ -99,11 +99,12 @@ exports.default = {
     var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ['*'];
     var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-    var PARAMS = '';
+    var PARAMS = '',
+        sql = void 0;
     var _key = params ? Object.keys(params) : null;
     if (_key && _key.length > 0) {
       var kk = _key.map(function (k) {
-        return k + '=' + params[k];
+        return table === 'orders' ? 'o.' + k + '=' + params[k] : k + '=' + params[k];
       });
       PARAMS = _key.length > 1 ? kk.join(' AND ') : kk[0];
       if (table === 'product') {
@@ -113,9 +114,12 @@ exports.default = {
     //else if(_key) {
     //  PARAMS = `${_key[0]}=${params._key[0]}`
     //}
-
-    var sql = !params ? 'SELECT ' + scope + ' FROM ' + table : 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + PARAMS;
-    console.log('Get all ' + table + ': ', sql);
+    if (table === 'orders') {
+      sql = 'SELECT\n      o.id,o.uid,o.promo_id as order_promo,o.ordered_at,o.pick_up_time,o.delivery,o.user_location,\n      od.item,od.quant,od.delay,od.promo_id,od.options\n      FROM orders o\n      JOIN order_detail od ON od.order_id=o.id\n      WHERE ' + PARAMS;
+    } else {
+      sql = !params ? 'SELECT {' + scope + '} FROM ' + table : 'SELECT ' + scope + ' FROM ' + table + ' WHERE ' + PARAMS;
+    }
+    console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
         //console.log(results)

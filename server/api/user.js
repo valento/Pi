@@ -143,16 +143,18 @@ console.log(sql)
       const sql = `SELECT
       f.*,
       s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,
+      p.list,
       st.name AS street,
       l.number
       FROM fac f
       JOIN store s ON s.fac=f.id AND s.on_hand>0
+      JOIN product p on p.id=s.product
       JOIN location l ON l.id=f.location_id
       JOIN street st ON st.id=l.street_id
       WHERE f.city=${city} AND f.prime=1
-      AND f.status=7`
+      AND f.status=7 ORDER BY p.list`
 
-console.log('Get FACs: ', sql)
+//console.log('Get FACs: ', sql)
       return new Promise( (resolve,reject) => {
         db.query(sql, (err,results) => {
           if(err) return reject(err)
