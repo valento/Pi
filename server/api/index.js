@@ -77,7 +77,7 @@ console.log(results)
     const _key = params? Object.keys(params) : null
     if(_key && _key.length > 0) {
       const kk = _key.map( k => {
-        return table==='orders'? `o.${k}=${params[k]}` : `${k}=${params[k]}`
+        return table==='orders'? `${k}=${params[k]}` : `${k}=${params[k]}`
       })
       PARAMS = (_key.length > 1)? kk.join(' AND ') : kk[0]
       if( table === 'product' ) {
@@ -101,7 +101,7 @@ console.log(results)
 console.log(sql)
     return new Promise( (resolve,reject) => {
       db.query(sql, (err,results) => {
-        //console.log(results)
+        console.log(results)
         if(err) return reject(err)
         resolve(results)
       })
