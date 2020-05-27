@@ -67,7 +67,14 @@ const RoleHome = ({uid,lan,membership,userSignedIn,setInterface,dispatch,...rest
       </div>
       <Switch>
         <Route path={rest.match.url} exact
-          render={ () => <AllAdminHome lan={lan} id={rest.fac.id} member={membership} />} />
+          render={ () => <AllAdminHome
+            lan={lan}
+            id={rest.fac.id}
+            fowner={rest.fac.uid} 
+            uid={uid}
+            member={membership}
+          />
+        }/>
         <Route path={`${rest.match.url}/${state.ui[lan][2]}`} component={AllAdminHome} />
         <Route path={`${rest.match.url}/${state.ui[lan][3]}`} component={AllAdminHome} />
         <Route path={`${rest.match.url}/${state.ui[lan][4]}`} component={AllAdminHome} />

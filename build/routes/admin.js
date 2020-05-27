@@ -151,12 +151,17 @@ adminRouter.post('/location/:type', function (req, res, next) {
 // =========== ADMIN FACs: ================================================
 // ----------- BAKER GET ORDERS: ------------------------------------------
 adminRouter.get('/fac/:id/:table', function (req, res, next) {
+  var rows = [];
   //req.mediator.emit('baker.login')
   var _req$params2 = req.params,
       id = _req$params2.id,
       table = _req$params2.table;
 
   _api2.default.getList(table, ['*'], { fac_id: id, status: 1 }).then(function (response) {
+    rows = Array.from(new Set(response.map(function (e) {
+      return e.id;
+    })));
+    console.log(rows);
     var list = [];
     if (response.length > 0) {
       list = response.map(function (e) {
@@ -172,7 +177,9 @@ adminRouter.get('/fac/:id/:table', function (req, res, next) {
 
         return { id: id, uid: uid, delivery: delivery, user_location: user_location, fc_id: fc_id, ordered_at: ordered_at, pick_up_time: pick_up_time, order_promo: order_promo, rest: rest };
       });
-      res.status(200).json(list);
+      _api2.default.updateMany({ id: rows, status: 2 }, 'orders').then(function () {
+        return res.status(200).json(list);
+      });
     } else {
       res.status(404).json({ error: { message: 'New Orders not found!' } });
     }

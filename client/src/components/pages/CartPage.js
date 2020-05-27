@@ -61,7 +61,6 @@ class CartPage extends React.Component {
         })
         .then( msg => {
           this.setState({ message: {stat: msg} })
-          console.log('Fire Socket!')
 // socket message Object: {sction-type, payload}
           fireSocket(null,JSON.stringify({
                 user: user.uid, mem: user.membership,

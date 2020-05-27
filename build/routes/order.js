@@ -30,7 +30,7 @@ orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
   var uid = req.uid,
       member = req.member;
 
-  console.log('Dont save this order! ', member);
+  var order = void 0;
   // If Tester, don't INSERT in DB
   if (member === 64) return res.status(200).json({ message: 'Order recieved' });
 
@@ -44,6 +44,7 @@ orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
   //console.log(uid, req.body.data)
 
   _api2.default.saveOne(Object.assign({}, { uid: uid }, { user_location: user_location, delivery: delivery, total: total, fac_id: fac_id }), 'orders').then(function (id) {
+    order = id;
     var details = cart.map(function (o) {
       return { order_id: id, item: o.product, quant: o.quant };
     });
@@ -52,7 +53,7 @@ orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
     return _api2.default.updateOne({ id: uid, orders: 'orders+1' }, 'user');
   }).then(function () {
     //req.mediator.emit('new.incoming.order')
-    res.status(200).json({ message: 'Order recieved' });
+    res.status(200).json({ message: 'Order #' + order + ' recieved' });
   }).catch(function (err) {
     return res.status(500).json({ message: err });
   });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Button,Divider,Confirm,Icon } from 'semantic-ui-react'
+import { Button,Divider,Icon } from 'semantic-ui-react'
 
 import { setInterface } from '../../../../actions/settup'
 import { getOrders } from '../../../../actions/order'
@@ -14,26 +14,23 @@ const BakerAdmin = ({uid,lan,fac,membership,order_counter,socket,getOrders,setIn
       en:['Bakery: ','Open Session','New Orders: '],
       es:['Panadería: ','Iniciar sesión','Nueva Orden: '],
       bg:['Пекарна: ','Отвори Сесия','Нови поръчки: ']
-    },
-    error: {
-      header: 'Not Your Bakery!',
-      message: 'Change Zone/City?'
     }
   }
 
   const [ data, setData ] = useState([])
-  const [ openConfirmation, setConfirmationOpen ] = useState(false)
+  const [ list, setList ] = useState([])
+
 
   const fetchOrders = () => {
     if(fac.uid === uid) {
       getOrders(fac.id)
       .then( data => {
+        let l = data.map( d => d.id )
           setData(data)
+          setList(Array.from(new Set(l)))
           setInterface({order_counter: 0})
         } )
       .catch( err => console.log(err.message) )
-    } else {
-      setConfirmationOpen(true)
     }
   }
 
@@ -41,29 +38,15 @@ const BakerAdmin = ({uid,lan,fac,membership,order_counter,socket,getOrders,setIn
       <div className='init padded oval-but'>
         <Divider horizontal>{`${state.ui[lan][0]}${fac.name}`}</Divider>
       {/* Incoming Orders Table */}
-        <CollectionTable data={data} member={membership} lan={lan} />
+        <CollectionTable data={data} list={list} member={membership} lan={lan} />
       {/* =============================================================== */}
+        <br/>
         <Button fluid
           color='blue'
           content={`${state.ui[lan][2]}: ${order_counter}`}
           onClick={e => {
             fetchOrders()
           }} />
-          <div className='eight wide column'>
-            <Confirm
-              header={state.error.header}
-              content={state.error.message}
-              open={openConfirmation}
-              onCancel={е => setConfirmationOpen(false)}
-              onConfirm={ e => {
-                setInterface({
-                  city: null,
-                  socket: false,
-                  order_counter: 0
-                })
-              }}
-            />
-          </div>
       </div>
 
   )

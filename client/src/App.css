@@ -239,6 +239,15 @@ h2 {
   font-size: 1.2em;
 }
 
+/* --- FAC ADMIN tables ----------------------- */
+.order {
+  background-color: #bbb;
+}
+.order .detail {
+  background-color: #fffaaa;
+}
+
+
 /* --- FORMS --------------------------- */
 .custom-form .ui.message {
   width: 100%;
@@ -347,6 +356,9 @@ h2 {
 .nopadd {
   padding: 0;
 }
+.nopadd.ui.celled.grid {
+  margin: 0;
+}
 .extra-padded {
   padding-left: 38px!important;
   padding-right: 38px!important;
@@ -436,7 +448,7 @@ p.short {
   .App-content {
     margin: 45px auto;
     max-width: 520px;
-    height: 90vh;
+    min-height: 90vh;
     border: 8px solid white;
     border-radius: 24px;
   }

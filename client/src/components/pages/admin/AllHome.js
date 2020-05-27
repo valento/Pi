@@ -1,8 +1,10 @@
-import React from 'react'
-import { Button,Divider } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { Button,Divider,Confirm } from 'semantic-ui-react'
 
 import BakerHome from './fac/BakerHome'
 import AdminDashboard from './AdminDashboard'
+import { setInterface } from '../../../actions/settup'
 
 const TesterHome = () => {
   return (
@@ -24,17 +26,23 @@ const TesterHome = () => {
 
 const AllAdminHome = props => {
 
-  const { member,id } = props
-
+  const { member,id,fowner,uid,setInterface } = props
 //  let role = Math.log2(member)
-
+console.log(member,id,uid)
   return (
     <div className='init top-15 padded oval-but'>
       {member===(8 || 4) && <BakerHome id={id} />}
       {member===64 && <TesterHome />}
       <AdminDashboard {...props} />
+      <Confirm
+        header='Unauthorized User'
+        content={`Not your Bakery! Change City/Zone`}
+        open={fowner!==uid}
+        onCancel={ e => setInterface({city: null}) }
+        onConfirm={ e => setInterface({city: null}) }
+      />
     </div>
   )
 }
 
-export default AllAdminHome
+export default connect(null,{ setInterface })(AllAdminHome)

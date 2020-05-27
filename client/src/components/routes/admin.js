@@ -9,7 +9,7 @@ const AdminRoute = ({isAdmin,membership,city,lan,component: Component, ...rest})
   return (
     <Route {...rest} render={ props => ((isAdmin || membership<128) && city) ?
         <Component lan={lan} {...props} /> :
-        <Redirect to='/admin' />
+        city? <Redirect to='/admin' /> : <Redirect to='/' />
   }/>)
 }
 

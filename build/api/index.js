@@ -104,7 +104,7 @@ exports.default = {
     var _key = params ? Object.keys(params) : null;
     if (_key && _key.length > 0) {
       var kk = _key.map(function (k) {
-        return table === 'orders' ? 'o.' + k + '=' + params[k] : k + '=' + params[k];
+        return table === 'orders' ? k + '=' + params[k] : k + '=' + params[k];
       });
       PARAMS = _key.length > 1 ? kk.join(' AND ') : kk[0];
       if (table === 'product') {
@@ -122,7 +122,7 @@ exports.default = {
     console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
-        //console.log(results)
+        console.log(results);
         if (err) return reject(err);
         resolve(results);
       });
@@ -219,6 +219,19 @@ exports.default = {
     });
     var sql = table === 'user' ? 'UPDATE ' + table + ' SET ' + _map + ' WHERE uid=' + id : 'UPDATE ' + table + ' SET ' + _map + ' WHERE id=' + id;
     console.log('Update ORM: ', sql);
+    return new Promise(function (resolve, reject) {
+      db.query(sql, function (err) {
+        if (err) return reject();
+        resolve();
+      });
+    });
+  },
+  updateMany: function updateMany() {
+    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var table = arguments[1];
+
+    var sql = 'UPDATE ' + table + ' SET status=2 WHERE id IN (' + data.id + ')';
+    console.log('Update many: ', data.id);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err) {
         if (err) return reject();

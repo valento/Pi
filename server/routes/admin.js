@@ -107,21 +107,26 @@ adminRouter.post('/location/:type', (req,res,next) => {
 // =========== ADMIN FACs: ================================================
 // ----------- BAKER GET ORDERS: ------------------------------------------
 adminRouter.get('/fac/:id/:table', (req,res,next) => {
+  let rows = []
   //req.mediator.emit('baker.login')
   const { id,table } = req.params
   api.getList(table,['*'],{fac_id:id, status: 1})
   .then( response => {
+    rows = Array.from(new Set(response.map( e => e.id)))
+    console.log(rows)
     let list = []
     if( response.length > 0 ) {
       list = response.map( e => {
 const { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time,order_promo,...rest} = e
 return { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time,order_promo,rest }
       })
-      res.status(200).json(list)
+      api.updateMany({id: rows, status:2},'orders')
+      .then( () => res.status(200).json(list) )
+
     } else {
       res.status(404).json({error: {message: 'New Orders not found!'}})
     }
-    })
+  })
   .catch( err => res.status(500).json({error: {message: 'Something went wrong'}}))
 })
 // ========================================================================

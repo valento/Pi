@@ -15,11 +15,9 @@ export const clearCart = () => ({
 })
 
 export const makeCart = data => dispatch => {
-  console.log('Cart Action: ',data)
   return new Promise( (resolve, reject) => {
     api.order.pushOrder(data).then( res => {
       dispatch(clearCart())
-      console.log(res)
       resolve(res.message)
     })
     .catch( err => {

@@ -186,5 +186,15 @@ console.log('Update ORM: ',sql)
         resolve()
       })
     } )
+  },
+  updateMany: (data={},table) => {
+    const sql = `UPDATE ${table} SET status=2 WHERE id IN (${data.id})`
+console.log('Update many: ',data.id)
+    return new Promise( (resolve,reject) => {
+      db.query(sql, err=>{
+        if(err) return reject()
+        resolve()
+      })
+    })
   }
 }

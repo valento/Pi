@@ -11,7 +11,7 @@ orderRouter.use(bodyParser.json())
 
 orderRouter.post('/', getUserId, (req,res,next) => {
   const {uid,member} = req
-  console.log('Dont save this order! ',member)
+  let order
 // If Tester, don't INSERT in DB
   if(member===64) return res.status(200).json({message: 'Order recieved'})
 
@@ -20,6 +20,7 @@ orderRouter.post('/', getUserId, (req,res,next) => {
   //console.log(uid, req.body.data)
   api.saveOne(Object.assign({},{uid},{user_location,delivery,total,fac_id}),'orders')
   .then( id => {
+    order = id
     let details = cart.map( o => {
       return {order_id: id, item: o.product, quant: o.quant}
     })
@@ -28,7 +29,7 @@ orderRouter.post('/', getUserId, (req,res,next) => {
   .then( () => api.updateOne({id: uid, orders:'orders+1'},'user') )
   .then( () => {
     //req.mediator.emit('new.incoming.order')
-    res.status(200).json({message: 'Order recieved'})
+    res.status(200).json({message: `Order #${order} recieved`})
   } )
   .catch( err => res.status(500).json({message: err}) )
 })

@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropType from 'prop-types'
 import { Link } from 'react-router-dom'
-import { Button,Divider } from 'semantic-ui-react'
+import { Button,Divider,Confirm } from 'semantic-ui-react'
 import LogoPie from '../../pi_pie.svg'
 import LogoPi from '../../pi_pi.svg'
 
@@ -18,6 +18,7 @@ import { initSocket,subscribeSocket } from '../../websocket'
 
 const HomePage = ({
   isAuthorized,user,
+  lab,
   fac,
   lan,
   city,one_city,cities,socket,
@@ -28,10 +29,16 @@ const HomePage = ({
       es: ['Bienvenido, ','Hola, ','You\'re in:','Admin','LAB','FAC','PoS','Courier','REP'],
       en: ['Hello, ','Welcome back, ','Estas en:','Admin','LAB','FAC','PoS','Courier','REP'],
       bg: ['Добре дошъл, ','Здравей, ','Намираш се във:','Admin','LAB','FAC','PoS','Куриер','REP']
+    },
+    error: {
+      header: 'Not Your Bakery!',
+      message: 'Change Zone/City?'
     }
   }
 
   const { membership,new_user,username,uid } = user
+
+//  const [openConfirm,setConfirm] = useState(false)
 
   let newUser = new_user === undefined || new_user
 //  let cty = !!one_city? one_city : city
@@ -48,7 +55,6 @@ const HomePage = ({
   } else {
     member = _mbr.length > 1 ? _mbr.join('/') : _mbr[0]
   }
-  console.log(member)
 
 // Get FAC's Store when City's set
   if(!!city && !Object.keys(fac).length>0){
@@ -63,6 +69,15 @@ const HomePage = ({
   if(isAuthorized && Object.keys(fac).length>0 && !socket) {
     initSocket(uid,membership,fac.id,setInterface)
     switch(membership) {
+      case 1 :
+        //subscribeSocket(socketCounter)
+        break
+      case 2 :
+        //subscribeSocket(socketCounter)
+        break
+      case 4 :
+        //subscribeSocket(socketCounter)
+        break
       case 8 :
         subscribeSocket(socketCounter)
         break
@@ -81,7 +96,6 @@ const HomePage = ({
           <img src={LogoPie} className='logo' alt='logo' />
           <img src={LogoPi} className='logo-top' alt='logo' />
         </div>
-
 
 {/* LOG or Register: */}
         {city !== undefined &&
@@ -109,14 +123,20 @@ const HomePage = ({
           <div>
             <Button basic color='blue'
               as={Link}
+              to={
+                (membership !== 1 && Object.keys(fac).length>0) ?
+                '/admin/home' : '/admin/boss'
+              }
               disabled={!city}
-              to={(membership !== 1 && Object.keys(fac).length>0) ? '/admin/home' : '/admin/boss'}
+              //onClick={ e => setConfirm(fac.uid!==user.uid) }
             >
               Hello, {_mbr[_mbr.length-1]}!
             </Button>
           </div>
         }
       </div>
+{/* === Not our Zone Admin */}
+
     </div>
   )
 }
