@@ -26,9 +26,12 @@ const HomePage = ({
 }) => {
   const state = {
     ui: {
-      es: ['Bienvenido, ','Hola, ','You\'re in:','Admin','LAB','FAC','PoS','Courier','REP'],
-      en: ['Hello, ','Welcome back, ','Estas en:','Admin','LAB','FAC','PoS','Courier','REP'],
-      bg: ['Добре дошъл, ','Здравей, ','Намираш се във:','Admin','LAB','FAC','PoS','Куриер','REP']
+      es: ['Bienvenido, ','Hola, ','Estas en:','Admin','LAB',
+      'FAC','PoS','Courier','REP','CERRADO'],
+      en: ['Hello, ','Welcome back, ','You\'re in:','Admin','LAB',
+      'FAC','PoS','Courier','REP','CLOSED'],
+      bg: ['Добре дошъл, ','Здравей, ','Намираш се във:','Admin','LAB',
+      'FAC','PoS','Куриер','REP','ЗАТВОРЕНО']
     },
     error: {
       header: 'Not Your Bakery!',
@@ -114,13 +117,12 @@ const HomePage = ({
             init={userInit}
             lan={lan} pass={false}
           /> :
-          membership>63? <MainMenu lan={lan} /> : null
+          membership>63? <MainMenu lan={lan} open={fac.open} /> : null
         }
 
 {/* For ADMIN/LAB/FAC/DELIVERY only Interface: */}
         <Divider horizontal />
-      {isAuthorized && membership && membership < 128 &&
-          <div>
+        {isAuthorized && membership && membership < 128 &&
             <Button basic color='blue'
               as={Link}
               to={
@@ -132,10 +134,10 @@ const HomePage = ({
             >
               Hello, {_mbr[_mbr.length-1]}!
             </Button>
-          </div>
         }
+  {/* === Closed FAC */}
+        {!!city && !fac.open && <h2 className='fac-closed'>{state.ui[lan][9]}</h2>}
       </div>
-{/* === Not our Zone Admin */}
 
     </div>
   )

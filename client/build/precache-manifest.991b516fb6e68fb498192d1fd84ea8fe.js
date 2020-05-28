@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/static/media/icons.faff9214.woff"
   },
   {
-    "revision": "845380d365e10e0cef48",
-    "url": "/static/css/main.b78ed726.chunk.css"
+    "revision": "9fd54ab22435c37b86d4",
+    "url": "/static/css/main.fb475fb7.chunk.css"
   },
   {
     "revision": "42ac5946195a7306e2a5",
@@ -16,8 +16,8 @@ self.__precacheManifest = [
     "url": "/static/media/brand-icons.a1a749e8.svg"
   },
   {
-    "revision": "2ccb9214928755f92e81",
-    "url": "/static/js/2.2ccb9214.chunk.js"
+    "revision": "6ced7768d58ca483075e",
+    "url": "/static/js/2.6ced7768.chunk.js"
   },
   {
     "revision": "90b4f22bf7034b0c99c82b369430c0f0",
@@ -28,12 +28,12 @@ self.__precacheManifest = [
     "url": "/static/media/pi_pi.27d4ed5a.svg"
   },
   {
-    "revision": "cd6c777f1945164224dee082abaea03a",
-    "url": "/static/media/outline-icons.cd6c777f.woff2"
-  },
-  {
     "revision": "ef60a4f6c25ef7f39f2d25a748dbecfe",
     "url": "/static/media/outline-icons.ef60a4f6.woff"
+  },
+  {
+    "revision": "cd6c777f1945164224dee082abaea03a",
+    "url": "/static/media/outline-icons.cd6c777f.woff2"
   },
   {
     "revision": "701ae6abd4719e9c2ada3535a497b341",
@@ -48,8 +48,8 @@ self.__precacheManifest = [
     "url": "/static/media/icons.0ab54153.woff2"
   },
   {
-    "revision": "845380d365e10e0cef48",
-    "url": "/static/js/main.845380d3.chunk.js"
+    "revision": "9fd54ab22435c37b86d4",
+    "url": "/static/js/main.9fd54ab2.chunk.js"
   },
   {
     "revision": "e8c322de9658cbeb8a774b6624167c2c",
@@ -64,12 +64,12 @@ self.__precacheManifest = [
     "url": "/static/media/flags.9c74e172.png"
   },
   {
-    "revision": "8e3c7f5520f5ae906c6cf6d7f3ddcd19",
-    "url": "/static/media/icons.8e3c7f55.eot"
-  },
-  {
     "revision": "b87b9ba532ace76ae9f6edfe9f72ded2",
     "url": "/static/media/icons.b87b9ba5.ttf"
+  },
+  {
+    "revision": "8e3c7f5520f5ae906c6cf6d7f3ddcd19",
+    "url": "/static/media/icons.8e3c7f55.eot"
   },
   {
     "revision": "13db00b7a34fee4d819ab7f9838cc428",
@@ -88,11 +88,11 @@ self.__precacheManifest = [
     "url": "/static/media/icons.962a1bf3.svg"
   },
   {
-    "revision": "2ccb9214928755f92e81",
+    "revision": "6ced7768d58ca483075e",
     "url": "/static/css/2.831f343c.chunk.css"
   },
   {
-    "revision": "2fae50df09aeb5c8aa9826ce6cad0b9b",
+    "revision": "96ff606b4488be7220302924d8c90fc2",
     "url": "/index.html"
   }
 ];

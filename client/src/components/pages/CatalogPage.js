@@ -17,13 +17,11 @@ class Catalog extends React.Component {
   render() {
     const { lan,city,products,facs } = this.props
     const { category } = this.state
-    const fli = facs.findIndex( f => f[city].city === city )
 
-    let l = facs[fli][city].products
-    .map( p => {
-      let prod = products.find( i => i.id === p.product )
-      return Object.assign(p,prod)
-    })
+    let l = facs.products.map( p => {
+        let prod = products.find( i => i.id === p.product )
+        return Object.assign(p,prod)
+      })
     let list = l.filter( p => p.category === category )
 
 

@@ -169,13 +169,12 @@ adminRouter.get('/fac/:id/:table', function (req, res, next) {
             uid = e.uid,
             delivery = e.delivery,
             user_location = e.user_location,
-            fc_id = e.fc_id,
             ordered_at = e.ordered_at,
             pick_up_time = e.pick_up_time,
             order_promo = e.order_promo,
-            rest = _objectWithoutProperties(e, ['id', 'uid', 'delivery', 'user_location', 'fc_id', 'ordered_at', 'pick_up_time', 'order_promo']);
+            rest = _objectWithoutProperties(e, ['id', 'uid', 'delivery', 'user_location', 'ordered_at', 'pick_up_time', 'order_promo']);
 
-        return { id: id, uid: uid, delivery: delivery, user_location: user_location, fc_id: fc_id, ordered_at: ordered_at, pick_up_time: pick_up_time, order_promo: order_promo, rest: rest };
+        return { id: id, uid: uid, delivery: delivery, user_location: user_location, ordered_at: ordered_at, pick_up_time: pick_up_time, order_promo: order_promo, rest: rest };
       });
       _api2.default.updateMany({ id: rows, status: 2 }, 'orders').then(function () {
         return res.status(200).json(list);

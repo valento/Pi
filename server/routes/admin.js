@@ -117,8 +117,8 @@ adminRouter.get('/fac/:id/:table', (req,res,next) => {
     let list = []
     if( response.length > 0 ) {
       list = response.map( e => {
-const { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time,order_promo,...rest} = e
-return { id,uid,delivery,user_location,fc_id,ordered_at,pick_up_time,order_promo,rest }
+const { id,uid,delivery,user_location,ordered_at,pick_up_time,order_promo,...rest} = e
+return { id,uid,delivery,user_location,ordered_at,pick_up_time,order_promo,rest }
       })
       api.updateMany({id: rows, status:2},'orders')
       .then( () => res.status(200).json(list) )

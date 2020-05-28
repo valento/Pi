@@ -20,13 +20,14 @@ const ProductsList = ({products,category,view,onOrder,item}) => {
         <div className={view==='hor'? 'product-list' : 'catalog'} style={style}>
           <ul>
             { view==='hor'? <li>
-              <div className={('product').concat(' ', icons[category-1])}></div>
+                <div className={('product').concat(' ', icons[category-1])}></div>
               </li> : <li>
                 --- MENU ---
               </li>
             }
-            { products.map( item => {
-                return <li><Product mode={view} entry={item} onOrder={onOrder} /></li>
+            { products.map(
+              entry => {
+                return <li><Product mode={view} entry={entry} onOrder={onOrder} /></li>
               })
             }
           </ul>

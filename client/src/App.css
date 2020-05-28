@@ -246,6 +246,12 @@ h2 {
 .order .detail {
   background-color: #fffaaa;
 }
+.fac-closed {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: red;
+  font-weight: bold;
+}
 
 
 /* --- FORMS --------------------------- */
