@@ -23,23 +23,32 @@ console.log('Initial Users: ',rnd)
 
   roles.forEach( (role,index) => {
     wsrouter.mount('*',`${role}-protocol`, request => {
-
+// Count Inital User array on Hand-shake:
       request.on('requestAccepted', connection => {
         if(connection.protocol === 'customer-protocol') {
           if(conn.customer.length > 0) {
-             conn.customer.forEach( c => c.send(JSON.stringify({customer_counter: conn.customer.length+rnd})))
+             conn.customer.forEach( c => c.send(JSON.stringify({
+               customer_counter: conn.customer.length+rnd
+             })))
+          }
+          if(conn.baker.length > 0) {
+            conn.baker.forEach( b => b.send(JSON.stringify({
+              customer_counter: conn.customer.map(cst => cst.FAC)
+            })))
           }
         } else if (connection.protocol === 'baker-protocol'){
-          if(conn[role].length>0) {
-            conn.baker.forEach( b => b.send(JSON.stringify({customer_counter: conn.customer.length})))
+          if(conn.baker.length>0) {
+            conn.baker.forEach( b => b.send(JSON.stringify({
+              customer_counter: conn.customer.map(cst => cst.FAC)
+            })))
           }
-
         }
       })
   // get WS.Connection
       let connection = request.accept(request.origin)
-      const { id } = request.resourceURL.query
+      const { id,fac } = request.resourceURL.query
       connection.ID = Number(id)
+      connection.FAC = Number(fac)
   // Store baker-Connections:
       let con = conn[role].find( c => c.ID === Number(id) )
       if( !con ) conn[role].push(connection)
@@ -47,16 +56,17 @@ console.log('Initial Users: ',rnd)
   // Event handlers:
   // ------ MESSAGING Event: ------------------------------------
       connection.on('message', msg => {
-        const { user,fac,mem,ordered } = JSON.parse(msg.utf8Data)
+        const { user,fac,mem,ordered,open } = JSON.parse(msg.utf8Data)
         console.log('Socket Parse: ', user,fac,mem,ordered)
         let bkr = conn.baker.find( c => c.ID === fac )
         let order = !!ordered
-        if(bkr) {
-          console.log(`Baker ${bkr.ID}, send`)
+        if(bkr && order) {
           bkr.send(JSON.stringify({ user: id, order: order }))
+        } else if(open !== undefined) {
+          conn.customer.filter( c => c.FAC===fac )
+          .forEach( c => c.send(JSON.stringify({ fac:fac, open:open })) )
         }
-          //conn[roles[Math.log2(mem)]].find( c => c.ID===user ).sendUTF(`Message from User: ${user}, recieved`)
-        console.log(`Connected ${role}: ${user} `)
+      //conn[roles[Math.log2(mem)]].find( c => c.ID===user ).sendUTF(`Message from User: ${user}, recieved`)
 
       //connection.sendUTF(`Message from Baker: ${user}, recieved`)
       })
@@ -66,7 +76,18 @@ console.log('Initial Users: ',rnd)
         conn[role].splice(i,1)
         if(role === 'customer' && conn.customer.length>0) {
           conn.customer.forEach( c => {
-            c.send(JSON.stringify({customer_counter: conn[role].length+rnd}))
+            if(conn.customer.length > 0) {
+               conn.customer.forEach( c => c.send(JSON.stringify({
+                 customer_counter: conn.customer.length+rnd
+               })))
+            }
+            if(conn.baker.length > 0) {
+              conn.baker.forEach( b => {
+                b.send(JSON.stringify({
+                  customer_counter: conn.customer.map(cst => cst.FAC)
+                }))
+              })
+            }
           })
         }
       })

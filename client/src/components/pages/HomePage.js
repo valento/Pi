@@ -136,7 +136,7 @@ const HomePage = ({
             </Button>
         }
   {/* === Closed FAC */}
-        {!!city && !fac.open &&
+        {!!city && !fac.open && user.membership>63 &&
           <div className='fac-lable'>
             <div className='fac-closed'>
               <h3>{state.ui[lan][9]}</h3>

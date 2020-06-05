@@ -24,7 +24,6 @@ const RoleHome = ({uid,lan,membership,userSignedIn,setInterface,dispatch,...rest
   }
 
   const logout = () => {
-    console.log('Logout this User')
     localStorage.clear()
     setAuthHeader()
     userSignedIn({})
@@ -40,24 +39,26 @@ const RoleHome = ({uid,lan,membership,userSignedIn,setInterface,dispatch,...rest
     <div className='App-content topped padded'>
       <div className='menu-bar dobletopped'>
         <Button.Group color='grey'>
-          <Button as={Link} to={url} icon='home'/>
+          <Button name='home' as={Link} to={url} icon='home'/>
           {membership === 1 &&
-            <Button as={Link} to={`${url}/${state.ui[lan][2]}`} content={state.ui[lan][3]}/>}
+            <Button name={state.ui[lan][2]} as={Link} to={`${url}/${state.ui[lan][2]}`} content={state.ui[lan][3]}/>}
           {membership === 2 &&
-            <Button as={Link} to={`${url}/${state.ui[lan][3]}`} content={state.ui[lan][3]}/>}
+            <Button name={state.ui[lan][3]} as={Link} to={`${url}/${state.ui[lan][3]}`} content={state.ui[lan][3]}/>}
           {membership === (4 || 12) &&
-            <Button as={Link} to={`${url}/${state.ui[lan][4]}`} content={state.ui[lan][4]} />}
+            <Button name={state.ui[lan][4]} as={Link} to={`${url}/${state.ui[lan][4]}`} content={state.ui[lan][4]} />}
           {membership === (8 || 12) &&
-            <Button as={Link}
+            <Button name={state.ui[lan][5]} as={Link}
               to={`${url}/${state.ui[lan][5]}`}
               content={state.ui[lan][5]}
-              desabled={!rest.fac.open}
+              onClick={ e => {
+                if(!rest.fac.open) return e.preventDefault()
+              }}
             />}
           {membership === 32 &&
-            <Button as={Link} to={`${url}/${state.ui[lan][6]}`} content={state.ui[lan][6]} />}
+            <Button name={state.ui[lan][6]} as={Link} to={`${url}/${state.ui[lan][6]}`} content={state.ui[lan][6]} />}
           {membership === 64 &&
-            <Button as={Link} to={`${url}/${state.ui[lan][7]}`} icon='eye' content={state.ui[lan][7]} />}
-            <Button as={Link} to={url}
+            <Button name={state.ui[lan][7]} as={Link} to={`${url}/${state.ui[lan][7]}`} icon='eye' content={state.ui[lan][7]} />}
+            <Button name={state.ui[lan][8]} as={Link} to={url}
               icon='stop circle outline'
               color='blue'
               content={state.ui[lan][8]}
@@ -70,7 +71,8 @@ const RoleHome = ({uid,lan,membership,userSignedIn,setInterface,dispatch,...rest
           render={ () => <AllAdminHome
             lan={lan}
             id={rest.fac.id}
-            fowner={rest.fac.uid} 
+            fowner={rest.fac.uid}
+            baker={rest.fac.baker}
             uid={uid}
             member={membership}
           />

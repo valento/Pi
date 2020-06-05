@@ -122,7 +122,6 @@ exports.default = {
     console.log(sql);
     return new Promise(function (resolve, reject) {
       db.query(sql, function (err, results) {
-        console.log(results);
         if (err) return reject(err);
         resolve(results);
       });

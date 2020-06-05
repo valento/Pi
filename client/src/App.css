@@ -94,7 +94,8 @@ h2 {
   padding: 1px 16px;
   background-color: white;
   color: #666;
-  font-size: 12px;
+  font-size: 1em;
+  text-align: left;
   display: flex;
 }
 
@@ -394,6 +395,9 @@ h2 {
 .nopadd {
   padding: 0;
 }
+.nopadd.ui.grid>.row {
+  padding-bottom: 0;
+}
 .nopadd.ui.celled.grid {
   margin: 0;
 }
@@ -458,6 +462,18 @@ p.short {
 }
 .selected-row {
   background-color: #ece5d5;
+}
+.circle-div {
+  margin: 0 auto;
+  height: 85px;
+  width: 85px;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  display: inline-block;
+}
+.circle-div h2 {
+  padding-top: 27%;
+  color: #aaa;
 }
 
 @keyframes App-logo-spin {

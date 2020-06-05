@@ -72,7 +72,7 @@ userRouter.post('/facs', getLan, (req,res,next) => {
   api.getFac(id)
   .then( results => {
     let facs = {}
-    const {id,uid,city,name,street,number,prime,open,checkin,
+    const {id,uid,baker,city,name,street,number,prime,open,checkin,
       sat_open,sat_close,sun_open,
       sun_close,vacation_end,vacation_start,
       delivery,bottleneck,mobile} = results[0]
@@ -92,7 +92,7 @@ userRouter.post('/facs', getLan, (req,res,next) => {
       //  facs = { ...facs, [location]: {open: 0}}
       //}
     })
-    facs = Object.assign({id,uid,city,name,number,prime,open,checkin,
+    facs = Object.assign({id,uid,baker,city,name,number,prime,open,checkin,
       sat_open,sat_close,sun_open,
       sun_close,vacation_end,vacation_start,
       delivery,bottleneck,mobile},{products:products, street: st})

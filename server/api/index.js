@@ -101,7 +101,6 @@ console.log(results)
 console.log(sql)
     return new Promise( (resolve,reject) => {
       db.query(sql, (err,results) => {
-        console.log(results)
         if(err) return reject(err)
         resolve(results)
       })

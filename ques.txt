@@ -18,12 +18,14 @@ no open FK for FAC_LOCATION table
 
 # ==== GEO =================================================
 # city.ALT - name in short
+# city.STATUS - ['active','inactive','canceled','pending']
 
 CREATE TABLE city (
 id INT AUTO_INCREMENT NOT NULL UNIQUE PRIMARY KEY,
 name JSON,
 alt JSON,
 zone INT,
+status,
 code INT UNIQUE NOT NULL,
 c_status TINYINT unsigned DEFAULT 2,
 c_owner TINYINT unsigned NOT NULL DEFAULT 1,
@@ -230,15 +232,15 @@ FOREIGN KEY (uid) REFERENCES user(uid) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO lab (city,name,mobile,status) VALUES (1,'FirstLab',877323598,7);
+INSERT INTO lab (uid,city,name,mobile,status) VALUES (18,18,'FirstSZLab',877323598,7);
 
 # FAC is a USER of GROUP 4 (they can buy components)
 # FAC belongs to LAB
 # fac.status = ['authorized','licensed','active','inactive','canceled','pending']
 # fac.checkin = FAC is set to open (baker is in)
-# fac.open = FAC is public
+# fac.open = FAC is open
 # fac.delivery = [all,to-door,to-take]
-# fac.pod = FAC is PoD=true or PoD is apart=false
+# fac.pod = PoD ID
 
 CREATE TABLE fac (
 id INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
@@ -276,8 +278,8 @@ FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE CASCADE ON UPDATE CA
 FOREIGN KEY (city) REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO fac (name,bulstat,open,status,mobile,city,delivery,lab)
-VALUES ('FACtory',205873583,1,7,888378946,5,0,1);
+INSERT INTO fac (uid,name,location_id,bulstat,status,mobile,city,lab)
+VALUES (18,'szFACtory',5,205873583,7,877323598,18,4);
 
 464 = 111 010 000
 
@@ -372,7 +374,7 @@ where fl.location in (4)
 # ---- - Product - Promo - -------------------------------------------------
 
 # ==== PRODUCTS : belong to OWNER/LAB ======================================
-# ==== ITEMS : belong to FAB.STORE =========================================
+# ==== ITEMS : belong to FAC.STORE =========================================
 
 # product.SUPPLIER = (lab,fac,other)
 # product.ALT = (music,tv,football,politics,...)
@@ -559,8 +561,14 @@ CREATE TABLE `store` (
 ------------------------------------------------------------------------------
 
 INSERT INTO store (fac,product,on_hand) VALUES
-(2,1,5),
-(2,2,8);
+(4,1,5),
+(4,3,5),
+(4,4,5),
+(4,11,5),
+(4,2,8);
+INSERT INTO store (fac,product,on_hand) VALUES
+(4,17,15),
+(4,18,15);
 
 INSERT INTO store (fac,product,on_hand) VALUES
 (3,9,4),
@@ -594,15 +602,16 @@ cat_related INT NOT NULL DEFAULT 1,
 # ---------------- 1 --- 2 ------- 4 ---- 8 --- 16 ----- 32 ----- 64 --- 128 -- 256 -- 512
 # order.STATUS = enter,recieve,inprocess,exit,transit,delivered,delayed,missing,reject,cancel
 # order.status {
-enter = system
-recieved = FAC pulled that order
-inprocess = FAC is working on it
-exit = FAC has finieshed
-transit = DLVR took it
-delayed = delayed for any reason (baking or transit)
-missing = lost for some reason
-rejected = CUSTOMER rejected order
-calnceled = CUSTOMER canceled order
+1 -   enter = system
+2 -   recieved = FAC pulled that order
+4 -   inprocess = FAC is working on it
+8 -   exit = FAC has finieshed
+16 -  transit = DLVR took it
+32 -  delivered = Customer recieved and paid for it
+64 -  delayed = delayed for any reason (baking or transit)
+128 - missing = lost for some reason
+256 - rejected = CUSTOMER rejected order
+512 - canceled = CUSTOMER canceled order
 }
 # order.USER_LOCATION = id of user_location -> get location id for delivery-app view
 # order.ADD_TIME = pizza.ADD_TIME average
@@ -655,8 +664,8 @@ c_status TINYINT unsigned DEFAULT 4,
 c_owner TINYINT unsigned NOT NULL DEFAULT 1,
 c_group TINYINT(2) signed NOT NULL DEFAULT 4,
 c_permis INT unsigned DEFAULT 439,
-FOREIGN KEY (item) REFERENCES product(id),
-FOREIGN KEY (order_id) REFERENCES orders(id),
+FOREIGN KEY (item) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (promo_id) REFERENCES promo(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

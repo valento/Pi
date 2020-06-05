@@ -30,8 +30,8 @@ export const initSocket = (id,membership,fac,cb) => {
   if(role === 'rep') role = 'customer'
 
   let URL = process.env.NODE_ENV==='production'?
-  `wss://pizzapi.co/?id=${ID}` :
-  `ws://localhost:8080/?id=${ID}`
+  `wss://pizzapi.co/?id=${ID}&fac=${fac}` :
+  `ws://localhost:8080/?id=${ID}&fac=${fac}`
 
   console.log('Role/ID: ', role, ID)
   console.log('WS on: ', URL)

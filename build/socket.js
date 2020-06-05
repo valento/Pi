@@ -26,27 +26,45 @@ var open = function open(server, member) {
 
   roles.forEach(function (role, index) {
     wsrouter.mount('*', role + '-protocol', function (request) {
-
+      // Count Inital User array on Hand-shake:
       request.on('requestAccepted', function (connection) {
         if (connection.protocol === 'customer-protocol') {
           if (conn.customer.length > 0) {
             conn.customer.forEach(function (c) {
-              return c.send(JSON.stringify({ customer_counter: conn.customer.length + rnd }));
+              return c.send(JSON.stringify({
+                customer_counter: conn.customer.length + rnd
+              }));
+            });
+          }
+          if (conn.baker.length > 0) {
+            conn.baker.forEach(function (b) {
+              return b.send(JSON.stringify({
+                customer_counter: conn.customer.map(function (cst) {
+                  return cst.FAC;
+                })
+              }));
             });
           }
         } else if (connection.protocol === 'baker-protocol') {
-          if (conn[role].length > 0) {
+          if (conn.baker.length > 0) {
             conn.baker.forEach(function (b) {
-              return b.send(JSON.stringify({ customer_counter: conn.customer.length }));
+              return b.send(JSON.stringify({
+                customer_counter: conn.customer.map(function (cst) {
+                  return cst.FAC;
+                })
+              }));
             });
           }
         }
       });
       // get WS.Connection
       var connection = request.accept(request.origin);
-      var id = request.resourceURL.query.id;
+      var _request$resourceURL$ = request.resourceURL.query,
+          id = _request$resourceURL$.id,
+          fac = _request$resourceURL$.fac;
 
       connection.ID = Number(id);
+      connection.FAC = Number(fac);
       // Store baker-Connections:
       var con = conn[role].find(function (c) {
         return c.ID === Number(id);
@@ -60,19 +78,24 @@ var open = function open(server, member) {
             user = _JSON$parse.user,
             fac = _JSON$parse.fac,
             mem = _JSON$parse.mem,
-            ordered = _JSON$parse.ordered;
+            ordered = _JSON$parse.ordered,
+            open = _JSON$parse.open;
 
         console.log('Socket Parse: ', user, fac, mem, ordered);
         var bkr = conn.baker.find(function (c) {
           return c.ID === fac;
         });
         var order = !!ordered;
-        if (bkr) {
-          console.log('Baker ' + bkr.ID + ', send');
+        if (bkr && order) {
           bkr.send(JSON.stringify({ user: id, order: order }));
+        } else if (open !== undefined) {
+          conn.customer.filter(function (c) {
+            return c.FAC === fac;
+          }).forEach(function (c) {
+            return c.send(JSON.stringify({ fac: fac, open: open }));
+          });
         }
         //conn[roles[Math.log2(mem)]].find( c => c.ID===user ).sendUTF(`Message from User: ${user}, recieved`)
-        console.log('Connected ' + role + ': ' + user + ' ');
 
         //connection.sendUTF(`Message from Baker: ${user}, recieved`)
       });
@@ -84,7 +107,22 @@ var open = function open(server, member) {
         conn[role].splice(i, 1);
         if (role === 'customer' && conn.customer.length > 0) {
           conn.customer.forEach(function (c) {
-            c.send(JSON.stringify({ customer_counter: conn[role].length + rnd }));
+            if (conn.customer.length > 0) {
+              conn.customer.forEach(function (c) {
+                return c.send(JSON.stringify({
+                  customer_counter: conn.customer.length + rnd
+                }));
+              });
+            }
+            if (conn.baker.length > 0) {
+              conn.baker.forEach(function (b) {
+                b.send(JSON.stringify({
+                  customer_counter: conn.customer.map(function (cst) {
+                    return cst.FAC;
+                  })
+                }));
+              });
+            }
           });
         }
       });

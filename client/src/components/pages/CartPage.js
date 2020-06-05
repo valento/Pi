@@ -14,11 +14,11 @@ class CartPage extends React.Component {
   state = {
     ui: {
       en:['Order','Where to:','Order:','Cancel','Add','You must give us a location!',
-      'Oreder recieved','Tu Pick up', 'Or', 'Success', 'Error'],
+      'Oreder recieved','Tu Pick up', 'Or', 'Success', 'Error','CLOSED'],
       es:['Orden','Para donde:','Pedir','Cancelar','Más','Necesitamos dirección de entrega!',
-      'Pedido recibido','Para recojer', 'O', 'Exitoso', 'Error'],
+      'Pedido recibido','Para recojer', 'O', 'Exitoso', 'Error','CERRADO'],
       bg:['Поръчка','За къде:','Поръчай','Откажи','Още','Трябва ни адрес на доставка!',
-      'Поръчката е приета','За Вземане', 'Или', 'Честито!', '!Грешка!']
+      'Поръчката е приета','За Вземане', 'Или', 'Честито!', '!Грешка!','ЗАТВОРЕНО']
     },
     currentLocation: 0,
     delivery: 1,
@@ -83,7 +83,13 @@ class CartPage extends React.Component {
       }
       defLoc = currentLocation!==0? currentLocation : prime
       this.props.makeCart({user_location: defLoc, cart: cart, delivery: delivery, fac_id: fac.id, total: total})
-        .then( msg => this.setState({ message: {stat: msg} }) )
+        .then( msg => {
+          this.setState({ message: {stat: msg} })
+          fireSocket(null,JSON.stringify({
+                user: user.uid, mem: user.membership,
+                fac: fac.id, ordered: true
+              }))
+        } )
         .catch( err => this.setState({ message: {err} }) )
     }
 
@@ -154,7 +160,7 @@ class CartPage extends React.Component {
             <Button color='grey' onClick={this.props.cancelCart} as={Link} to='/' content={ui[3]}/>
             <Button
               name='submit'
-              disabled={total===0 || (!user.locations && fac.delivery !== 4)}
+              disabled={total===0 || (!user.locations && fac.delivery !== 4 || !fac.open)}
               color='orange'
               onClick={this.onOrder}
               content={ui[2].concat(' ',total.toString())}
@@ -162,6 +168,14 @@ class CartPage extends React.Component {
             <Button color='grey' as={Link} to='/order' icon='plus' content={ui[4]} />
           </Button.Group>
         </div>}
+{/* ===== Closed FAC ============================================ */}
+        {!fac.open &&
+          <div className='fac-lable'>
+            <div className='fac-closed'>
+              <h3>{ui[11]}</h3>
+            </div>
+          </div>
+        }
       </div>
     )
   }

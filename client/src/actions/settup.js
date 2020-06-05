@@ -45,7 +45,11 @@ export const socketCounter = data => dispatch => {
   console.log('Socket Action: ',data)
   if(data.order) {
     return dispatch(countOrders())
-  } else {
+  }
+  else if (data.hasOwnProperty('open')) {
+    return dispatch(facSetup({open: data.open}))
+  }
+  else {
     return dispatch(countCustomers(data))
   }
 }
