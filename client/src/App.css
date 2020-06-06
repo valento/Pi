@@ -392,6 +392,11 @@ h2 {
   padding-left: 8px!important;
   padding-right: 8px!important;
 }
+.bottom-div {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
 .nopadd {
   padding: 0;
 }

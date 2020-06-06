@@ -9,6 +9,7 @@ let orderRouter = express.Router({
 
 orderRouter.use(bodyParser.json())
 
+// Save an Order and Order_Details
 orderRouter.post('/', getUserId, (req,res,next) => {
   const {uid,member} = req
   let order
@@ -18,6 +19,7 @@ orderRouter.post('/', getUserId, (req,res,next) => {
 // Prepare SQL Data Object:
   const {user_location,delivery,fac_id,total,cart} = req.body.data
   //console.log(uid, req.body.data)
+
   api.saveOne(Object.assign({},{uid},{user_location,delivery,total,fac_id}),'orders')
   .then( id => {
     order = id

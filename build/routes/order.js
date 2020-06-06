@@ -26,6 +26,7 @@ var orderRouter = _express2.default.Router({
 
 orderRouter.use(_bodyParser2.default.json());
 
+// Save an Order and Order_Details
 orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
   var uid = req.uid,
       member = req.member;

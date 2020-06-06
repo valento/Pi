@@ -59,7 +59,10 @@ class OrdersPage extends React.Component {
 // ProductList.view - hor, ver
     return(
       <div className='App-content topped padded'>
-        <ProductsList view='hor' products={list} category={category} item={item} facs={facs} />
+        <ProductsList view='hor' lan={lan}
+          products={list} category={category} 
+          item={item} facs={facs}
+        />
         <MenuList lan={lan} cats={cat_list} category={category} onCategory={this.onCategory} />
         <Order products={list} category={category} stat={false} itemSelected={this.onItemSelected} lan={lan} />
       </div>
