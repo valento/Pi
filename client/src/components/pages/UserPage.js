@@ -50,7 +50,7 @@ class UserPage extends React.Component {
     setAuthHeader()
     this.props.userSignedIn({})
     closeSocket()
-    this.props.setInterface({socket: false})
+    this.props.setInterface({socket: false,city:null})
   }
 
   render() {

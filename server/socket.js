@@ -37,11 +37,9 @@ console.log('Initial Users: ',rnd)
             })))
           }
         } else if (connection.protocol === 'baker-protocol'){
-          if(conn.baker.length>0) {
-            conn.baker.forEach( b => b.send(JSON.stringify({
-              customer_counter: conn.customer.map(cst => cst.FAC)
-            })))
-          }
+          connection.send(JSON.stringify({
+            customer_counter: conn.customer.map(cst => cst.FAC)
+          }))
         }
       })
   // get WS.Connection
@@ -72,23 +70,24 @@ console.log('Initial Users: ',rnd)
       })
   // ------ CLOSE Event: ------------------------------------
       connection.on('close', (reasonCode, description) => {
-        let i = conn[role].find(c => c.ID === connection.ID)
+        console.log('Close Customer Connection: ', connection.ID, connection.FAC)
+        let { FAC,ID } = connection, local_customers = [], all_customers
+        let b = conn.baker.find( b => b.FAC === FAC)
+        let i = conn[role].findIndex( c => c.ID === ID )
         conn[role].splice(i,1)
-        if(role === 'customer' && conn.customer.length>0) {
-          conn.customer.forEach( c => {
-            if(conn.customer.length > 0) {
-               conn.customer.forEach( c => c.send(JSON.stringify({
-                 customer_counter: conn.customer.length+rnd
-               })))
-            }
-            if(conn.baker.length > 0) {
-              conn.baker.forEach( b => {
-                b.send(JSON.stringify({
-                  customer_counter: conn.customer.map(cst => cst.FAC)
-                }))
-              })
-            }
-          })
+
+        if(role === 'customer') {
+// Notify Baker counter:
+          if(b) {
+            local_customers = conn.customer.filter(cst => cst.FAC===FAC)
+            //console.log('Local Customers: ', local_customers)
+            b.send( JSON.stringify({customer_counter: local_customers.map( c => c.FAC )}) )
+          }
+// Notify Customer counter:
+          conn.customer.forEach( c => c.send(
+            JSON.stringify({
+              customer_counter: conn.customer.length
+          })))
         }
       })
 

@@ -46,15 +46,11 @@ var open = function open(server, member) {
             });
           }
         } else if (connection.protocol === 'baker-protocol') {
-          if (conn.baker.length > 0) {
-            conn.baker.forEach(function (b) {
-              return b.send(JSON.stringify({
-                customer_counter: conn.customer.map(function (cst) {
-                  return cst.FAC;
-                })
-              }));
-            });
-          }
+          connection.send(JSON.stringify({
+            customer_counter: conn.customer.map(function (cst) {
+              return cst.FAC;
+            })
+          }));
         }
       });
       // get WS.Connection
@@ -101,28 +97,36 @@ var open = function open(server, member) {
       });
       // ------ CLOSE Event: ------------------------------------
       connection.on('close', function (reasonCode, description) {
-        var i = conn[role].find(function (c) {
-          return c.ID === connection.ID;
+        console.log('Close Customer Connection: ', connection.ID, connection.FAC);
+        var FAC = connection.FAC,
+            ID = connection.ID,
+            local_customers = [],
+            all_customers = void 0;
+
+        var b = conn.baker.find(function (b) {
+          return b.FAC === FAC;
+        });
+        var i = conn[role].findIndex(function (c) {
+          return c.ID === ID;
         });
         conn[role].splice(i, 1);
-        if (role === 'customer' && conn.customer.length > 0) {
+
+        if (role === 'customer') {
+          // Notify Baker counter:
+          if (b) {
+            local_customers = conn.customer.filter(function (cst) {
+              return cst.FAC === FAC;
+            });
+            //console.log('Local Customers: ', local_customers)
+            b.send(JSON.stringify({ customer_counter: local_customers.map(function (c) {
+                return c.FAC;
+              }) }));
+          }
+          // Notify Customer counter:
           conn.customer.forEach(function (c) {
-            if (conn.customer.length > 0) {
-              conn.customer.forEach(function (c) {
-                return c.send(JSON.stringify({
-                  customer_counter: conn.customer.length + rnd
-                }));
-              });
-            }
-            if (conn.baker.length > 0) {
-              conn.baker.forEach(function (b) {
-                b.send(JSON.stringify({
-                  customer_counter: conn.customer.map(function (cst) {
-                    return cst.FAC;
-                  })
-                }));
-              });
-            }
+            return c.send(JSON.stringify({
+              customer_counter: conn.customer.length
+            }));
           });
         }
       });

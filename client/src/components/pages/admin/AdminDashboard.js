@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Divider,Grid,Icon } from 'semantic-ui-react'
 
-const AdminDashboard = ({member,lan,customers,orders}) => {
+const AdminDashboard = ({member,fac,lan,customers,orders}) => {
   const state = {
     ui: {
       en:['Boss','Lab','Fac','Baker','Courier','Tester'],
@@ -27,7 +27,7 @@ const AdminDashboard = ({member,lan,customers,orders}) => {
       <Grid.Row columns={2}>
         <Grid.Column>
           <div className='circle-div'>
-            <h2>{customers.length || 0}</h2>
+            <h2>{customers.filter( c=>c===fac ).length || 0}</h2>
           </div>
         </Grid.Column>
         <Grid.Column>
@@ -43,6 +43,7 @@ const AdminDashboard = ({member,lan,customers,orders}) => {
 
 const mapStateToProps = state => ({
   customers: state.settings.customer_counter,
-  orders: state.settings.order_counter
+  orders: state.settings.order_counter,
+  fac: state.facs.id
 })
 export default connect(mapStateToProps)(AdminDashboard)
