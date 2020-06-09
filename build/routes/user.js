@@ -112,6 +112,7 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
   var id = req.body.id;
 
   _user2.default.getFac(id).then(function (results) {
+    console.log(results[0]);
     var facs = {};
     var _results$ = results[0],
         id = _results$.id,
@@ -124,6 +125,10 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
         prime = _results$.prime,
         open = _results$.open,
         checkin = _results$.checkin,
+        work_open = _results$.work_open,
+        day_close = _results$.day_close,
+        noon_open = _results$.noon_open,
+        work_close = _results$.work_close,
         sat_open = _results$.sat_open,
         sat_close = _results$.sat_close,
         sun_open = _results$.sun_open,
@@ -132,6 +137,7 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
         vacation_start = _results$.vacation_start,
         delivery = _results$.delivery,
         bottleneck = _results$.bottleneck,
+        order_estimated = _results$.order_estimated,
         mobile = _results$.mobile;
 
     var st = JSON.parse(street)[lan];
@@ -159,9 +165,9 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
       };
     });
     facs = Object.assign({ id: id, uid: uid, baker: baker, city: city, name: name, number: number, prime: prime, open: open, checkin: checkin,
-      sat_open: sat_open, sat_close: sat_close, sun_open: sun_open,
-      sun_close: sun_close, vacation_end: vacation_end, vacation_start: vacation_start,
-      delivery: delivery, bottleneck: bottleneck, mobile: mobile }, { products: products, street: st });
+      work_open: work_open, day_close: day_close, noon_open: noon_open, work_close: work_close, sat_open: sat_open, sat_close: sat_close, sun_open: sun_open, sun_close: sun_close,
+      vacation_end: vacation_end, vacation_start: vacation_start,
+      delivery: delivery, bottleneck: bottleneck, order_estimated: order_estimated, mobile: mobile }, { products: products, street: st });
     res.status(200).json(facs);
   }).catch(function (err) {
     return console.log(err.message);

@@ -32,7 +32,7 @@ const AdminDashboard = ({member,fac,lan,customers,orders}) => {
         </Grid.Column>
         <Grid.Column>
           <div className='circle-div'>
-            <h2>{orders || 100}</h2>
+            <h2>{orders || 64}</h2>
           </div>
         </Grid.Column>
       </Grid.Row>

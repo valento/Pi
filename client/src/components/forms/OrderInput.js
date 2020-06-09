@@ -77,7 +77,7 @@ class OrderInput extends React.Component {
             </div>
             <div className='three wide column'>
               <Form.Input onChange={this.onChange} type='number'
-                required name='units' placeholder={1}
+                required name='units' placeholder={0}
                 value={item.units || ''}
               />
             </div>

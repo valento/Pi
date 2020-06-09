@@ -91,6 +91,10 @@ const HomePage = ({
         subscribeSocket(socketCounter)
     }
   }
+  const init = new Date(`Januar 1, 00 ${fac.work_open}`)
+  const pause = new Date(`Januar 1, 00 ${fac.day_close}`)
+  const reinit = new Date(`Januar 1, 00 ${fac.noon_open}`)
+  const close = new Date(`Januar 1, 00 ${fac.work_close}`)
 
   return (
     <div className='App-content topped padded'>
@@ -137,10 +141,16 @@ const HomePage = ({
         }
   {/* === Closed FAC */}
         {!!city && !fac.open && user.membership>63 &&
-          <div className='fac-lable'>
-            <div className='fac-closed'>
-              <h3>{state.ui[lan][9]}</h3>
+          <div className='fac-info'>
+            <div className='fac-lable'>
+              <div className='fac-closed'>
+                <h3>{state.ui[lan][9]}</h3>
+              </div>
             </div>
+            <p>{`${init.getHours()}:${init.getMinutes()>0? init.getMinutes(): '00'} -
+            ${pause.getHours()}:${pause.getMinutes()>0? init.getMinutes(): '00'}`}</p>
+          <p>{`${reinit.getHours()}:${reinit.getMinutes()>0? init.getMinutes(): '00'} -
+            ${close.getHours()}:${close.getMinutes()>0? init.getMinutes(): '00'}`}</p>
           </div>
         }
       </div>

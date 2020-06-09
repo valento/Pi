@@ -10,8 +10,8 @@ class SearchSetupForm extends React.Component {
     data: {},
     ui: {
       en: ['Cancel','Submit','No service in that City', 'Sorry:'],
-      es: ['Cancelar','Guardar','Sin servicio en esta Ciudad', 'Perdona, pero:'],
-      bg: ['Изтрий','Запази','Не обслужваме този град все още...', 'Съжаляваме, но:']
+      es: ['Cancelar','Confirmar','Sin servicio en esta Ciudad', 'Perdona, pero:'],
+      bg: ['Изтрий','Потвърди','Не обслужваме този град все още...', 'Съжаляваме, но:']
     }
   }
 

@@ -247,6 +247,12 @@ h2 {
 .order .detail {
   background-color: #fffaaa;
 }
+.fac-info {
+  position: relative;
+  margin: 0 auto;
+  min-width: 170px;
+  color: red;
+}
 .fac-lable {
   position: relative;
   margin: 0 auto;
@@ -260,7 +266,6 @@ h2 {
   min-height: 40px;
   border: 1px solid rgba(220,220,220,.9);
   background: #eee;
-  color: red;
   font-weight: bold;
 }
 .fac-closed::before,
