@@ -34,13 +34,14 @@ const CollectionTable =
             let entry = data.filter( e => e.id===l)
             let details = entry.length>1 ? entry.map( d=>d.rest) : entry[0].rest
             const { id,ordered_at,pick_up_time} = entry[0]
+
             return (
               <Grid celled className='order nopadd'>
                 <OrderLine key={id}
                   id={id}
                   onClick={ e => detailID(id)}
-                  ordered={new Date(ordered_at)}
-                  pickup={new Date(pick_up_time)}
+                  ordered={ordered_at? new Date(ordered_at) : null}
+                  pickup={pick_up_time? new Date(pick_up_time) : null}
                 />
               {detail===id && <OrderDetail data={details} />}
               </Grid>

@@ -71,7 +71,6 @@ userRouter.post('/facs', getLan, (req,res,next) => {
   const { id } = req.body
   api.getFac(id)
   .then( results => {
-    console.log(results[0])
     let facs = {}
     const {id,uid,baker,city,name,street,number,prime,open,checkin,
       work_open,day_close,noon_open,work_close,sat_open,sat_close,sun_open,sun_close,

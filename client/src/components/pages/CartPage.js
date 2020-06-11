@@ -14,11 +14,11 @@ class CartPage extends React.Component {
   state = {
     ui: {
       en:['Order','Where to:','Order:','Cancel','Add','You must give us a location!',
-      'Oreder recieved','Tu Pick up', 'Or', 'Success', 'Error','CLOSED'],
+      'Oreder recieved','Tu Pick up', 'Or', 'Success', 'Error','CLOSED','Pick up in: ','min.'],
       es:['Orden','Para donde:','Pedir','Cancelar','Más','Necesitamos dirección de entrega!',
-      'Pedido recibido','Para recojer', 'O', 'Exitoso', 'Error','CERRADO'],
+      'Pedido recibido','Para recojer', 'O', 'Exitoso', 'Error','CERRADO','Recoger en: ','min.'],
       bg:['Поръчка','За къде:','Поръчай','Откажи','Още','Трябва ни адрес на доставка!',
-      'Поръчката е приета','За Вземане', 'Или', 'Честито!', '!Грешка!','ЗАТВОРЕНО']
+      'Поръчката е приета','За Вземане', 'Или', 'Честито!', '!Грешка!','ЗАТВОРЕНО','Вземи след: ','мин.']
     },
     currentLocation: 0,
     delivery: 1,
@@ -151,6 +151,7 @@ class CartPage extends React.Component {
           <Message positive={message.stat} negative={message.error}>
             <Message.Header>{message.stat? ui[9] : ui[10]}</Message.Header>
               <p>{message.stat? message.stat : message.err}</p>
+              {message.stat && <p>{`${ui[12]}${fac.order_estimated}${ui[13]}`}</p>}
           </Message> :
           <OrderList stat={true} cart={cart} lan={lan} />
         }

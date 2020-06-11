@@ -27,9 +27,15 @@ var orderRouter = _express2.default.Router({
 orderRouter.use(_bodyParser2.default.json());
 
 // Save an Order and Order_Details
-orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
+orderRouter.post('/', _middleware.getUserId, _middleware.getLan, function (req, res, next) {
+  var ui = {
+    en: ['We recieved your order:'],
+    es: ['Recibido su pedido:'],
+    bg: ['Поръчката Ви е получена:']
+  };
   var uid = req.uid,
-      member = req.member;
+      member = req.member,
+      lan = req.lan;
 
   var order = void 0;
   // If Tester, don't INSERT in DB
@@ -43,6 +49,7 @@ orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
       total = _req$body$data.total,
       cart = _req$body$data.cart;
   //console.log(uid, req.body.data)
+  // Save ORDER & RETURN Success Status
 
   _api2.default.saveOne(Object.assign({}, { uid: uid }, { user_location: user_location, delivery: delivery, total: total, fac_id: fac_id }), 'orders').then(function (id) {
     order = id;
@@ -54,7 +61,7 @@ orderRouter.post('/', _middleware.getUserId, function (req, res, next) {
     return _api2.default.updateOne({ id: uid, orders: 'orders+1' }, 'user');
   }).then(function () {
     //req.mediator.emit('new.incoming.order')
-    res.status(200).json({ message: 'Order #' + order + ' recieved' });
+    res.status(200).json({ message: ui[lan][0] + ' #' + order });
   }).catch(function (err) {
     return res.status(500).json({ message: err });
   });

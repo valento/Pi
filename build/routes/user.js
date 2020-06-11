@@ -112,7 +112,6 @@ userRouter.post('/facs', _middleware.getLan, function (req, res, next) {
   var id = req.body.id;
 
   _user2.default.getFac(id).then(function (results) {
-    console.log(results[0]);
     var facs = {};
     var _results$ = results[0],
         id = _results$.id,

@@ -10,8 +10,13 @@ let orderRouter = express.Router({
 orderRouter.use(bodyParser.json())
 
 // Save an Order and Order_Details
-orderRouter.post('/', getUserId, (req,res,next) => {
-  const {uid,member} = req
+orderRouter.post('/', getUserId, getLan, (req,res,next) => {
+  const ui = {
+    en: ['We recieved your order:'],
+    es: ['Recibido su pedido:'],
+    bg: ['Поръчката Ви е получена:']
+  }
+  const {uid,member,lan} = req
   let order
 // If Tester, don't INSERT in DB
   if(member===64) return res.status(200).json({message: 'Order recieved'})
@@ -19,7 +24,7 @@ orderRouter.post('/', getUserId, (req,res,next) => {
 // Prepare SQL Data Object:
   const {user_location,delivery,fac_id,total,cart} = req.body.data
   //console.log(uid, req.body.data)
-
+// Save ORDER & RETURN Success Status
   api.saveOne(Object.assign({},{uid},{user_location,delivery,total,fac_id}),'orders')
   .then( id => {
     order = id
@@ -31,7 +36,7 @@ orderRouter.post('/', getUserId, (req,res,next) => {
   .then( () => api.updateOne({id: uid, orders:'orders+1'},'user') )
   .then( () => {
     //req.mediator.emit('new.incoming.order')
-    res.status(200).json({message: `Order #${order} recieved`})
+    res.status(200).json({message: `${ui[lan][0]} #${order}`})
   } )
   .catch( err => res.status(500).json({message: err}) )
 })
