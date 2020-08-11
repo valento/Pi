@@ -72,11 +72,11 @@ var start = function start(options) {
     app.use('/orders', _order2.default);
 
     // ========================================================
-
+    // GET UI: Citiy list
     app.get('/ui', _middleware.getLan, function (req, res, next) {
       var data = {};
       var params = {
-        c_status: 4
+        status: 1
       };
       var lan = req.lan;
       // SWITCH to:    req.language// === 'en' ? 'bg' : req.language
@@ -87,7 +87,7 @@ var start = function start(options) {
       data.lan = lan;
       if (!!CURRENT_CITY) data.city = Number(CURRENT_CITY);
       //}
-      // get cities: ? add params {c_status: 4} if needed
+      // get cities: ? add params {status: 4} if needed
       _api2.default.getList('city', ['name', 'status', 'id', 'zone', 'code', 'alt'], params).then(function (response) {
         //,{c_status: 4}
         var cty = response.map(function (entry) {
@@ -125,9 +125,9 @@ var start = function start(options) {
 
     var server = app.listen(PORT, function () {
       console.log('Server Running on: ', PORT);
-      //resolve(app)
+      resolve(server);
     });
-    resolve(server);
+    //resolve(server)
   });
 };
 

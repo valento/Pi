@@ -180,7 +180,7 @@ adminRouter.get('/fac/:id/:table', function (req, res, next) {
         return res.status(200).json(list);
       });
     } else {
-      res.status(404).json({ error: { message: 'New Orders not found!' } });
+      res.status(404).json({ error: { message: 'No Orders...' } });
     }
   }).catch(function (err) {
     return res.status(500).json({ error: { message: 'Something went wrong' } });

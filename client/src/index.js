@@ -28,7 +28,7 @@ const initState = {
     customer_counter: 0
   },
   products: [],
-  order: {},
+  order: [],
   cart: []
 }
 

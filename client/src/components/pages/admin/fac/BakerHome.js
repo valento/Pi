@@ -77,6 +77,7 @@ class BakerHome extends React.Component {
 
   render() {
     const ui = this.state.ui[this.props.lan]
+    const { open,checkin,dlvr,pod } = this.state
     return (
     <div className='oval-but'>
       <Divider horizontal>{ui[2]}</Divider>
@@ -84,17 +85,17 @@ class BakerHome extends React.Component {
         <Grid.Row>
           <Grid.Column>
             <Checkbox name='checkin'
-              checked={this.state.checkin}
-              disabled={this.state.open}
-              label={<label>{this.state.checkin? 'Check-out' : 'Check-in'}</label>}
+              checked={checkin}
+              disabled={open}
+              label={<label>{checkin? 'Check-out' : 'Check-in'}</label>}
               onChange={this.onChange} toggle
             />
           </Grid.Column>
           <Grid.Column>
             <Checkbox name='open'
-              checked={this.state.open}
-              disabled={!this.state.checkin}
-              label={<label>{this.state.open? 'Close' : 'Open'}</label>}
+              checked={open}
+              disabled={!checkin}
+              label={<label>{open? 'Close' : 'Open'}</label>}
               onChange={this.onChange} toggle
             />
           </Grid.Column>
@@ -107,8 +108,8 @@ class BakerHome extends React.Component {
           <Grid.Column>
             <Button fluid color='blue'
               icon='motorcycle'
-              disabled={!this.state.checkin || this.props.fac.delivery === 4}
-              content={this.state.dlvr? `${ui[6]}: ${ui[4]}` : `${ui[6]}: ${ui[3]}`}
+              disabled={!checkin || this.props.fac.delivery === 4}
+              content={dlvr? `${ui[6]}: ${ui[4]}` : `${ui[6]}: ${ui[3]}`}
               onClick={this.closeShop}
             />
           </Grid.Column>
@@ -116,7 +117,7 @@ class BakerHome extends React.Component {
             <Button fluid color='grey'
               icon='sign-out'
               disabled={true}
-              content={this.state.pod? `${ui[5]}: ${ui[4]}` : `${ui[5]}: ${ui[3]}`}
+              content={pod? `${ui[5]}: ${ui[4]}` : `${ui[5]}: ${ui[3]}`}
               onClick={this.switchPod}
             />
         </Grid.Column>
@@ -127,14 +128,14 @@ class BakerHome extends React.Component {
         name='pause'
         icon='pause'
         content={ui[1]}
-        disabled={true}//!this.state.open
+        disabled={true}//!open
         onClick={this.closeShop}
       />
       <br/>
       <Button fluid color='red'
         name='close'
         icon='attention'
-        disabled={!this.state.open || !this.state.checkin}
+        disabled={!open || !checkin}
         content={ui[0]}
         onClick={this.closeShop}
       />

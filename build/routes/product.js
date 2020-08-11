@@ -41,6 +41,7 @@ productRouter.get('/:lan', function (req, res, next) {
         var id = entry.id,
             promo = entry.promo,
             price = entry.price,
+            price_pos = entry.price_pos,
             list = entry.list,
             category = entry.category,
             klass = entry.klass,

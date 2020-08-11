@@ -45,6 +45,8 @@ __options.CURENT_CITY = process.env.SINGLE_CITY > 0 ? process.env.SINGLE_CITY : 
 _server2.default.start(__options).then(function (server) {
   // # WebSocket-Node Server #
   _socket2.default.open(server);
+}).catch(function (err) {
+  return console.log(err);
 });
 
 // Instantiate EVENT EMITTER:

@@ -22,6 +22,7 @@ server.start(__options)
 // # WebSocket-Node Server #
   socket.open(server)
 })
+.catch( err => console.log(err) )
 
 
 // Instantiate EVENT EMITTER:

@@ -9,6 +9,7 @@ import UserPerksList from '../ui/user/UserPerksList'
 import { userSignedIn } from '../../actions/auth'
 import setAuthHeader from '../../utils/setAuthHeader'
 import { getLocationData } from '../../actions/user'
+import { cancelCart } from '../../actions/cart'
 import { setInterface } from '../../actions/settup'
 import { closeSocket } from '../../websocket'
 
@@ -45,12 +46,14 @@ class UserPage extends React.Component {
   }
 
   logout = () => {
+    const { cancelCart,userSignedIn,setInterface } = this.props
     console.log('Logout this User')
     localStorage.clear()
     setAuthHeader()
-    this.props.userSignedIn({})
+    cancelCart()
     closeSocket()
-    this.props.setInterface({socket: false,city:null})
+    setInterface({socket: false,city:null})
+    userSignedIn({})
   }
 
   render() {
@@ -70,7 +73,9 @@ class UserPage extends React.Component {
         </div>}
         <Divider horizontal>{ui[3]}</Divider>
         <Divider horizontal>{ui[4]}</Divider>
-        <UserPerksList lan={lan} has_perks={user.free_pizza} new_user={user.new_user} />
+        <UserPerksList lan={lan}
+          has_perks={user.orders%5 === 0}
+        />
         <Divider horizontal />
         <Button fluid color='red'
           content='LOGOUT'
@@ -102,4 +107,8 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-export default connect(mapStateToProps,{ getLocationData,userSignedIn,setInterface })(UserPage)
+export default connect(mapStateToProps,
+  {
+    getLocationData,userSignedIn,
+    setInterface,cancelCart
+  })(UserPage)

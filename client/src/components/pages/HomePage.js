@@ -1,5 +1,5 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import PropType from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Button,Divider,Confirm } from 'semantic-ui-react'
@@ -13,6 +13,7 @@ import AppSetup from '../ui/AppSetup'
 
 import { signUp } from '../../actions/auth'
 import { userInit,getLocalFacs } from '../../actions/user'
+import { addCart } from '../../actions/cart'
 import { setInterface,getFacStore,socketCounter } from '../../actions/settup'
 import { initSocket,subscribeSocket } from '../../websocket'
 
@@ -22,16 +23,20 @@ const HomePage = ({
   fac,
   lan,
   city,one_city,cities,socket,
-  signUp,userInit,getLocalFacs,getFacStore,setInterface,socketCounter
+  signUp,userInit,getLocalFacs,getFacStore,setInterface,
+  socketCounter,addCart
 }) => {
   const state = {
     ui: {
       es: ['Bienvenido, ','Hola, ','Estas en:','Admin','LAB',
-      'FAC','PoS','Courier','REP','CERRADO'],
+      'FAC','PoS','Courier','REP','CERRADO',
+      'La #1 es GRATIS !!!','Margherita'],
       en: ['Hello, ','Welcome back, ','You\'re in:','Admin','LAB',
-      'FAC','PoS','Courier','REP','CLOSED'],
+      'FAC','PoS','Courier','REP','CLOSED',
+      'TAKE #1 FREE !!!','Margherita'],
       bg: ['Добре дошъл, ','Здравей, ','Намираш се във:','Admin','LAB',
-      'FAC','PoS','Куриер','REP','ЗАТВОРЕНО']
+      'FAC','PoS','Куриер','REP','ЗАТВОРЕНО',
+      '#1 e ГРАТИС !!!','Маргерита']
     },
     error: {
       header: 'Not Your Bakery!',
@@ -39,7 +44,7 @@ const HomePage = ({
     }
   }
 
-  const { membership,new_user,username,uid } = user
+  const { membership,new_user,username,uid,orders } = user
 
 //  const [openConfirm,setConfirm] = useState(false)
 
@@ -70,7 +75,9 @@ const HomePage = ({
   }
 
   if(isAuthorized && Object.keys(fac).length>0 && !socket) {
+  // Init Socket:
     initSocket(uid,membership,fac.id,setInterface)
+  // Socket Listener:
     switch(membership) {
       case 1 :
         //subscribeSocket(socketCounter)
@@ -95,14 +102,32 @@ const HomePage = ({
   const pause = new Date(`Januar 1, 00 ${fac.day_close}`)
   const reinit = new Date(`Januar 1, 00 ${fac.noon_open}`)
   const close = new Date(`Januar 1, 00 ${fac.work_close}`)
+  let first_free = orders === 0
+  let free_pizza = orders%5 === 0
 
   return (
     <div className='App-content topped padded'>
       <div className='init central padded'>
-        <div className='logo-still'>
-          <img src={LogoPie} className='logo' alt='logo' />
-          <img src={LogoPi} className='logo-top' alt='logo' />
-        </div>
+        {fac.open && first_free && city ?
+          <div className='promo oval-but'>
+            <Button color='green'
+              content={state.ui[lan][10]}
+              onClick={() => addCart(
+                [{
+                  product: 1,
+                  quant: 1,
+                  name: state.ui[lan][11],
+                  price: 0,
+                  promo: 1
+                }]
+              )}
+            />
+          </div> :
+          <div className='logo-still'>
+            <img src={LogoPie} className='logo' alt='logo' />
+            <img src={LogoPi} className='logo-top' alt='logo' />
+          </div>
+        }
 
 {/* LOG or Register: */}
         {city !== undefined &&
@@ -179,5 +204,6 @@ export default connect(mapStateToProps, {
   getLocalFacs,
   setInterface,
   getFacStore,
+  addCart,
   socketCounter
 } )(HomePage)

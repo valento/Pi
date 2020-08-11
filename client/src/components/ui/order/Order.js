@@ -29,13 +29,9 @@ class Order extends React.Component {
   }
 
   onAddItem = (item,units) => {
-    console.log(Number(units)+ ' of ' +item)
-    let ind = this.state.order.findIndex( o => {
-      return o.product === item
-    })
-    let inx = this.props.products.findIndex( ent => {
-      return ent.id === item
-    })
+    console.log(this.state.order)
+    let ind = this.state.order.findIndex( o => (o.product === item && !o.hasOwnProperty('promo')) )
+    let inx = this.props.products.findIndex( ent => ent.id === item )
     if( ind > -1 ) {
       this.setState({
         order: [...this.state.order.slice(0,ind),
@@ -61,7 +57,7 @@ class Order extends React.Component {
 
   componentDidMount() {
     const { cart } = this.props
-    console.log('OrderComponent Mount: ', cart.length);
+    console.log('OrderComponent Mount: ', cart.length)
     if(cart.length > 0){
       this.setState({
         order: this.props.cart

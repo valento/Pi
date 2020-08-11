@@ -43,11 +43,18 @@ api.settup.setupFac(settings).then( () => {
 
 export const socketCounter = data => dispatch => {
   console.log('Socket Action: ',data)
+// Baker has new order:
   if(data.order) {
     return dispatch(countOrders())
   }
+// Bakery just Opened:
   else if (data.hasOwnProperty('open')) {
     return dispatch(facSetup({open: data.open}))
+  }
+// Bakery socket closed:
+  else if(data.hasOwnProperty('bsocket')) {
+    // Reinit Socket if Working: initSocket(uid,membership,fac.id,setInterface)
+    console.log(`Backer socket ${!data.bsocket? 'closed' : 'open'}`)
   }
   else {
     return dispatch(countCustomers(data))

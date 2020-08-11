@@ -185,6 +185,17 @@ h2 {
   color: #2185d0;
 }
 
+.promo {
+  position: relative;
+  height: 200px;
+  background: url('/img/promo_first_free.png') no-repeat center;
+  background-size: contain;
+}
+.promo .ui.button {
+  position: relative;
+  top: 160px;
+}
+
 /* --- TABLES -------------------------- */
 .collection-table {
   width: 100%;

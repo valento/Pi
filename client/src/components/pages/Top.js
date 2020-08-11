@@ -11,7 +11,7 @@ import UserAdmin from '../ui/user/admin'
 
 const Top = ({
     city,fac,cities,lan,isAuthorized,socket,
-    user,
+    user, cart,
     setInterface,setLocationFactory,clearCart
   }) => {
   const state = {
@@ -68,6 +68,7 @@ const Top = ({
       </div>
       <div className='four wide column'>
         <UserAdmin lan={lan}
+          cart={cart.length}
           disabled={( isAuthorized && city && user.membership>64 && user.membership!==1 )? false : true}
         />
       </div>
@@ -87,6 +88,7 @@ const mapStateToProps = state => ({
   fac: state.facs,
   cities: state.settings.cities,
   isAuthorized: !!state.user.token,
-  user: state.user
+  user: state.user,
+  cart: state.cart
 })
 export default connect(mapStateToProps, { setInterface,setLocationFactory,clearCart })(Top)

@@ -17,7 +17,7 @@ productRouter.get('/:lan', (req,res,next) => {
     let products = []
     response.forEach( entry => {
       if(entry.c_status===4){
-        const { id,promo,price,list,category,klass,prod_time } = entry
+        const { id,promo,price,price_pos,list,category,klass,prod_time } = entry
         products.push({name: JSON.parse(entry.name)[lan], dscr: JSON.parse(entry.descr)[lan],...{id,promo,price,list,category,klass}})
       }
     })

@@ -29,7 +29,7 @@ orderRouter.post('/', getUserId, getLan, (req,res,next) => {
   .then( id => {
     order = id
     let details = cart.map( o => {
-      return {order_id: id, item: o.product, quant: o.quant}
+      return {order_id: id, item: o.product, quant: o.quant, promo_id: o.promo? o.promo : null}
     })
     api.saveMany(details,'order_detail')
   })

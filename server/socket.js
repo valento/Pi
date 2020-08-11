@@ -12,10 +12,9 @@
 
 const open = (server,member) => {
   let rnd = Math.floor(Math.random()*Math.floor(6))
-console.log('Initial Users: ',rnd)
   const wsServer = new WS({
     httpServer: server,
-    autoAcceptConnections: false
+    keepalive: true
   })
 
   const wsrouter = new WSR()
@@ -69,7 +68,7 @@ console.log('Initial Users: ',rnd)
       //connection.sendUTF(`Message from Baker: ${user}, recieved`)
       })
   // ------ CLOSE Event: ------------------------------------
-      connection.on('close', (reasonCode, description) => {
+      connection.on('close', ( reasonCode, description ) => {
         console.log('Close Customer Connection: ', connection.ID, connection.FAC)
         let { FAC,ID } = connection, local_customers = [], all_customers
         let b = conn.baker.find( b => b.FAC === FAC)
@@ -94,7 +93,9 @@ console.log('Initial Users: ',rnd)
     })
   })
 
-  wsServer.on('connect', socket => {
+
+
+  wsServer.on('connect', c => {
     console.log('Connection created at: ', new Date())
   })
 

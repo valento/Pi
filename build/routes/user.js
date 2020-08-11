@@ -55,12 +55,13 @@ userRouter.get('/', _middleware.getUser, function (req, res, next) {
         language = _response$.language,
         status = _response$.status,
         rest = _objectWithoutProperties(_response$, ['uid', 'username', 'userlast', 'verified', 'orders', 'credit', 'gender', 'bday', 'membership', 'language', 'status']);
+    //let free_pizza = orders===0 || orders%5===0
 
-    var free_pizza = orders > 0 && orders % 5 === 0;
+
     user = Object.assign({}, {
       uid: uid, username: username, userlast: userlast, verified: verified, orders: orders, credit: credit,
       gender: gender, bday: bday, membership: membership, language: language, status: status
-    }, { free_pizza: free_pizza });
+    }); //,{free_pizza: free_pizza})
 
     if (response.length > 1) {
       user.locations = [];

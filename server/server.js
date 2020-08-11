@@ -32,11 +32,11 @@ const start = options => {
     app.use('/orders', orderRouter)
 
     // ========================================================
-
+// GET UI: Citiy list
     app.get('/ui', getLan, (req,res,next) => {
       let data = {}
       let params = {
-        c_status: 4
+        status: 1
       }
       const { lan } = req
     // SWITCH to:    req.language// === 'en' ? 'bg' : req.language
@@ -46,8 +46,9 @@ const start = options => {
       data.lan = lan
       if(!!CURRENT_CITY) data.city = Number(CURRENT_CITY)
       //}
-    // get cities: ? add params {c_status: 4} if needed
-      api.getList('city',['name','status','id','zone','code','alt'],params).then( response => {//,{c_status: 4}
+    // get cities: ? add params {status: 4} if needed
+      api.getList('city',['name','status','id','zone','code','alt'],params)
+      .then( response => {//,{c_status: 4}
         const cty = response.map( entry => {
     //switch BG to req.language in production
           return {
@@ -81,9 +82,9 @@ const start = options => {
 
     const server = app.listen(PORT, () => {
       console.log('Server Running on: ',PORT)
-      //resolve(app)
+      resolve(server)
     })
-    resolve(server)
+    //resolve(server)
   })
 }
 

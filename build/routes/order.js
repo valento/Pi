@@ -54,7 +54,7 @@ orderRouter.post('/', _middleware.getUserId, _middleware.getLan, function (req, 
   _api2.default.saveOne(Object.assign({}, { uid: uid }, { user_location: user_location, delivery: delivery, total: total, fac_id: fac_id }), 'orders').then(function (id) {
     order = id;
     var details = cart.map(function (o) {
-      return { order_id: id, item: o.product, quant: o.quant };
+      return { order_id: id, item: o.product, quant: o.quant, promo_id: o.promo ? o.promo : null };
     });
     _api2.default.saveMany(details, 'order_detail');
   }).then(function () {

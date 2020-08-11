@@ -28,11 +28,11 @@ userRouter.get('/', getUser, (req,res,next) => {
       uid,username,userlast,verified,orders,credit,
       gender,bday,membership,language,status,...rest
     } = response[0]
-    let free_pizza = orders>0 && orders%5===0
+    //let free_pizza = orders===0 || orders%5===0
     user = Object.assign({},{
       uid,username,userlast,verified,orders,credit,
       gender,bday,membership,language,status
-    },{free_pizza: free_pizza})
+    })//,{free_pizza: free_pizza})
 
     if(response.length > 1){
       user.locations =[]

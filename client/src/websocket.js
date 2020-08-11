@@ -41,13 +41,18 @@ export const initSocket = (id,membership,fac,cb) => {
   userSocket.onerror = error => console.log('WebSocket error: ' + error)
 
   userSocket.onopen = () => {
-    console.log(`${role}-Socket on Client`)
+    console.log(`Open ${role}-Socket on Client`)
     cb({socket: true})
+  }
+  userSocket.onclose = () => {
+    console.log(`${role}-Socket Closed`)
+    cb({socket: false})
   }
 // api.settup.userSocket.member = membership
 }
 
 export const subscribeSocket = cb => {
+// callback: socketCounter
   console.log(`${role} Suscribed: ${cb}`)
   userSocket.onmessage = message => {
   console.log('WS: ',message.data)

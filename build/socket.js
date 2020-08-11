@@ -15,10 +15,9 @@ var conn = { root: [], lab: [], fac: [], baker: [], pos: [], dlv: [],
 
 var open = function open(server, member) {
   var rnd = Math.floor(Math.random() * Math.floor(6));
-  console.log('Initial Users: ', rnd);
   var wsServer = new WS({
     httpServer: server,
-    autoAcceptConnections: false
+    keepalive: true
   });
 
   var wsrouter = new WSR();
@@ -133,7 +132,7 @@ var open = function open(server, member) {
     });
   });
 
-  wsServer.on('connect', function (socket) {
+  wsServer.on('connect', function (c) {
     console.log('Connection created at: ', new Date());
   });
 
