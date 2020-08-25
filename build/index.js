@@ -55,27 +55,26 @@ mediator.on('baker.login', function () {
   console.log('Baker Here!');
 });
 
-var options = {
-  key: _fs2.default.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
-  cert: _fs2.default.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
+//const options = {
+//key: fs.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
+//cert:fs.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
+//}
 
-  //if(ENV==='production') {
-  //// TRY HTTP2: no ssl-file
-  //  const options = {
-  //    key: fs.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
-  //    cert:fs.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
-  //  }
-  //  server = https.createServer(options,app).listen(PORT, error => {
-  //    if(error){
-  //      console.log(error)
-  //      return process.exit(1)
-  //    } else {
-  //      console.log('HTTPS running on: ', PORT)
-  //    }
-  //  })
-  //} else {
-  // server = app.listen(PORT, () => console.log('Server Running on: ',PORT) )
-  //}
-
-};
+//if(ENV==='production') {
+//// TRY HTTP2: no ssl-file
+//  const options = {
+//    key: fs.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
+//    cert:fs.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
+//  }
+//  server = https.createServer(options,app).listen(PORT, error => {
+//    if(error){
+//      console.log(error)
+//      return process.exit(1)
+//    } else {
+//      console.log('HTTPS running on: ', PORT)
+//    }
+//  })
+//} else {
+// server = app.listen(PORT, () => console.log('Server Running on: ',PORT) )
+//}
 //# sourceMappingURL=index.js.map

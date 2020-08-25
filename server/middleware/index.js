@@ -19,9 +19,8 @@ export const getUser = (req,res,next) => {
 }
 
 export const getLan = (req,res,next) => {
-  const lan = req.get('Accepted-Language')
-  req.lan = lan
-  console.log('Accepted-Language: ',lan)
+  req.lan = req.get('Accepted-Language') !== undefined ? req.get('Accepted-Language') : 'bg'
+  console.log('Accepted-Language: ', req.lan)
   next()
 }
 

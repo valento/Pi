@@ -105,7 +105,7 @@ var start = function start(options) {
         data.banner = !!(process.env.BANNER == 'true');
         res.status(200).json(data);
       }).catch(function (err) {
-        return res.status(500).json({ message: 'Something went wrong...' });
+        return res.status(500).json({ message: err });
       });
     });
 

@@ -29,9 +29,8 @@ var getUser = exports.getUser = function getUser(req, res, next) {
 };
 
 var getLan = exports.getLan = function getLan(req, res, next) {
-  var lan = req.get('Accepted-Language');
-  req.lan = lan;
-  console.log('Accepted-Language: ', lan);
+  req.lan = req.get('Accepted-Language') !== undefined ? req.get('Accepted-Language') : 'bg';
+  console.log('Accepted-Language: ', req.lan);
   next();
 };
 

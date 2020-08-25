@@ -33,10 +33,10 @@ mediator.on('baker.login', () => {
 
 
 
-const options = {
-    key: fs.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
-    cert:fs.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
-  }
+//const options = {
+    //key: fs.readFileSync(__dirname + '/ssl/server.key', 'utf8'),
+    //cert:fs.readFileSync(__dirname + '/ssl/server.srt', 'utf8')
+//}
 
 //if(ENV==='production') {
 //// TRY HTTP2: no ssl-file

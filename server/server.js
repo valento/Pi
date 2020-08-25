@@ -64,7 +64,7 @@ const start = options => {
         data.banner = !!(process.env.BANNER == 'true')
         res.status(200).json(data)
       })
-      .catch( err => res.status(500).json({message: 'Something went wrong...'}))
+      .catch( err => res.status(500).json({message: err}))
     })
 
     app.get('/*', (req,res) => {
