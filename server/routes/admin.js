@@ -15,9 +15,7 @@ adminRouter.use(bodyParser.json())
 adminRouter.get('/location/ref/:uid', requestLanguage({
   languages: ['en','es']
 }), getLan, (req,res,next) => {
-  console.log('Get location in: ',req.lan)
-  console.log('Get user location by: ',uid)
-  const {uid} = req.params
+  const { uid } = req.params
   let data
   api.getOneReference({uid},'location')
   .then( response => {
@@ -30,7 +28,7 @@ adminRouter.get('/location/ref/:uid', requestLanguage({
     }
     res.status(200).json(data)
   })
-  .catch(err => { res.status(500).json({messages: 'Wrong...'}) })
+  .catch( err => res.status(500).json({messages: 'Wrong...'}) )
 })
 
 adminRouter.get('/location/:type/:by', requestLanguage({
@@ -66,7 +64,7 @@ adminRouter.get('/location/:type/:by', requestLanguage({
     data[tp] = r
     res.status(200).json(data)
   })
-  .catch( err => res.status(500).json({messages: 'Something went wrong!'}))
+  .catch( err => res.status(500).json({messages: 'Something went wrong!'}) )
 })
 
 adminRouter.get('/location', requestLanguage({
@@ -90,12 +88,13 @@ adminRouter.get('/location', requestLanguage({
   })
 })
 
-// MAKE a LOCATION (a building): Street_ID, City_ID, Number
+// MAKE new LOCATION (a building): Street_ID, City_ID, Number, uid(for refferets program):
 adminRouter.post('/location/:type', (req,res,next) => {
   const { data } = req.body
   const { type } = req.params
   let msgCap = type.charAt(0).toUpperCase() + type.slice(1)
   console.log(msgCap + ' Save: ',data,type)
+// unique ID for chained orders ref
   if (type === 'location') {
     data.uid = uniqid.time()
   }

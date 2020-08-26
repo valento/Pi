@@ -99,7 +99,7 @@ authRouter.post('/', (req,res,next) => {
         length: 8,
         numbers: true
       })
-      let u = role ? {username: uname,membership: member} : {}
+      let u = role ? {username: uname, membership: member} : {}
       console.log('Object to Insert: ',u)
 // encrypt password and save it to DB:
       bcrypt.hash(pass, 8, (err,hash) => {

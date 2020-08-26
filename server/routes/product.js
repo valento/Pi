@@ -9,6 +9,7 @@ let productRouter = express.Router({
 
 productRouter.use(bodyParser.json())
 
+// get full list of commercial products:
 productRouter.get('/:lan', (req,res,next) => {
   let {lan} = req.params
 // get only commercial products {type:1}:
