@@ -94,12 +94,12 @@ class AdminHome extends React.Component {
             </Grid.Column>
             <Grid.Column width={4} />
             <Grid.Column width={6}>
-              <Checkbox name='checkin'
+              {membership>2 && <Checkbox name='checkin'
                 checked={this.state.checkin}
                 disabled={!this.state.logged}
                 label={<label>{this.state.checkin? 'Close' : 'Open'}</label>}
                 onChange={this.onCheck} toggle
-              />
+              />}
             </Grid.Column>
           </Grid.Row>
         </Grid>

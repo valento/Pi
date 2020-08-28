@@ -181,6 +181,7 @@ export default class AddLocationForm extends React.Component {
                   <Divider horizontal content='or' />
                   <Button fluid
                     content={ui[11]}
+                    disabled={this.state.data.bg || this.state.data.lat}
                     onClick={e => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -225,12 +226,13 @@ export default class AddLocationForm extends React.Component {
 
 {/* ==== IF NOTHING: =====================================*/}
 
-              <div className='row centered menu-bar'>
+              {/*<div className='row centered menu-bar'>
                 <Button.Group widths='2' className='padded'>
                   <Button color='grey' onClick={this.onReset} content={ui[6]} />
                   <Button color='blue' type='submit' content={ui[4]} />
                 </Button.Group>
               </div>
+              */}
 
             </div>
         </Form.Group>
