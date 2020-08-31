@@ -8,7 +8,7 @@ const options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
   database: config.get('MYSQL_DB'),
-  host: 'localhost'// 172.17.0.6
+  //host: 'localhost'// 172.17.0.6
 }
 
 if( config.get('INSTANCE_CONNECTION_NAME') && process.env.NODE_ENV === 'production' ) {
@@ -143,7 +143,7 @@ console.log(sql)
       //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
       const sql = `SELECT
       f.*,
-      s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,
+      s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,s.baker,
       p.list,
       st.name AS street,
       l.number

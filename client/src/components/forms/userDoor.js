@@ -21,24 +21,23 @@ export default class UserDoor extends React.Component {
   }
 
   onChange = (e,{name,value}) => {
-    let v
-    if(name === 'entry' || 'bell'){
-      v = isNaN(value)? value : Number(value)
-    }
+    const { edit,onInput,addData } = this.props
+    let v = name === 'floor'? Number(value) : value
     this.setState({
-      data: {...this.state.data, [name]: name==='entry'||'bell'? v :  Number(value)}
+      data: {...this.state.data, [name]: v}
     })
-    if(this.props.edit){
-      this.props.onInput(name, name==='entry'||'bell'? v : Number(value))
+    if(edit){
+      onInput(name, v)
     } else {
-      this.props.addData({[name]: name==='entry'||'bell'? v : Number(value)})
+      addData({[name]: v})
     }
   }
 
   onCheckBox = (e, {name}) => {
-    this.props.onInput(name, this.state.data[name]? Number(!this.state.data[name]) : 1)
+    const { data } = this.state
+    this.props.onInput(name, data[name]? Number(!data[name]) : 1)
     this.setState({
-      data: {...this.state.data, [name]: this.state.data[name]? !this.state.data[name] : true}
+      data: {...data, [name]: data[name]? !data[name] : true}
     })
   }
 
@@ -61,13 +60,17 @@ export default class UserDoor extends React.Component {
               <div className="row">
                 <div className='eight wide column rect'>
                   <Form.Input onChange={this.onChange}
-                    required name='bell' placeholder={edit && loc.bell? ui[3].concat(': ',loc.bell) : ui[3]}
+                    required
+                    name='bell'
+                    placeholder={edit && loc.bell? ui[3].concat(': ',loc.bell) : ui[3]}
                     value={data.bell || ''}
                   />
                 </div>
                 <div className='seven wide column rect'>
                   <Form.Input onChange={this.onChange}
-                    required name='mobile' placeholder={edit && loc.mobile? loc.mobile : ui[4]}
+                    required
+                    name='mobile'
+                    placeholder={edit && loc.mobile? loc.mobile : ui[4]}
                     value={data.mobile || ''}
                   />
                 </div>
@@ -76,19 +79,24 @@ export default class UserDoor extends React.Component {
               <div className="row">
                 <div className='four wide column rect'>
                   <Form.Input onChange={this.onChange}
-                    required name='floor' placeholder={edit && loc.floor? loc.floor.toString().concat(' ',ui[0]) : ui[0]}
+                    required
+                    name='floor'
+                    placeholder={edit && loc.floor? loc.floor.toString().concat(' ',ui[0]) : ui[0]}
                     value={data.floor || ''}
                   />
                 </div>
                 <div className='four wide column rect'>
                   <Form.Input onChange={this.onChange}
-                    required name='door' placeholder={edit && loc.door? loc.door.toString().concat(' ',ui[1]) : ui[1]}
+                    required
+                    name='door'
+                    placeholder={edit && loc.door? loc.door.toString().concat(' ',ui[1]) : ui[1]}
                     value={data.door || ''}
                   />
                 </div>
                 <div className='four wide column rect'>
                   <Form.Input onChange={this.onChange}
-                    name='entry' placeholder={edit && loc.entry? loc.entry.toString().concat(' ', ui[2]) : ui[2]}
+                    name='entry'
+                    placeholder={edit && loc.entry? loc.entry.toString().concat(' ', ui[2]) : ui[2]}
                     value={data.entry || ''}
                   />
                 </div>

@@ -73,7 +73,7 @@ userRouter.post('/facs', getLan, (req,res,next) => {
   .then( results => {
     let facs = {}
     const {id,uid,baker,city,name,street,number,prime,open,checkin,
-      work_open,day_close,noon_open,work_close,sat_open,sat_close,sun_open,sun_close,
+      day_open,day_close,noon_open,noon_close,sat_open,sat_close,sun_open,sun_close,
       vacation_end,vacation_start,
       delivery,bottleneck,order_estimated,mobile} = results[0]
     const st = JSON.parse(street)[lan]
