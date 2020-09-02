@@ -98,17 +98,17 @@ const HomePage = ({
         subscribeSocket(socketCounter)
     }
   }
-  const init = new Date(`Januar 1, 00 ${fac.work_open}`)
+  const init = new Date(`Januar 1, 00 ${fac.day_open}`)
   const pause = new Date(`Januar 1, 00 ${fac.day_close}`)
   const reinit = new Date(`Januar 1, 00 ${fac.noon_open}`)
-  const close = new Date(`Januar 1, 00 ${fac.work_close}`)
+  const close = new Date(`Januar 1, 00 ${fac.noon_close}`)
   let first_free = orders === 0
   let free_pizza = orders%5 === 0
 
   return (
     <div className='App-content topped padded'>
       <div className='init central padded'>
-        {fac.open && first_free && city ?
+        {fac.open && first_free && city && membership>127 ?
           <div className='promo oval-but'>
             <Button color='green'
               content={state.ui[lan][10]}

@@ -30,6 +30,7 @@ var productRouter = _express2.default.Router({
 
 productRouter.use(_bodyParser2.default.json());
 
+// get full list of commercial products:
 productRouter.get('/:lan', function (req, res, next) {
   var lan = req.params.lan;
   // get only commercial products {type:1}:

@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import { Route,Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-const AdminRoute = ({isAdmin,membership,city,lan,component: Component, ...rest}) => {
+const AdminRoute = ({membership,city,lan,component: Component, ...rest}) => {
   console.log('Log Admin as: ', membership)
 
   return (
-    <Route {...rest} render={ props => ((isAdmin || membership<128) && city) ?
+    <Route {...rest} render={ props => ((membership<128) && city) ?
         <Component lan={lan} {...props} /> :
         city? <Redirect to='/admin' /> : <Redirect to='/' />
   }/>)
@@ -15,7 +15,7 @@ const AdminRoute = ({isAdmin,membership,city,lan,component: Component, ...rest})
 
 AdminRoute.propTypes = {
   component: PropTypes.func.isRequired,
-  isAdmin: PropTypes.bool.isRequired,
+  membership: PropTypes.number.isRequired,
   //user: PropTypes.shape({
   //  membership: PropTypes.number.isRequired
   //}).isRequired
@@ -24,7 +24,6 @@ AdminRoute.propTypes = {
 const mapStateToProps = state => ({
   lan: state.settings.lan,
   city: state.settings.city,
-  isAdmin: state.user.membership === 1,
   membership: state.user.membership
 })
 

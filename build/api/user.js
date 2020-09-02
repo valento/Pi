@@ -22,8 +22,8 @@ _dotenv2.default.config({ silent: true });
 var options = {
   user: config.get('MYSQL_USER'),
   password: config.get('MYSQL_PASSWORD'),
-  database: config.get('MYSQL_DB'),
-  host: 'localhost' // 172.17.0.6
+  database: config.get('MYSQL_DB')
+  //host: 'localhost'// 172.17.0.6
 };
 
 if (config.get('INSTANCE_CONNECTION_NAME') && process.env.NODE_ENV === 'production') {

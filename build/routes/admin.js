@@ -40,8 +40,6 @@ adminRouter.use(_bodyParser2.default.json());
 adminRouter.get('/location/ref/:uid', (0, _expressRequestLanguage2.default)({
   languages: ['en', 'es']
 }), _middleware.getLan, function (req, res, next) {
-  console.log('Get location in: ', req.lan);
-  console.log('Get user location by: ', uid);
   var uid = req.params.uid;
 
   var data = void 0;
@@ -59,7 +57,7 @@ adminRouter.get('/location/ref/:uid', (0, _expressRequestLanguage2.default)({
     }
     res.status(200).json(data);
   }).catch(function (err) {
-    res.status(500).json({ messages: 'Wrong...' });
+    return res.status(500).json({ messages: 'Wrong...' });
   });
 });
 
@@ -133,13 +131,14 @@ adminRouter.get('/location', (0, _expressRequestLanguage2.default)({
   });
 });
 
-// MAKE a LOCATION (a building): Street_ID, City_ID, Number
+// MAKE new LOCATION (a building): Street_ID, City_ID, Number, uid(for refferets program):
 adminRouter.post('/location/:type', function (req, res, next) {
   var data = req.body.data;
   var type = req.params.type;
 
   var msgCap = type.charAt(0).toUpperCase() + type.slice(1);
   console.log(msgCap + ' Save: ', data, type);
+  // unique ID for chained orders ref
   if (type === 'location') {
     data.uid = _uniqid2.default.time();
   }

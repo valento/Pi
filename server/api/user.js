@@ -143,7 +143,7 @@ console.log(sql)
       //f.id,f.city,f.prime,f.open,f.delivery,f.bottleneck,f.mobile
       const sql = `SELECT
       f.*,
-      s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,s.baker,
+      s.product,s.local_promo,s.local_price,s.on_hand,s.take_only,
       p.list,
       st.name AS street,
       l.number
