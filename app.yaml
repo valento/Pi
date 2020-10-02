@@ -3,3 +3,7 @@ runtime: nodejs
 env: flex
 beta_settings:
   cloud_sql_instances: pizzapi-287407:europe-west3:pzzaappdb
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
