@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+//import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -34,7 +34,7 @@ import AdminHome from './components/pages/admin/'
 //)
 // ---------------------------------------------------------
 
-const App = ({location,lan}) => {
+const App = ({location}) => {
   return (
     <div className='App'>
       <Route location={location} path='/' exact component={HomePage}/>
@@ -64,14 +64,13 @@ const App = ({location,lan}) => {
 }
 
 App.propTypes = {
-  lan: PropTypes.string.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string.isRequired
   }).isRequired
 }
 
-const mapStateToProps = state => ({
-  lan: state.settings.lan
-})
+//const mapStateToProps = state => ({
+//  lan: state.settings.lan
+//})
 
-export default connect(mapStateToProps)(App)
+export default App//connect(mapStateToProps)

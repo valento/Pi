@@ -30,22 +30,24 @@ class Order extends React.Component {
 
   onAddItem = (item,units) => {
     console.log(this.state.order)
-    let ind = this.state.order.findIndex( o => (o.product === item && !o.hasOwnProperty('promo')) )
-    let inx = this.props.products.findIndex( ent => ent.id === item )
+    const { order } = this.state
+    const { products } = this.props
+    let ind = order.findIndex( o => (o.product === item && !o.hasOwnProperty('promo')) )
+    let inx = products.findIndex( ent => ent.id === item )
     if( ind > -1 ) {
       this.setState({
-        order: [...this.state.order.slice(0,ind),
-          {...this.state.order[ind], quant: this.state.order[ind].quant + Number(units)},
-          ...this.state.order.slice(ind+1)
+        order: [...order.slice(0,ind),
+          {...order[ind], quant: order[ind].quant + Number(units)},
+          ...order.slice(ind+1)
         ]
       })
     } else {
       this.setState({
-        order: this.state.order.concat({
+        order: order.concat({
           product: item,
           quant: Number(units),
-          name: this.props.products[inx].name,
-          price: this.props.products[inx].price
+          name: products[inx].name,
+          price: products[inx].price
         })
       })
     }
@@ -60,7 +62,7 @@ class Order extends React.Component {
     console.log('OrderComponent Mount: ', cart.length)
     if(cart.length > 0){
       this.setState({
-        order: this.props.cart
+        order: cart
       })
     }
   }
@@ -95,7 +97,7 @@ class Order extends React.Component {
       <div className='custom-form'>
         <Divider horizontal>{ttl}</Divider>
         <OrderInput lan={lan} category={category} items={items} onAddItem={this.onAddItem} onItemSelect={itemSelected} />
-        <OrderList stat={false} lan={lan} cart={order} onDelete={this.onDeleteItem} />
+        <OrderList stat={false} lan={lan} cart={order} member={user.membership} onDelete={this.onDeleteItem} />
         <Divider horizontal>&#9675;</Divider>
         <Button
           as={Link} to='/cart'

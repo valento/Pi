@@ -19,7 +19,7 @@ productRouter.get('/:lan', (req,res,next) => {
     response.forEach( entry => {
       if(entry.c_status===4){
         const { id,promo,price,price_pos,list,category,klass,prod_time } = entry
-        products.push({name: JSON.parse(entry.name)[lan], dscr: JSON.parse(entry.descr)[lan],...{id,promo,price,list,category,klass}})
+        products.push({name: JSON.parse(entry.name)[lan], dscr: JSON.parse(entry.descr)[lan],...{id,promo,price,price_pos,list,category,klass}})
       }
     })
     res.status(200).json(products)

@@ -48,7 +48,7 @@ productRouter.get('/:lan', function (req, res, next) {
             klass = entry.klass,
             prod_time = entry.prod_time;
 
-        products.push(_extends({ name: JSON.parse(entry.name)[lan], dscr: JSON.parse(entry.descr)[lan] }, { id: id, promo: promo, price: price, list: list, category: category, klass: klass }));
+        products.push(_extends({ name: JSON.parse(entry.name)[lan], dscr: JSON.parse(entry.descr)[lan] }, { id: id, promo: promo, price: price, price_pos: price_pos, list: list, category: category, klass: klass }));
       }
     });
     res.status(200).json(products);

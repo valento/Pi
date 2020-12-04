@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon } from 'semantic-ui-react'
 
-const OrderRow = ({stat,empty,row,onDelete,ind,lan}) => {
+const OrderRow = ({stat,empty,row,onDelete,ind,lan,member}) => {
   const state = {
     list: [],
     ui: {
@@ -21,7 +21,7 @@ const OrderRow = ({stat,empty,row,onDelete,ind,lan}) => {
             </div>
             <div className='six wide column nopad'>{row.name}</div>
             <div className='three wide column nopad items'><Icon name='x' size='tiny' />{row.quant}</div>
-            <div className='three wide column nopad'>{(parseFloat(row.price)*parseFloat(row.quant)).toFixed(2)}</div>
+            <div className='three wide column nopad'>{(parseFloat(member===32? row.price_pos : row.price)*parseFloat(row.quant)).toFixed(2)}</div>
             <div className='two wide column nopad'>
               {!stat && <span className='' basic onClick={() => onDelete(ind)}><Icon name='minus circle' /></span>}
             </div>

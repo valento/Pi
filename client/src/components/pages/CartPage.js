@@ -161,7 +161,7 @@ class CartPage extends React.Component {
             <Button color='grey' onClick={this.props.cancelCart} as={Link} to='/' content={ui[3]}/>
             <Button
               name='submit'
-              disabled={total===0 || (!user.locations && fac.delivery !== 4 || !fac.open)}
+              disabled={total<1 || (!user.locations && fac.delivery !== 4 || !fac.open)}
               color='orange'
               onClick={this.onOrder}
               content={ui[2].concat(' ',total.toString())}

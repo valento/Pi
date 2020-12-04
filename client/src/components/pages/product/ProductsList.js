@@ -3,16 +3,15 @@ import { Divider } from 'semantic-ui-react'
 
 import Product from './'
 
-const ProductsList = ({products,lan,category,view,onOrder,item,facs,open}) => {
+const ProductsList = ({orders,products,lan,category,view,onOrder,item,facs,open,addItem}) => {
   let ui = {
     en: ['MENU PIZZA'],
     es: ['MENU PIZZA'],
     bg: ['МЕНЮ ПИЦИ']
   }
-  let l, i, style
-  l = view==='hor'? (products.length + 1)*100 : 100
-  i = products.findIndex( p => p.id === item)
-  style = view==='hor'?
+  let l = view==='hor'? (products.length + 1)*100 : 100
+  let i = products.findIndex( p => p.id === item)
+  let style = view==='hor'?
     {
       minWidth: `${l}vw`,
       left: `-${(i+1)*97.5}vw`
@@ -34,14 +33,17 @@ const ProductsList = ({products,lan,category,view,onOrder,item,facs,open}) => {
             { products.map(
               entry => {
                 return <li>
-                        <Product lan={lan} open={facs? facs.open : open}
+                        <Product lan={lan}
+                          open={facs? facs.open : open}
                           mode={view}
                           entry={entry}
                           onOrder={onOrder}
+                          onAddItem={addItem}
                         />
                       </li>
               })
             }
+            <li className='empty' style={{minHeight: (orders*28+74).toString().concat('px')}}></li>
           </ul>
         </div>
       </div>

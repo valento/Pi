@@ -18,7 +18,7 @@ const MainMenu = ({ lan,open }) => {
         <Button.Group color='grey'>
           <Button as={Link} to='/play' icon='play circle' content={ui[0]}/>
           <Button as={Link}
-            to={open? '/order' : '/catalog'}
+            to={open? '/catalog' : '/catalog'}
             icon={open? 'food' : 'eye'}
             content={open? ui[1]:ui[3]}
           />

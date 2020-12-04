@@ -14,7 +14,14 @@ export const clearCart = () => ({
   type: CART_CLEAR
 })
 
-export const makeCart = data => dispatch => {
+export const addToCart = (data) => (dispatch) => {
+  return new Promise( (resolve,reject) => {
+    dispatch(addCart(data))
+    resolve()
+  })
+}
+
+export const makeCart = (data) => (dispatch) => {
   return new Promise( (resolve, reject) => {
     api.order.pushOrder(data).then( res => {
       dispatch(clearCart())

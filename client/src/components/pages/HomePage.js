@@ -13,18 +13,19 @@ import AppSetup from '../ui/AppSetup'
 
 import { signUp } from '../../actions/auth'
 import { userInit,getLocalFacs } from '../../actions/user'
-import { addCart } from '../../actions/cart'
+import { addToCart } from '../../actions/cart'
 import { setInterface,getFacStore,socketCounter } from '../../actions/settup'
 import { initSocket,subscribeSocket } from '../../websocket'
 
 const HomePage = ({
+  history,
   isAuthorized,user,
   lab,
   fac,
   lan,
   city,one_city,cities,socket,
   signUp,userInit,getLocalFacs,getFacStore,setInterface,
-  socketCounter,addCart
+  socketCounter,addToCart
 }) => {
   const state = {
     ui: {
@@ -108,11 +109,11 @@ const HomePage = ({
   return (
     <div className='App-content topped padded'>
       <div className='init central padded'>
-        {fac.open && first_free && city && membership>127 ?
+        {fac.open && first_free && membership>127 ?
           <div className='promo oval-but'>
             <Button color='green'
               content={state.ui[lan][10]}
-              onClick={() => addCart(
+              onClick={() => addToCart(
                 [{
                   product: 1,
                   quant: 1,
@@ -120,7 +121,7 @@ const HomePage = ({
                   price: 0,
                   promo: 1
                 }]
-              )}
+              ).then( ()=>{ history.push('/catalog') } )}
             />
           </div> :
           <div className='logo-still'>
@@ -146,7 +147,7 @@ const HomePage = ({
             init={userInit}
             lan={lan} pass={false}
           /> :
-          membership>63? <MainMenu lan={lan} open={fac.open} /> : null
+          membership>31? <MainMenu lan={lan} open={fac.open} /> : null
         }
 
 {/* For ADMIN/LAB/FAC/DELIVERY only Interface: */}
@@ -204,6 +205,6 @@ export default connect(mapStateToProps, {
   getLocalFacs,
   setInterface,
   getFacStore,
-  addCart,
+  addToCart,
   socketCounter
 } )(HomePage)

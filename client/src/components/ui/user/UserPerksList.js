@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Button } from 'semantic-ui-react'
 import { addCart } from '../../../actions/cart'
 
-const UserPerksList = ({ lan,has_perks,new_user,perks,addCart }) => {
+const UserPerksList = ({ lan,open,has_perks,new_user,perks,addCart }) => {
   const state = {
     ui: {
       bg:['Имаш','Нямаш','бонуси!...','1 "Маргарита" Гратис!','Маргерита'],
@@ -16,6 +16,7 @@ const UserPerksList = ({ lan,has_perks,new_user,perks,addCart }) => {
       {has_perks ? (
         <div className='oval-but'>
           <Button color='orange'
+            disabled={!open}
             content={state.ui[lan][3]}
             onClick={ () => addCart(
               [{
@@ -34,4 +35,8 @@ const UserPerksList = ({ lan,has_perks,new_user,perks,addCart }) => {
   )
 }
 
-export default connect(null, { addCart })(UserPerksList)
+const mapStateToProps = state => ({
+  open: state.facs.open
+})
+
+export default connect(mapStateToProps, { addCart })(UserPerksList)
